@@ -1,0 +1,48 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "tokenTr",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "responseTr",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "codeResponse",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "endPointTr",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "dateRequest",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "dateResponse",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "loginActeur",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "requestTr",
+            "fieldType": "byte[]",
+            "fieldTypeBlobContent": "text"
+        }
+    ],
+    "changelogDate": "20191223082611",
+    "dto": "no",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "tracking",
+    "databaseType": "sql",
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
+}

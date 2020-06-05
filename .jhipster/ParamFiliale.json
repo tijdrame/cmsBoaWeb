@@ -1,0 +1,41 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "codeFiliale",
+            "fieldType": "String",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "designationPays",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "endPoint",
+            "fieldType": "String",
+            "fieldValidateRules": []
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "dateCre",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "endPointCompte",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20191226104128",
+    "dto": "no",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "param_filiale",
+    "databaseType": "sql",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
+}

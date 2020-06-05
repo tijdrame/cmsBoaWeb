@@ -1,0 +1,11 @@
+version: '2'
+services:
+  cmsboaweb-postgresql:
+    image: postgres:11.5
+    # volumes:
+    #     - ~/volumes/jhipster/cmsBoaWeb/postgresql/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=user_ccboaweb
+      - POSTGRES_PASSWORD=2jDtNQ4GeRKyMjW7MfPi
+    ports:
+      - 5432:5432
