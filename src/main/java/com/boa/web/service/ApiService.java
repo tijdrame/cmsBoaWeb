@@ -30,6 +30,7 @@ import com.boa.web.response.GetCardsDetailResponse;
 import com.boa.web.response.GetPrepaidDechargementResponse;
 import com.boa.web.response.IdClientResponse;
 import com.boa.web.response.PrepareCardToOwnCardTransferResponse;
+import com.boa.web.response.prepareChangeCardOption.HiddenInput;
 import com.boa.web.response.prepareChangeCardOption.Information;
 import com.boa.web.service.util.ICodeDescResponse;
 
@@ -63,11 +64,10 @@ public class ApiService {
         this.paramFilialeService = paramFilialeService;
     }
 
-    /*################ MEL21022020  Fin:ExecuteBankActivateCard#####################*/
+    /*
+     * ################ MEL21022020 Fin:ExecuteBankActivateCard#####################
+     */
 
-    
-    
-    
     /*---------MEL21022020 :GetCardBankActivationParametersProxy--------------*/
     public GetCardBankActivationParametersResponse GetCardBankActivationParameters(
             GetCardBankActivationParametersRequest getCardBankActivationParametersRequest, HttpServletRequest request) {
@@ -81,7 +81,12 @@ public class ApiService {
         Client client = new Client();
         log.info("trace1:05022020");
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardBankActivationParametersProxy");
-
+        if (filiale == null) {
+            genericResponse = (GetCardBankActivationParametersResponse) paramFilialeService.clientAbsent(
+                    genericResponse, tracking, request.getRequestURI(), ICodeDescResponse.FILIALE_ABSENT_CODE,
+                    ICodeDescResponse.SERVICE_ABSENT_DESC, request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
         try {
             client = paramFilialeService.callApiIdClient(getCardBankActivationParametersRequest.getCompte(),
                     getCardBankActivationParametersRequest.getInstitutionId());
@@ -140,8 +145,9 @@ public class ApiService {
                     // genericResponse.setFaultCode(obj.getJSONObject("Envelope").getJSONObject("Body")
                     // .getJSONObject("Fault").getString("faultcode"));
                     genericResponse.setBusinessfault(obj.getJSONObject("Envelope").getJSONObject("Body")
-                            .getJSONObject("Fault").getJSONObject("detail").getString("business-fault"));
+                            .getJSONObject("Fault").getString("faultstring"));
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
                     genericResponse.setDateResponse(Instant.now());
                     // genericResponse.setFaultString(obj.getJSONObject("Envelope").getJSONObject("Body")
                     // .getJSONObject("Fault").getJSONObject("detail").getJSONObject("business-fault")
@@ -153,7 +159,7 @@ public class ApiService {
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
-                    tracking.setLoginActeur(user.isPresent()?user.get().getLogin():"");
+                    tracking.setLoginActeur(user.isPresent() ? user.get().getLogin() : "");
                     tracking.setResponseTr(result);
                     tracking.setTokenTr(tab[1]);
                     tracking.setDateRequest(Instant.now());
@@ -168,8 +174,8 @@ public class ApiService {
                 result = br.readLine();
                 log.info("result == [{}]", result);
                 obj = new JSONObject(result);
-                
-                log.info("MEL18022020");
+
+                log.info("MEL18022020 [{}]", result);
 
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("prepare-change-card-option-response")) {
@@ -179,11 +185,11 @@ public class ApiService {
                     log.info("Here ELM14022020");
                     genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription("ICodeDescResponse.CLIENT_ABSENT_DESC");
+                    genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
-                    tracking.setLoginActeur(user.isPresent()?user.get().getLogin():"");
+                    tracking.setLoginActeur(user.isPresent() ? user.get().getLogin() : "");
                     tracking.setResponseTr(result);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
@@ -198,78 +204,78 @@ public class ApiService {
                 // genericResponse.setFaultcode(myObj.getString("faultcode"));
                 // genericResponse.setFaultstring(myObj.getString("faultstring"));
 
-                log.info("1MEL18022020");
-                
-                if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("Fault")) {
+                if (getCardBankActivationParametersRequest.getEntValue().contains("VALID")) {
+                    JSONObject myObjA = obj.getJSONObject("Envelope").getJSONObject("Body")
+                            .getJSONObject("prepare-change-card-option-response").getJSONObject("string-input");
 
-                }
-                
-                log.info("2MEL18022020");
-
-                
-                if (getCardBankActivationParametersRequest.getEntValue().contains("VALID"))
-                {
-                	JSONObject myObjA = obj.getJSONObject("Envelope").getJSONObject("Body")
-                            .getJSONObject("prepare-change-card-option-response").getJSONObject(
-                            "string-input");
-                	
-                  	
-               	    Information information = new Information();
+                    Information information = new Information();
                     information.setIdentifier(myObjA.getString("identifier"));
                     information.setStereotype(myObjA.getString("stereotype"));
                     information.setLabel(myObjA.getString("label"));
                     information.setDescription(myObjA.getString("description"));
                     information.setPlaceholder(myObjA.getString("placeholder"));
-                    
+
+                    if (obj.toString().contains("hidden-input")) {
+                        JSONObject myObjB = obj.getJSONObject("Envelope").getJSONObject("Body")
+                            .getJSONObject("prepare-change-card-option-response").getJSONObject("hidden-input");
+
+                        HiddenInput hiddenInput = new HiddenInput();
+                        hiddenInput.setIdentifier(myObjB.getString("identifier"));
+                        hiddenInput.setValue(myObjB.getString("value"));
+                        genericResponse.setHiddenInput(hiddenInput);
+                    }
+
                     genericResponse.getStringInput().add(information);
-                	
-                }  
-                
-                if (getCardBankActivationParametersRequest.getEntValue().contains("TEMPORARY_BLOCKED_BY_USER"))
-                {
+
+                }
+
+                if (getCardBankActivationParametersRequest.getEntValue().contains("TEMPORARY_BLOCKED_BY_USER")) {
 
                     JSONArray jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
-                             .getJSONObject("prepare-change-card-option-response").getJSONArray("string-input");
-                     log.info("1MEL18022020");
-                     
-                     if (obj.getJSONObject("Envelope").getJSONObject("Body").toString()
-                             .contains("prepare-change-card-option-response")) {
-                     	log.info(" Log1 test 18022020");
-                     	
+                            .getJSONObject("prepare-change-card-option-response").getJSONArray("string-input");
+                    log.info("1MEL18022020");
+
+                    if (obj.getJSONObject("Envelope").getJSONObject("Body").toString()
+                            .contains("prepare-change-card-option-response")) {
+                        log.info(" Log1 test 18022020");
 
                         for (int i = 0; i < jsonArray.length(); i++) {
-                             JSONObject myObj1 = jsonArray.getJSONObject(i);
-                             Information information = new Information();
-                             information.setIdentifier(myObj1.getString("identifier"));
-                             information.setStereotype(myObj1.getString("stereotype"));
-                             information.setLabel(myObj1.getString("label"));
-                             information.setDescription(myObj1.getString("description"));
-                             information.setPlaceholder(myObj1.getString("placeholder"));
-                             
-                             log.info("Identifier == [{}]", myObj1.getString("identifier"));
-                             genericResponse.getStringInput().add(information);
-                         }
-                	
-                }  
-                 
-                 
+                            JSONObject myObj1 = jsonArray.getJSONObject(i);
+                            Information information = new Information();
+                            information.setIdentifier(myObj1.getString("identifier"));
+                            information.setStereotype(myObj1.getString("stereotype"));
+                            information.setLabel(myObj1.getString("label"));
+                            information.setDescription(myObj1.getString("description"));
+                            information.setPlaceholder(myObj1.getString("placeholder"));
 
+                            log.info("Identifier == [{}]", myObj1.getString("identifier"));
+                            genericResponse.getStringInput().add(information);
+                        }
+                        if (obj.toString().contains("hidden-input")) {
+                            JSONObject myObjB = obj.getJSONObject("Envelope").getJSONObject("Body")
+                                .getJSONObject("prepare-change-card-option-response").getJSONObject("hidden-input");
+    
+                            HiddenInput hiddenInput = new HiddenInput();
+                            hiddenInput.setIdentifier(myObjB.getString("identifier"));
+                            hiddenInput.setValue(myObjB.getString("value"));
+                            genericResponse.setHiddenInput(hiddenInput);
+                        }
 
-                
-              
-                    log.info(" Log2 test 18022020");
+                    }
+
+                    
+                }
+                log.info(" Log2 test 18022020");
                     genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                     tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
-                    tracking.setLoginActeur(user.isPresent()?user.get().getLogin():"");
+                    tracking.setLoginActeur(user.isPresent() ? user.get().getLogin() : "");
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
                     tracking.setTokenTr(tab[1]);
-
-                }
 
             }
         }
@@ -278,12 +284,12 @@ public class ApiService {
             log.error(" error = [{}]", e1.getMessage());
             tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
             tracking.tokenTr(tab[1]).dateRequest(Instant.now())
-                    .loginActeur(user.isPresent()?user.get().getLogin():"");
+                    .loginActeur(user.isPresent() ? user.get().getLogin() : "");
             tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
             tracking.dateResponse(Instant.now());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e1.getMessage());
         }
 
         trackingService.save(tracking);
@@ -304,16 +310,15 @@ public class ApiService {
     /*---------MEL04022020:GetPrepaidDechargementResponse--------------*/
     public GetPrepaidDechargementResponse GetPrepaidDechargement(GetPrepaidDechargementRequest GetPrepaidDechargement,
             HttpServletRequest request) {
-
+        Tracking tracking = new Tracking();
         Optional<User> user = userService.getUserWithAuthorities();
-        String login = user.isPresent()?user.get().getLogin():"";
+        String login = user.isPresent() ? user.get().getLogin() : "";
         log.info("trace0 :05022020");
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         GetPrepaidDechargementResponse getPrepaidDechargementResponse = new GetPrepaidDechargementResponse();
         log.info("trace1:05022020");
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("dechargementCarteProxy_V2");
-        Tracking tracking = new Tracking();
         if (filiale == null) {
             getPrepaidDechargementResponse = (GetPrepaidDechargementResponse) paramFilialeService.clientAbsent(
                     getPrepaidDechargementResponse, tracking, request.getRequestURI(),
@@ -321,6 +326,7 @@ public class ApiService {
                     request.getRequestURI(), tab[1]);
             return getPrepaidDechargementResponse;
         }
+        
         log.info("trace2:05022020");
 
         try {
@@ -383,8 +389,7 @@ public class ApiService {
                 log.info("trace7:05022020");
 
                 JSONObject jsonString1 = new JSONObject().put("codopsc", "GAB")
-                        .put("comptec", GetPrepaidDechargement.getCompteTarget())
-                        .put("compted", null)
+                        .put("comptec", GetPrepaidDechargement.getCompteTarget()).put("compted", null)
                         .put("country", GetPrepaidDechargement.getPays())
                         .put("dateT", GetPrepaidDechargement.getDateTrans())
                         .put("datexpir", cardsDetailResponse.getCard().getExpiryDate())
@@ -479,26 +484,26 @@ public class ApiService {
                 }
             } catch (Exception e) {
                 tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
-                tracking.tokenTr(tab[1]).dateRequest(Instant.now())
-                        .loginActeur(login);
+                tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
                 tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
                 tracking.dateResponse(Instant.now());
                 getPrepaidDechargementResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
                 getPrepaidDechargementResponse.setDateResponse(Instant.now());
-                getPrepaidDechargementResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+                getPrepaidDechargementResponse
+                        .setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
                 log.error("errorrr==", e.getMessage());
 
             }
 
         } catch (Exception e) {
             tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
-            tracking.tokenTr(tab[1]).dateRequest(Instant.now())
-                    .loginActeur(login);
+            tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
             tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
             tracking.dateResponse(Instant.now());
             getPrepaidDechargementResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             getPrepaidDechargementResponse.setDateResponse(Instant.now());
-            getPrepaidDechargementResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            getPrepaidDechargementResponse
+                    .setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
             log.error("errorrr==", e.getMessage());
 
         }
@@ -510,15 +515,22 @@ public class ApiService {
     /*---------MEL10022020 Debut :prepareCardToOwnCardTransfer--------------*/
     public PrepareCardToOwnCardTransferResponse PrepareCardToOwnCardTransfer(
             PrepareCardToOwnCardTransferRequest prepareCardToOwnCardTransferRequest, HttpServletRequest request) {
-
-        Optional<User> user = userService.getUserWithAuthorities();
-        String login = user.isPresent()?user.get().getLogin():"";
-        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("prepareCardToOwnCardTransfer");
-        Tracking tracking = new Tracking();
+                Tracking tracking = new Tracking();
         PrepareCardToOwnCardTransferResponse genericResponse = new PrepareCardToOwnCardTransferResponse();
-        Client client = new Client();
+        Optional<User> user = userService.getUserWithAuthorities();
+        String login = user.isPresent() ? user.get().getLogin() : "";
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
+        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("prepareCardToOwnCardTransfer");
+        if (filiale == null) {
+            genericResponse = (PrepareCardToOwnCardTransferResponse) paramFilialeService.clientAbsent(genericResponse,
+                    tracking, request.getRequestURI(), ICodeDescResponse.FILIALE_ABSENT_CODE,
+                    ICodeDescResponse.SERVICE_ABSENT_DESC, request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
+        
+
+        Client client = new Client();
 
         log.info("Compte  == [{}]", prepareCardToOwnCardTransferRequest.getCompte());
         log.info("InstitutionID  == [{}]", prepareCardToOwnCardTransferRequest.getInstitutionId());
@@ -629,7 +641,7 @@ public class ApiService {
                         // TODO 11022020
                         genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
                         genericResponse.setDateResponse(Instant.now());
-                        genericResponse.setDescription("ICodeDescResponse.CLIENT_ABSENT_DESC");
+                        genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
                         tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
 
                         tracking.setDateResponse(Instant.now());
@@ -671,13 +683,13 @@ public class ApiService {
                 } catch (JSONException e) {
                     log.error(" error = [{}]", e.getMessage());
                     tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
-                    tracking.tokenTr(tab[1]).dateRequest(Instant.now())
-                            .loginActeur(login);
+                    tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
                     tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
                     tracking.dateResponse(Instant.now());
                     genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+                    genericResponse
+                            .setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
                 }
 
             }
@@ -686,13 +698,12 @@ public class ApiService {
         catch (IOException | JSONException e1) {
             log.error(" error = [{}]", e1.getMessage());
             tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
-            tracking.tokenTr(tab[1]).dateRequest(Instant.now())
-                    .loginActeur(login);
+            tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
             tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
             tracking.dateResponse(Instant.now());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e1.getMessage());
         }
 
         trackingService.save(tracking);
@@ -712,14 +723,21 @@ public class ApiService {
      */
     public ExecuteCardToOwnCardTransferResponse ExecuteCardToOwnCardTransfer(
             ExecuteCardToOwnCardTransferRequest executeCardToOwnCardTransferRequest, HttpServletRequest request) {
+                Tracking tracking = new Tracking();
         Optional<User> user = userService.getUserWithAuthorities();
-        String login = user.isPresent()?user.get().getLogin():"";
-        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("executeCardToOwnCardTransfert");
-        Tracking tracking = new Tracking();
+        String login = user.isPresent() ? user.get().getLogin() : "";
         ExecuteCardToOwnCardTransferResponse genericResponse = new ExecuteCardToOwnCardTransferResponse();
-        Client client = new Client();
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
+        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("executeCardToOwnCardTransfert");
+        if (filiale == null) {
+            genericResponse = (ExecuteCardToOwnCardTransferResponse) paramFilialeService.clientAbsent(genericResponse,
+                    tracking, request.getRequestURI(), ICodeDescResponse.FILIALE_ABSENT_CODE,
+                    ICodeDescResponse.SERVICE_ABSENT_DESC, request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
+        
+        Client client = new Client();
 
         try {
             client = paramFilialeService.callApiIdClient(executeCardToOwnCardTransferRequest.getCompte(),
@@ -751,7 +769,7 @@ public class ApiService {
             jsonString = new JSONObject().put("opidentifier", executeCardToOwnCardTransferRequest.getidoperation())
                     .put("clidentifier", client.getIdClient())
                     .put("langage", executeCardToOwnCardTransferRequest.getlangue())
-                    //.put("country", executeCardToOwnCardTransferRequest.getPays())
+                    // .put("country", executeCardToOwnCardTransferRequest.getPays())
                     // .put("variant", executeCardToOwnCardTransferRequest.getVariant())
                     .put("srcaccnumb", executeCardToOwnCardTransferRequest.getsourceCardId())
                     .put("tcardclident", executeCardToOwnCardTransferRequest.getreceiverCardId())
@@ -826,7 +844,7 @@ public class ApiService {
 
                     genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription("ICodeDescResponse.CLIENT_ABSENT_DESC");
+                    genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
 
                     tracking.setDateResponse(Instant.now());
@@ -894,13 +912,12 @@ public class ApiService {
         catch (IOException | JSONException e1) {
             log.error(" error = [{}]", e1.getMessage());
             tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
-            tracking.tokenTr(tab[1]).dateRequest(Instant.now())
-                    .loginActeur(login);
+            tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
             tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
             tracking.dateResponse(Instant.now());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e1.getMessage());
         }
 
         trackingService.save(tracking);
@@ -914,7 +931,7 @@ public class ApiService {
 
     public IdClientResponse IdClient(IdClientRequest IdClient, HttpServletRequest request) {
         Optional<User> user = userService.getUserWithAuthorities();
-        String login = user.isPresent()?user.get().getLogin():"";
+        String login = user.isPresent() ? user.get().getLogin() : "";
         log.info("trace0");
         IdClientResponse idClientResponse = new IdClientResponse();
         log.info("trace1");
@@ -1147,9 +1164,9 @@ public class ApiService {
      * @return
      */
     public ExecuteBankActivateCardResponse ExecuteBankActivateCard(
-    		ExecuteBankActivateCardRequest executeBankActivateCardRequest, HttpServletRequest request) {
+            ExecuteBankActivateCardRequest executeBankActivateCardRequest, HttpServletRequest request) {
         Optional<User> user = userService.getUserWithAuthorities();
-        String login = user.isPresent()?user.get().getLogin():"";
+        String login = user.isPresent() ? user.get().getLogin() : "";
         log.info("trace0 :MEL21022020");
 
         Tracking tracking = new Tracking();
@@ -1159,13 +1176,18 @@ public class ApiService {
         Client client = new Client();
         log.info("trace1:MEL21022020");
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("executeBankActivateCard");
-
+        if (filiale == null) {
+            genericResponse = (ExecuteBankActivateCardResponse) paramFilialeService.clientAbsent(genericResponse,
+                    tracking, request.getRequestURI(), ICodeDescResponse.FILIALE_ABSENT_CODE,
+                    ICodeDescResponse.SERVICE_ABSENT_DESC, request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
         try {
             client = paramFilialeService.callApiIdClient(executeBankActivateCardRequest.getCompte(),
-            		executeBankActivateCardRequest.getInstitutionId());
+                    executeBankActivateCardRequest.getInstitutionId());
             if (client == null) {
-                genericResponse = (ExecuteBankActivateCardResponse) paramFilialeService.clientAbsent(
-                        genericResponse, tracking, request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
+                genericResponse = (ExecuteBankActivateCardResponse) paramFilialeService.clientAbsent(genericResponse,
+                        tracking, request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
                         ICodeDescResponse.CLIENT_ABSENT_DESC, request.getRequestURI(), tab[1]);
                 return genericResponse;
             }
@@ -1187,10 +1209,10 @@ public class ApiService {
 
             String jsonString = "";
 
-          jsonString = new JSONObject().put("idClient", client.getIdClient())
+            jsonString = new JSONObject().put("idClient", client.getIdClient())
                     .put("langue", executeBankActivateCardRequest.getLangue())
                     .put("cartIdentif", executeBankActivateCardRequest.getCartIdentif())
-                    .put("operationIdentif", executeBankActivateCardRequest.getOperationIdentif()).toString();
+                    .put("operationIdentif", executeBankActivateCardRequest.getIdoperation()).toString();
 
             log.info("jsonString MEL21022020 : {}", jsonString);
 
@@ -1214,7 +1236,7 @@ public class ApiService {
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setFaultstring(obj.getJSONObject("Envelope").getJSONObject("Body")
                             .getJSONObject("Fault").getString("faultstring"));
-                  
+
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
@@ -1233,18 +1255,16 @@ public class ApiService {
                 result = br.readLine();
                 log.info("result == [{}]", result);
                 obj = new JSONObject(result);
-                
-                
+
                 JSONArray jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
                         .getJSONObject("complete-change-card-option-response").getJSONArray("string-input");
-                
 
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("prepare-change-card-option-response")) {
 
                     // TODO MEL21022020
-                	
-                	for (int i = 0; i < jsonArray.length(); i++) {
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject myObj = jsonArray.getJSONObject(i);
                         Information information = new Information();
                         information.setDescription(myObj.getString("description"));
@@ -1252,21 +1272,19 @@ public class ApiService {
                         information.setLabel(myObj.getString("label"));
                         information.setPlaceholder(myObj.getString("placeholder"));
                         information.setStereotype(myObj.getString("stereotype"));
-                        
+
                         genericResponse.getStringInput().add(information);
                     }
-                	
-                	
-                	
-                	 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("complete-change-card-option-response")) {
-                	genericResponse.setAction(obj.getString("action"));
-                	 }
-                	  
+
+                    if (obj.getJSONObject("Envelope").getJSONObject("Body").toString()
+                            .contains("complete-change-card-option-response")) {
+                        genericResponse.setAction(obj.getString("action"));
+                    }
 
                     log.info("Here MEL21022020");
                     genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription("ICodeDescResponse.CLIENT_ABSENT_DESC");
+                    genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
@@ -1276,21 +1294,18 @@ public class ApiService {
                     trackingService.save(tracking);
                     return genericResponse;
 
-                }               
-              
+                }
 
-                    genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
-                    genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
-                    tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
-                    tracking.setDateResponse(Instant.now());
-                    tracking.setEndPointTr(filiale.getEndPoint());
-                    tracking.setLoginActeur(login );
-                    tracking.setDateRequest(Instant.now());
-                    tracking.setResponseTr(result);
-                    tracking.setTokenTr(tab[1]);
-
-                
+                genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
+                tracking.setDateResponse(Instant.now());
+                tracking.setEndPointTr(filiale.getEndPoint());
+                tracking.setLoginActeur(login);
+                tracking.setDateRequest(Instant.now());
+                tracking.setResponseTr(result);
+                tracking.setTokenTr(tab[1]);
 
             }
         }
@@ -1298,13 +1313,12 @@ public class ApiService {
         catch (IOException | JSONException e1) {
             log.error(" error = [{}]", e1.getMessage());
             tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
-            tracking.tokenTr(tab[1]).dateRequest(Instant.now())
-                    .loginActeur(login);
+            tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
             tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
             tracking.dateResponse(Instant.now());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e1.getMessage());
         }
 
         trackingService.save(tracking);
@@ -1312,8 +1326,8 @@ public class ApiService {
         return genericResponse;
     }
 
-   
-    
-    /*################ MEL21022020  Fin:ExecuteBankActivateCard#####################*/
+    /*
+     * ################ MEL21022020 Fin:ExecuteBankActivateCard#####################
+     */
 
 }

@@ -109,6 +109,22 @@ public void setInstitutionId(String institutionId) {
 }
 
 
+	@Override
+	public String toString() {
+		return "{" +
+			" compte='" + compte + "'" +
+			", institutionId='" + institutionId + "'" +
+			", langue='" + langue + "'" +
+			", pays='" + pays + "'" +
+			", variant='" + variant + "'" +
+			", cartIdentif='" + cartIdentif + "'" +
+			", action='" + action + "'" +
+			", entKey='" + entKey + "'" +
+			", entValue='" + entValue + "'" +
+			", additionalProperties='" + additionalProperties + "'" +
+			"}";
+	}
+
 	
 	
 	

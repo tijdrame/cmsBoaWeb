@@ -61,6 +61,7 @@ import com.boa.web.response.changecardlimit.ChangeCardLimitResponse;
 import com.boa.web.response.getCardAuthRestrictions.GetCardAuthRestrictionsResponse;
 import com.boa.web.response.getCardAuthRestrictions.OperationType;
 import com.boa.web.response.getCardAuthRestrictions.Region;
+import com.boa.web.response.getCardAuthRestrictions.Restriction;
 import com.boa.web.response.prepareChangeCardOption.HiddenInput;
 import com.boa.web.response.prepareChangeCardOption.Information;
 import com.boa.web.response.prepareChangeCardOption.PrepareChangeCardOption;
@@ -204,7 +205,7 @@ public class ParamFilialeService {
                         .contains("client-card-identifier")) {
                     genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription("ICodeDescResponse.CLIENT_ABSENT_DESC");
+                    genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
 
                     tracking.setDateResponse(Instant.now());
@@ -242,9 +243,13 @@ public class ParamFilialeService {
                         card.setCategory(myObj.getString("category"));
                         card.setBrand(myObj.getString("brand"));
                         Status status = new Status();
-                        status.setDefaultIdentifier(myObj.getJSONObject("status").getString("default-identifier"));
-                        status.setIdentifier(myObj.getJSONObject("status").getInt("identifier"));
-                        status.setDescription(myObj.getJSONObject("status").getString("description"));
+                        JSONObject sObject = myObj.getJSONObject("status");
+                        if(sObject.toString().contains("default-identifier"))
+                            status.setDefaultIdentifier(myObj.getJSONObject("status").getString("default-identifier"));
+                        if(sObject.toString().contains("identifier"))
+                            status.setIdentifier(myObj.getJSONObject("status").getInt("identifier"));
+                        if(sObject.toString().contains("description"))
+                            status.setDescription(myObj.getJSONObject("status").getString("description"));
                         card.setStatus(status);
                         card.setActive(myObj.getBoolean("active"));
                         card.setPinNotSet(myObj.getBoolean("pinNotSet"));
@@ -276,9 +281,13 @@ public class ParamFilialeService {
                     card.setCategory(myObj.getString("category"));
                     card.setBrand(myObj.getString("brand"));
                     Status status = new Status();
-                    // status.setDefaultIdentifier(myObj.getJSONObject("status").getString("default-identifier"));
-                    status.setIdentifier(myObj.getJSONObject("status").getInt("identifier"));
-                    status.setDescription(myObj.getJSONObject("status").getString("description"));
+                    JSONObject sObject = myObj.getJSONObject("status");
+                    if(sObject.toString().contains("default-identifier"))
+                        status.setDefaultIdentifier(myObj.getJSONObject("status").getString("default-identifier"));
+                    if(sObject.toString().contains("identifier"))
+                        status.setIdentifier(myObj.getJSONObject("status").getInt("identifier"));
+                    if(sObject.toString().contains("description"))
+                        status.setDescription(myObj.getJSONObject("status").getString("description"));
                     card.setStatus(status);
                     card.setActive(myObj.getBoolean("active"));
                     card.setPinNotSet(myObj.getBoolean("pinNotSet"));
@@ -317,7 +326,7 @@ public class ParamFilialeService {
             tracking.dateResponse(Instant.now()).endPointTr(request.getRequestURI());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC+" Message="+e.getMessage());
             log.error("errorrr== [{}]", e);
 
         }
@@ -393,7 +402,7 @@ public class ParamFilialeService {
                         .contains("prepare-change-card-option-response")) {
                     genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription("ICodeDescResponse.CLIENT_ABSENT_DESC");
+                    genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
 
                     tracking.setDateResponse(Instant.now());
@@ -450,7 +459,7 @@ public class ParamFilialeService {
             tracking.dateResponse(Instant.now()).endPointTr(request.getRequestURI());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC+" Message="+e.getMessage());
             log.error("errorrr==[{}]", e);
 
         }
@@ -603,7 +612,7 @@ public class ParamFilialeService {
             tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC+" Message="+e.getMessage());
             log.error("errorrr==[{}]", e);
 
         }
@@ -731,7 +740,7 @@ public class ParamFilialeService {
             tracking.dateResponse(Instant.now());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC+" Message="+e.getMessage());
             log.error("errorrr==[{}]", e);
 
         }
@@ -875,44 +884,44 @@ public class ParamFilialeService {
                     }
                 } else if (jsonObject != null) {
                     Operation operation = new Operation();
-                        JSONObject myObj = jsonObject;
-                        operation.setDatetime(myObj.getString("datetime"));
-                        operation.setIdentifier(myObj.getInt("identifier"));
-                        Type type = new Type();
-                        type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier"));
-                        type.setDescription(myObj.getJSONObject("type").getString("description"));
-                        operation.setType(type);
-                        Amount amount = new Amount();
-                        amount.setAmount(myObj.getJSONObject("amount").getDouble("amount"));
-                        amount.setCurrency(myObj.getJSONObject("amount").getString("currency"));
-                        operation.setAmount(amount);
-                        operation.setDescription(myObj.getString("description"));
-                        operation.setIsReversal(myObj.getBoolean("is-reversal"));
-                        State state = new State();
-                        state.setIdentifier(myObj.getJSONObject("state").getInt("identifier"));
-                        state.setDescription(myObj.getJSONObject("state").getString("description"));
-                        operation.setState(state);
-                        Address address = new Address();
-                        Country country = new Country();
-                        country.setName(myObj.getJSONObject("address").getJSONObject("country").getString("name"));
-                        country.setAlpha2Code(
-                                myObj.getJSONObject("address").getJSONObject("country").getString("alpha-2-code"));
-                        country.setAlpha3Code(
-                                myObj.getJSONObject("address").getJSONObject("country").getString("alpha-3-code"));
-                        country.setNumber3Code(
-                                myObj.getJSONObject("address").getJSONObject("country").getInt("number-3-code"));
-                        address.setCountry(country);
-                        address.setCity(myObj.getJSONObject("address").getString("city"));
-                        address.setAddress(myObj.getJSONObject("address").getString("address"));
-                        operation.setAddress(address);
-                        operation.setIsHold(myObj.getBoolean("is-hold"));
-                        ResultingBalance resultingBalance = new ResultingBalance();
-                        resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
-                        resultingBalance.setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
-                        operation.setResultingBalance(resultingBalance);
-                        operation.setDirection(myObj.getString("direction"));
-                        operation.setMcc(myObj.getInt("mcc"));
-                        genericResponse.getOperation().add(operation);
+                    JSONObject myObj = jsonObject;
+                    operation.setDatetime(myObj.getString("datetime"));
+                    operation.setIdentifier(myObj.getInt("identifier"));
+                    Type type = new Type();
+                    type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier"));
+                    type.setDescription(myObj.getJSONObject("type").getString("description"));
+                    operation.setType(type);
+                    Amount amount = new Amount();
+                    amount.setAmount(myObj.getJSONObject("amount").getDouble("amount"));
+                    amount.setCurrency(myObj.getJSONObject("amount").getString("currency"));
+                    operation.setAmount(amount);
+                    operation.setDescription(myObj.getString("description"));
+                    operation.setIsReversal(myObj.getBoolean("is-reversal"));
+                    State state = new State();
+                    state.setIdentifier(myObj.getJSONObject("state").getInt("identifier"));
+                    state.setDescription(myObj.getJSONObject("state").getString("description"));
+                    operation.setState(state);
+                    Address address = new Address();
+                    Country country = new Country();
+                    country.setName(myObj.getJSONObject("address").getJSONObject("country").getString("name"));
+                    country.setAlpha2Code(
+                            myObj.getJSONObject("address").getJSONObject("country").getString("alpha-2-code"));
+                    country.setAlpha3Code(
+                            myObj.getJSONObject("address").getJSONObject("country").getString("alpha-3-code"));
+                    country.setNumber3Code(
+                            myObj.getJSONObject("address").getJSONObject("country").getInt("number-3-code"));
+                    address.setCountry(country);
+                    address.setCity(myObj.getJSONObject("address").getString("city"));
+                    address.setAddress(myObj.getJSONObject("address").getString("address"));
+                    operation.setAddress(address);
+                    operation.setIsHold(myObj.getBoolean("is-hold"));
+                    ResultingBalance resultingBalance = new ResultingBalance();
+                    resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
+                    resultingBalance.setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
+                    operation.setResultingBalance(resultingBalance);
+                    operation.setDirection(myObj.getString("direction"));
+                    operation.setMcc(myObj.getInt("mcc"));
+                    genericResponse.getOperation().add(operation);
                 }
                 // }
 
@@ -932,10 +941,10 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
                 log.info("getCardHistoryProxy result error == [{}]", result);
-                genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.HSTORIQUE_VIDE);
-                tracking.setCodeResponse(ICodeDescResponse.HSTORIQUE_VIDE + "");
+                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
 
                 tracking.setDateResponse(Instant.now());
                 tracking.setEndPointTr(filiale.getEndPoint());
@@ -948,14 +957,15 @@ public class ParamFilialeService {
             }
             os.close();
         } catch (Exception e) {
+            //pb interpretation resp
             tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
             tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
             tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
             tracking.dateResponse(Instant.now());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
-            log.error("errorrr==[{}]", e);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC+" Message="+e.getMessage());
+            log.error("errorrr==[{}]", e.getMessage());
 
         }
         trackingService.save(tracking);
@@ -1213,7 +1223,7 @@ public class ParamFilialeService {
             tracking.dateResponse(Instant.now());
             genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC+" Message="+e.getMessage());
             log.error("errorrr except==[{}]", e);
         }
         trackingService.save(tracking);
@@ -1789,6 +1799,34 @@ public class ParamFilialeService {
                     region.setName(myObj.getString("name"));
                     genericResponse.getRegion().add(region);
                 }
+                if (obj.toString().contains("restriction")) {
+                    JSONArray restArray = null;
+                    JSONObject restObject = null;
+                    if (obj.get("restriction") instanceof JSONArray)
+                    restArray = obj.getJSONArray("restriction");
+                    else
+                    restObject = obj.getJSONObject("restriction");
+                    if (restArray != null) {
+                        for (int i = 0; i < restArray.length(); i++) {
+                            Restriction restriction = new Restriction();
+                            JSONObject myObj = restArray.getJSONObject(i);
+                            restriction
+                            .operationTypeIdentifier(myObj.getString("operation-type-identifier"))
+                            .regionIdentifier(myObj.getString("region-identifier"))
+                            .isActive(myObj.getBoolean("is-active"))
+                            ;
+                            genericResponse.getRestrictions().add(restriction);
+                        }
+                    }else if(restObject != null) {
+                            Restriction restriction = new Restriction();
+                            restriction
+                            .operationTypeIdentifier(restObject.getString("operation-type-identifier"))
+                            .regionIdentifier(restObject.getString("region-identifier"))
+                            .isActive(restObject.getBoolean("is-active"))
+                            ;
+                            genericResponse.getRestrictions().add(restriction);
+                    }
+                }
 
                 tracking.setResponseTr(result);
                 // System.out.println("tab 1=" + tab[1]);
@@ -2137,7 +2175,7 @@ public class ParamFilialeService {
             log.error("exception in cardless [{}]", e);
             genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
             genericResponse.setDateResponse(Instant.now());
-            genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC+" Message="+e.getMessage());
             tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), e.getMessage(), tab[1]);
         }
         trackingService.save(tracking);

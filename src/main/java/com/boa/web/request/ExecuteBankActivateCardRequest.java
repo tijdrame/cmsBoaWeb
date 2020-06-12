@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 "institutionId" ,
 "langue",
 "cartIdentif",
-"operationIdentif",
+"idoperation",
 })
 
 public class ExecuteBankActivateCardRequest {
@@ -33,7 +33,9 @@ public class ExecuteBankActivateCardRequest {
 	    
 	    @JsonProperty("cartIdentif")
 	    private String cartIdentif;
-	    
+		
+		@JsonProperty("idoperation")
+	    private String idoperation;
 	
 	    
 	    public String getCompte() {
@@ -83,21 +85,65 @@ public class ExecuteBankActivateCardRequest {
 		}
 
 
+	public ExecuteBankActivateCardRequest() {
+	}
 
-		public String getOperationIdentif() {
-			return operationIdentif;
-		}
+	public ExecuteBankActivateCardRequest(String compte, String institutionId, String langue, String cartIdentif, String idoperation) {
+		this.compte = compte;
+		this.institutionId = institutionId;
+		this.langue = langue;
+		this.cartIdentif = cartIdentif;
+		this.idoperation = idoperation;
+	}
+
+	public String getIdoperation() {
+		return this.idoperation;
+	}
+
+	public void setIdoperation(String idoperation) {
+		this.idoperation = idoperation;
+	}
+
+	public ExecuteBankActivateCardRequest compte(String compte) {
+		this.compte = compte;
+		return this;
+	}
+
+	public ExecuteBankActivateCardRequest institutionId(String institutionId) {
+		this.institutionId = institutionId;
+		return this;
+	}
+
+	public ExecuteBankActivateCardRequest langue(String langue) {
+		this.langue = langue;
+		return this;
+	}
+
+	public ExecuteBankActivateCardRequest cartIdentif(String cartIdentif) {
+		this.cartIdentif = cartIdentif;
+		return this;
+	}
+
+	public ExecuteBankActivateCardRequest idoperation(String idoperation) {
+		this.idoperation = idoperation;
+		return this;
+	}
+
+
+	@Override
+	public String toString() {
+		return "{" +
+			" compte='" + getCompte() + "'" +
+			", institutionId='" + getInstitutionId() + "'" +
+			", langue='" + getLangue() + "'" +
+			", cartIdentif='" + getCartIdentif() + "'" +
+			", idoperation='" + getIdoperation() + "'" +
+			"}";
+	}
 
 
 
-		public void setOperationIdentif(String operationIdentif) {
-			this.operationIdentif = operationIdentif;
-		}
 
-
-
-		@JsonProperty("operationIdentif")
-	    
-	    private String operationIdentif;
+		
 	
 }

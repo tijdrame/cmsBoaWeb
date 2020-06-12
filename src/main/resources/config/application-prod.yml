@@ -15,9 +15,9 @@
 
 logging:
   level:
-    ROOT: INFO
-    io.github.jhipster: INFO
-    com.boa.web: INFO
+    ROOT: DEBUG
+    io.github.jhipster: DEBUG
+    com.boa.web: DEBUG
 
 management:
   metrics:
@@ -34,8 +34,8 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     # DCE
-    url: jdbc:postgresql://10.170.102.35:5432/boa_express_db
-    username: postgres
+    url: jdbc:postgresql://10.170.102.35:5432/ccboawebdb
+    username: user_ccboaweb
     password: 2-P=o$1j+ubve,c$<xmU
     #CASA
     #url: jdbc:postgresql://10.132.71.184:5432/ccboawebdb

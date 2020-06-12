@@ -4,18 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.boa.web.response.GetCardBankActivationParametersResponse.StringInput;
+import com.boa.web.response.prepareChangeCardOption.HiddenInput;
 import com.boa.web.response.prepareChangeCardOption.Information;
 
 public class GetCardBankActivationParametersResponse extends GenericResponse {
 	
 	//private String faultcode;
-	private String businessfault;
+	
 	
 	//private List<StringInput> stringInput = null;
 	
 	 private List<Information> stringInput = new ArrayList<>();
+	private HiddenInput hiddenInput;
 	
-	
+	private String businessfault;
 	public List<Information> getStringInput() {
 		return stringInput;
 	}
@@ -24,10 +26,19 @@ public class GetCardBankActivationParametersResponse extends GenericResponse {
 		return businessfault;
 	}
 
-
-
 	public void setBusinessfault(String businessfault) {
 		this.businessfault = businessfault;
+	}
+	public void setStringInput(List<Information> stringInput) {
+		this.stringInput = stringInput;
+	}
+
+	public HiddenInput getHiddenInput() {
+		return this.hiddenInput;
+	}
+
+	public void setHiddenInput(HiddenInput hiddenInput) {
+		this.hiddenInput = hiddenInput;
 	}
 
 	
