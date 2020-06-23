@@ -1,13 +1,15 @@
 package com.boa.web.request;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
 @XmlRootElement(name="IdClientRequest")
 public class IdClientRequest {
 
-	
+	@XmlAttribute(name = "compte")
 	private String compte ;
+	@XmlAttribute(name = "institutionId")
 	private String institutionId ;
 	
 	
@@ -24,6 +26,14 @@ public class IdClientRequest {
 		this.institutionId = institutionId;
 	}
 	
+
+	@Override
+	public String toString() {
+		return "{" +
+			" compte='" + compte + "'" +
+			", institutionId='" + institutionId + "'" +
+			"}";
+	}
 	
 
 }

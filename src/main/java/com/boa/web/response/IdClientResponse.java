@@ -1,6 +1,9 @@
 package com.boa.web.response;
 
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -9,8 +12,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
 "infoClient"
 })
+@XmlRootElement
 public class IdClientResponse  extends GenericResponse{
 
+	@XmlAttribute(name = "idClient")
 	@JsonProperty("idClient")
 	private String idClient;
 	@JsonProperty("compte")

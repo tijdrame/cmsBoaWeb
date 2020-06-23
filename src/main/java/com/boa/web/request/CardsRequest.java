@@ -1,10 +1,15 @@
 package com.boa.web.request;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * CardsRequest
  */
+@XmlRootElement
 public class CardsRequest {
 
+    @XmlAttribute(name="compte")
     private String compte;
     private String langue;
     private String pays;

@@ -678,7 +678,7 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 // System.out.println("result==" + result);
-                log.info("result getCardLimit == [{}]", result);
+                log.info("result getCardLimit ***== [{}]", result);
                 obj = new JSONObject(result);
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("get-card-limits-response")) {
@@ -698,9 +698,19 @@ public class ParamFilialeService {
                     return genericResponse;
                 }
 
-                JSONArray jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
-                        .getJSONObject("get-card-limits-response").getJSONArray("card-limit");
+                JSONArray jsonArray = null;
+                JSONObject jsonObject = null;
+                if (obj.getJSONObject("Envelope").getJSONObject("Body")
+                .getJSONObject("get-card-limits-response").getJSONArray("card-limit") instanceof JSONArray)
+                    jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
+                    .getJSONObject("get-card-limits-response").getJSONArray("card-limit");
+                else
+                    jsonObject = obj.getJSONObject("Envelope").getJSONObject("Body")
+                    .getJSONObject("get-card-limits-response").getJSONObject("card-limit");
 
+                /*JSONArray jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
+                        .getJSONObject("get-card-limits-response").getJSONArray("card-limit");*/
+                if (jsonArray != null) {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     CardLimit_ cardLimit = new CardLimit_();
                     JSONObject myObj = jsonArray.getJSONObject(i);
@@ -718,6 +728,22 @@ public class ParamFilialeService {
                     genericResponse.getCardLimit().add(cardLimit);
 
                 }
+            }else if (jsonObject != null) {
+                JSONObject myObj = jsonObject;
+                CardLimit_ cardLimit = new CardLimit_();
+                cardLimit.setType(myObj.getString("@type"));
+                cardLimit.setIdentifier(myObj.getInt("identifier"));
+                cardLimit.setName(myObj.getString("name"));
+                cardLimit.setDescription(myObj.getString("currency"));
+                cardLimit.setIsActive(myObj.getBoolean("is-active"));
+                cardLimit.setIsChangeable(myObj.getBoolean("is-changeable"));
+                cardLimit.setIsPermanent(myObj.getBoolean("is-permanent"));
+                cardLimit.setCurrency(myObj.getString("currency"));
+                cardLimit.setValue(myObj.getInt("value"));
+                cardLimit.setUsedValue(myObj.getInt("used-value"));
+                cardLimit.setIsPerTransaction(myObj.getBoolean("is-per-transaction"));
+                genericResponse.getCardLimit().add(cardLimit);
+            }
 
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
