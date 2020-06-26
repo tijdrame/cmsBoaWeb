@@ -33,10 +33,14 @@ spring:
       enabled: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
+    # PRODUCTION
+    url: jdbc:postgresql://10.170.70.38:5432/cmsboawebdb
+    username: postgres
+    password: postgres
     # DCE
-    url: jdbc:postgresql://10.170.102.35:5432/ccboawebdb
-    username: user_ccboaweb
-    password: 2-P=o$1j+ubve,c$<xmU
+    #url: jdbc:postgresql://10.170.102.35:5432/ccboawebdb
+    #username: user_ccboaweb
+    #password: 2-P=o$1j+ubve,c$<xmU
     #CASA
     #url: jdbc:postgresql://10.132.71.184:5432/ccboawebdb
     #username: user_ccboaweb
