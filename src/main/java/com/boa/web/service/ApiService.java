@@ -388,7 +388,7 @@ public class ApiService {
 
                 log.info("trace7:05022020");
 
-                JSONObject jsonString1 = new JSONObject().put("codopsc", "GAB")
+                /*JSONObject jsonString1 = new JSONObject().put("codopsc", "GAB")
                         .put("comptec", GetPrepaidDechargement.getCompteTarget()).put("compted", null)
                         .put("country", GetPrepaidDechargement.getPays())
                         .put("dateT", GetPrepaidDechargement.getDateTrans())
@@ -400,7 +400,7 @@ public class ApiService {
                         .put("numcarte", cardsDetailResponse.getCard().getNumber())
                         .put("refrel", GetPrepaidDechargement.getRefRel()).put("val", "V");
 
-                log.info("jsonString  Value{}", jsonString1.toString());
+                log.info("jsonString  Value{}", jsonString1.toString());*/
 
                 StringBuilder builder = new StringBuilder();
                 builder.append("<body><dechargement>");

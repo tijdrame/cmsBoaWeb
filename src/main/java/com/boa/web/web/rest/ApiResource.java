@@ -116,7 +116,7 @@ public class ApiResource {
         public ResponseEntity<PrepareCardToOwnCardTransferResponse> PrepareCardToOwnCardTransfer(
                         @RequestBody PrepareCardToOwnCardTransferRequest prepareCardToOwnCardTransfer,
                         HttpServletRequest request) throws URISyntaxException {
-                log.debug("REST request to getPrepaidDechargement : {}", prepareCardToOwnCardTransfer);
+                log.debug("REST request to PrepareCardToOwnCardTransferRequest : {}", prepareCardToOwnCardTransfer);
 
                 PrepareCardToOwnCardTransferResponse prepareCardToOwnCardTransferResponse = apiService
                                 .PrepareCardToOwnCardTransfer(prepareCardToOwnCardTransfer, request);
@@ -137,7 +137,7 @@ public class ApiResource {
         public ResponseEntity<ExecuteCardToOwnCardTransferResponse> ExecuteCardToOwnCardTransfer(
                         @RequestBody ExecuteCardToOwnCardTransferRequest executeCardToOwnCardTransfer,
                         HttpServletRequest request) throws URISyntaxException {
-                log.debug("REST request to getPrepaidDechargement : {}", executeCardToOwnCardTransfer);
+                log.debug("REST request to ExecuteCardToOwnCardTransfer : {}", executeCardToOwnCardTransfer);
 
                 ExecuteCardToOwnCardTransferResponse executeCardToOwnCardTransferResponse = apiService
                                 .ExecuteCardToOwnCardTransfer(executeCardToOwnCardTransfer, request);
