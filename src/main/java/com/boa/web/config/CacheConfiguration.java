@@ -44,6 +44,7 @@ public class CacheConfiguration {
             createCache(cm, com.boa.web.domain.User.class.getName() + ".authorities");
             createCache(cm, com.boa.web.domain.Tracking.class.getName());
             createCache(cm, com.boa.web.domain.ParamFiliale.class.getName());
+            createCache(cm, com.boa.web.domain.ParamIdentifier.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

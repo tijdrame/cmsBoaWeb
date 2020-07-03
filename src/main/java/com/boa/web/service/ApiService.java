@@ -1144,7 +1144,7 @@ public class ApiService {
             }
         } catch (Exception e) {
 
-            log.error("errorrr==", e.getMessage());
+            log.error("errorrr==[{}]", e.getMessage());
 
         }
 
