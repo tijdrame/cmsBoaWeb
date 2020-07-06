@@ -18,7 +18,7 @@ public class Operation {
     @JsonProperty("datetime")
     private String datetime;
     @JsonProperty("identifier")
-    private Integer identifier;
+    private String identifier;
     @JsonProperty("type")
     private Type type;
     @JsonProperty("amount")
@@ -55,12 +55,12 @@ public class Operation {
     }
 
     @JsonProperty("identifier")
-    public Integer getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
     @JsonProperty("identifier")
-    public void setIdentifier(Integer identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 

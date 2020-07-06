@@ -14,19 +14,19 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class State {
 
     @JsonProperty("identifier")
-    private Integer identifier;
+    private String identifier;
     @JsonProperty("description")
     private String description;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("identifier")
-    public Integer getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
     @JsonProperty("identifier")
-    public void setIdentifier(Integer identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 

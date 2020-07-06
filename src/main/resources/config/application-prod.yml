@@ -34,13 +34,13 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     # PRODUCTION
-    url: jdbc:postgresql://10.170.70.38:5433/cmsboawebdb
-    username: postgres
-    password: postgres
+    #url: jdbc:postgresql://10.170.70.38:5433/cmsboawebdb
+    #username: postgres
+    #password: postgres
     # DCE
-    #url: jdbc:postgresql://10.170.102.35:5432/ccboawebdb
-    #username: user_ccboaweb
-    #password: 2-P=o$1j+ubve,c$<xmU
+    url: jdbc:postgresql://10.170.102.35:5432/ccboawebdb
+    username: user_ccboaweb
+    password: 2-P=o$1j+ubve,c$<xmU
     #CASA
     #url: jdbc:postgresql://10.132.71.184:5432/ccboawebdb
     #username: user_ccboaweb
@@ -67,6 +67,7 @@ spring:
   # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
   liquibase:
     contexts: prod
+    enabled: false
   mail:
     host: localhost
     port: 25

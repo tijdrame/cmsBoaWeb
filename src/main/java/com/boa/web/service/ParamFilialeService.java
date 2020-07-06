@@ -877,7 +877,7 @@ public class ParamFilialeService {
                         Operation operation = new Operation();
                         JSONObject myObj = jsonArray.getJSONObject(i);
                         operation.setDatetime(myObj.getString("datetime"));
-                        operation.setIdentifier(myObj.getInt("identifier"));
+                        operation.setIdentifier(myObj.getString("identifier"));
                         Type type = new Type();
                         type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier"));
                         type.setDescription(myObj.getJSONObject("type").getString("description"));
@@ -889,7 +889,7 @@ public class ParamFilialeService {
                         operation.setDescription(myObj.getString("description"));
                         operation.setIsReversal(myObj.getBoolean("is-reversal"));
                         State state = new State();
-                        state.setIdentifier(myObj.getJSONObject("state").getInt("identifier"));
+                        state.setIdentifier(myObj.getJSONObject("state").getString("identifier"));
                         state.setDescription(myObj.getJSONObject("state").getString("description"));
                         operation.setState(state);
                         Address address = new Address();
@@ -919,7 +919,7 @@ public class ParamFilialeService {
                     Operation operation = new Operation();
                     JSONObject myObj = jsonObject;
                     operation.setDatetime(myObj.getString("datetime"));
-                    operation.setIdentifier(myObj.getInt("identifier"));
+                    operation.setIdentifier(myObj.getString("identifier"));
                     Type type = new Type();
                     type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier"));
                     type.setDescription(myObj.getJSONObject("type").getString("description"));
@@ -931,7 +931,7 @@ public class ParamFilialeService {
                     operation.setDescription(myObj.getString("description"));
                     operation.setIsReversal(myObj.getBoolean("is-reversal"));
                     State state = new State();
-                    state.setIdentifier(myObj.getJSONObject("state").getInt("identifier"));
+                    state.setIdentifier(myObj.getJSONObject("state").getString("identifier"));
                     state.setDescription(myObj.getJSONObject("state").getString("description"));
                     operation.setState(state);
                     Address address = new Address();
