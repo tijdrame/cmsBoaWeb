@@ -152,7 +152,7 @@ public class ParamFilialeService {
      * @return GetCardsResponse
      */
     public GetCardsResponse getCards(CardsRequest cardsRequest, HttpServletRequest request) {
-        Map<Integer, String> theMap = identifierService.findAll();
+        Map<String, String> theMap = identifierService.findAll();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCards");
@@ -250,7 +250,7 @@ public class ParamFilialeService {
                         Status status = new Status();
                         JSONObject sObject = myObj.getJSONObject("status");
                         if(sObject.toString().contains("identifier")){
-                            status.setIdentifier(myObj.getJSONObject("status").getInt("identifier"));
+                            status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
                             status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
                         }
                         if(sObject.toString().contains("description"))
@@ -288,7 +288,7 @@ public class ParamFilialeService {
                     Status status = new Status();
                     JSONObject sObject = myObj.getJSONObject("status");
                     if(sObject.toString().contains("identifier")){
-                        status.setIdentifier(myObj.getJSONObject("status").getInt("identifier"));
+                        status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
                         status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
                     }
                         
@@ -494,7 +494,7 @@ public class ParamFilialeService {
      * @return GetCardsDetailResponse
      */
     public GetCardsDetailResponse getCardDetails(CardsDetailRequest cardsRequest, HttpServletRequest request) {
-        Map<Integer, String> theMap = identifierService.findAll();
+        Map<String, String> theMap = identifierService.findAll();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardDetailsProxy");
@@ -579,7 +579,7 @@ public class ParamFilialeService {
                 cardDetails.setCategory(myObj.getString("category"));
                 cardDetails.setBrand(myObj.getString("brand"));
                 Status status = new Status();
-                status.setIdentifier(myObj.getJSONObject("status").getInt("identifier"));
+                status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
                 status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
                 status.setDescription(myObj.getJSONObject("status").getString("description"));
                 cardDetails.setStatus(status);

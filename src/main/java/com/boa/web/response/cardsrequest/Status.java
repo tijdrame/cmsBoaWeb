@@ -16,7 +16,7 @@ public class Status {
     @JsonProperty("default-identifier")
     private String defaultIdentifier;
     @JsonProperty("identifier")
-    private Integer identifier;
+    private String identifier;
     @JsonProperty("description")
     private String description;
     @JsonIgnore
@@ -33,12 +33,12 @@ public class Status {
     }
 
     @JsonProperty("identifier")
-    public Integer getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
     @JsonProperty("identifier")
-    public void setIdentifier(Integer identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 

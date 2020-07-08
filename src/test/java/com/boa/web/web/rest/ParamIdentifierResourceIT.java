@@ -30,8 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 public class ParamIdentifierResourceIT {
 
-    private static final Integer DEFAULT_CODE = 1;
-    private static final Integer UPDATED_CODE = 2;
+    private static final String DEFAULT_CODE = "1";
+    private static final String UPDATED_CODE = "2";
 
     private static final String DEFAULT_LIBELLE = "AAAAAAAAAA";
     private static final String UPDATED_LIBELLE = "BBBBBBBBBB";

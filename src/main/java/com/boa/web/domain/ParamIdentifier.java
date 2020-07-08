@@ -25,7 +25,7 @@ public class ParamIdentifier implements Serializable {
 
     @NotNull
     @Column(name = "code", nullable = false)
-    private Integer code;
+    private String code;
 
     @NotNull
     @Column(name = "libelle", nullable = false)
@@ -40,16 +40,16 @@ public class ParamIdentifier implements Serializable {
         this.id = id;
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 
-    public ParamIdentifier code(Integer code) {
+    public ParamIdentifier code(String code) {
         this.code = code;
         return this;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

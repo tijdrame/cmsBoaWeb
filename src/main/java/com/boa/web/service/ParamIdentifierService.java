@@ -54,8 +54,8 @@ public class ParamIdentifierService {
     }
 
     @Transactional(readOnly = true)
-    public Map<Integer, String> findAll() {
-        Map<Integer, String> theMap = new HashMap<>();
+    public Map<String, String> findAll() {
+        Map<String, String> theMap = new HashMap<>();
         log.debug("Request to get all ParamIdentifiers");
         List <ParamIdentifier> list = paramIdentifierRepository.findAll();
         for (ParamIdentifier it : list) {
