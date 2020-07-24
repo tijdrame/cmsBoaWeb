@@ -12,8 +12,8 @@ public class GetPrepaidDechargementRequest {
 	private String compteTarget ;
 	private String cartIdentifSource ;
 	private String compteCardSource ;
-	private Double montant ;
-	private Double montantFrais ;
+	private String montant ;
+	private String montantFrais ;
 	private String dateTrans ;
 	private String refRel ;
 	private String libelle ;
@@ -79,16 +79,16 @@ public class GetPrepaidDechargementRequest {
 	public void setInstitutionId(String institutionId) {
 		this.institutionId = institutionId;
 	}
-	public Double getMontant() {
+	public String getMontant() {
 		return montant;
 	}
-	public void setMontant(Double montant) {
+	public void setMontant(String montant) {
 		this.montant = montant;
 	}
-	public Double getMontantFrais() {
+	public String getMontantFrais() {
 		return montantFrais;
 	}
-	public void setMontantFrais(Double montantFrais) {
+	public void setMontantFrais(String montantFrais) {
 		this.montantFrais = montantFrais;
 	}
 	public String getDateTrans() {

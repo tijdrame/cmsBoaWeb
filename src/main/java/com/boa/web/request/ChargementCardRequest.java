@@ -7,8 +7,8 @@ public class ChargementCardRequest {
 
     private String cartIdentifTarget;
     private String institutionId;
-    private Double montant;
-    private Double montantFrais;
+    private String montant;
+    private String montantFrais;
     private String compteSource;
     private String compteCardTarget;
     private String dateTrans;
@@ -34,19 +34,19 @@ public class ChargementCardRequest {
         this.institutionId = institutionId;
     }
 
-    public Double getMontant() {
+    public String getMontant() {
         return this.montant;
     }
 
-    public void setMontant(Double montant) {
+    public void setMontant(String montant) {
         this.montant = montant;
     }
 
-    public Double getMontantFrais() {
+    public String getMontantFrais() {
         return this.montantFrais;
     }
 
-    public void setMontantFrais(Double montantFrais) {
+    public void setMontantFrais(String montantFrais) {
         this.montantFrais = montantFrais;
     }
 

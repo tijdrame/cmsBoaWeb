@@ -283,7 +283,7 @@ public class ParamFilialeResource {
         log.debug("REST request to chargementCarte :======= {}", cardsRequest);
         ChargeCardResponse chargeCardResponse = new ChargeCardResponse();
         if (controleParam(cardsRequest.getCompteSource()) || controleParam(cardsRequest.getInstitutionId())
-                || cardsRequest.getMontant() == null || cardsRequest.getMontant() <= 0
+                || controleParam(cardsRequest.getMontant())
                 || controleParam(cardsRequest.getCartIdentifTarget())) {
             log.info("param ko======");
             chargeCardResponse.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);

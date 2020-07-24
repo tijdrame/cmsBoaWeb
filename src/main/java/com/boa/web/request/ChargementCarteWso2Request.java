@@ -14,8 +14,8 @@ public class ChargementCarteWso2Request {
     private String devise;
     private String dispo;
     private String libelle;
-    private Double mntdev;
-    private Double mntfrais;
+    private String mntdev;
+    private String mntfrais;
     private String numcarte;
     private String refrel;
     private String reftrans;
@@ -93,19 +93,19 @@ public class ChargementCarteWso2Request {
         this.libelle = libelle;
     }
 
-    public Double getMntdev() {
+    public String getMntdev() {
         return this.mntdev;
     }
 
-    public void setMntdev(Double mntdev) {
+    public void setMntdev(String mntdev) {
         this.mntdev = mntdev;
     }
 
-    public Double getMntfrais() {
+    public String getMntfrais() {
         return this.mntfrais;
     }
 
-    public void setMntfrais(Double mntfrais) {
+    public void setMntfrais(String mntfrais) {
         this.mntfrais = mntfrais;
     }
 

@@ -24,7 +24,7 @@ public class GetPrepaidDechargementResponse extends GenericResponse{
 	private String reference;
 	private String resultat;
 	private String texte;
-
+	private Annulation annulation;
 			
 			
 	public String getReference() {
@@ -45,6 +45,27 @@ public class GetPrepaidDechargementResponse extends GenericResponse{
 	public void setTexte(String texte) {
 		this.texte = texte;
 	}
+
+	public Annulation getAnnulation() {
+		return this.annulation;
+	}
+
+	public void setAnnulation(Annulation annulation) {
+		this.annulation = annulation;
+	}
+
+	
+
+	@Override
+	public String toString() {
+		return "{" +
+			" reference='" + reference + "'" +
+			", resultat='" + resultat + "'" +
+			", texte='" + texte + "'" +
+			", annulation='" + annulation + "'" +
+			"}";
+	}
+
 	/*public String getCompte() {
 		return compte;
 	}

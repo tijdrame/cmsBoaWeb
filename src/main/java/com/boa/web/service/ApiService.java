@@ -22,6 +22,7 @@ import com.boa.web.request.GetCardBankActivationParametersRequest;
 import com.boa.web.request.GetPrepaidDechargementRequest;
 import com.boa.web.request.IdClientRequest;
 import com.boa.web.request.PrepareCardToOwnCardTransferRequest;
+import com.boa.web.response.Annulation;
 import com.boa.web.response.Client;
 import com.boa.web.response.ExecuteBankActivateCardResponse;
 import com.boa.web.response.ExecuteCardToOwnCardTransferResponse;
@@ -413,7 +414,7 @@ public class ApiService {
                 // builder.append("<datexpir>" + cardsDetailResponse.getCard().getExpiryDate() +
                 // "</datexpir>");
                 String[] data = cardsDetailResponse.getCard().getExpiryDate().split("-");
-                String date = data[0].substring(2) + data[2].substring(0, 2);
+                String date = data[0].substring(2) + data[1].substring(0, 2);
                 log.info("data === [{}]", date);
                 // carteWso2Request.setDatexpir(date);
                 builder.append("<datexpir>" + date + "</datexpir>");
@@ -446,19 +447,80 @@ public class ApiService {
 
                 log.info("trace9:05022020");
                 // BufferedReader br1 = null;
+                log.info("response code [{}]", conn.getResponseCode());
                 JSONObject obj = new JSONObject();
+                if (conn.getResponseCode() == 500) {
+                    br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                    result = br.readLine();
+                    obj = new JSONObject(result);
+                    log.info("res 500= [{}]", result);
+                    getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                    getPrepaidDechargementResponse.setDateResponse(Instant.now());
+                    getPrepaidDechargementResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    getPrepaidDechargementResponse.setResultat(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                    .getString("RCOD"));
+                    getPrepaidDechargementResponse.setTexte(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                                    .getString("RMSG"));
+                    tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
+
+                    tracking.setDateResponse(Instant.now());
+                    tracking.setEndPointTr(filiale.getEndPoint());
+                    tracking.setLoginActeur(login);
+                    tracking.setDateRequest(Instant.now());
+                    tracking.setResponseTr(result);
+                    tracking.setTokenTr(tab[1]);
+                    trackingService.save(tracking);
+                    log.info("err == [{}]", result);
+                    return getPrepaidDechargementResponse;                    
+
+                }
                 if (conn != null && conn.getResponseCode() > 0) {
                     br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     result = br.readLine();
-                    log.info("result=========================== [{}]", result);
-
+                    log.info("result dechargement =========================== [{}]", result);
                     obj = new JSONObject(result);
+                    if(obj.getJSONObject("dechargementCarte").getJSONObject("response").toString().contains("annulation"))
+                        log.info("in annulation ", obj.getJSONObject("dechargementCarte").
+                        getJSONObject("response").getJSONObject("annulation").toString());
+                    
+                    if (obj.getJSONObject("dechargementCarte").getJSONObject("response").toString().contains("annulation")){
+                        log.info("in annulation ", obj.getJSONObject("dechargementCarte").
+                        getJSONObject("response").getJSONObject("annulation").toString());
+                        getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                        getPrepaidDechargementResponse.setDateResponse(Instant.now());
+                        getPrepaidDechargementResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                        //if (!obj.getJSONObject("dechargementCarte").getJSONObject("response").getJSONObject("annulation")
+                          //      .toString().contains(null)) {
+                            Annulation annulation = new Annulation();
+                            annulation.setRcod(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                                    .getJSONObject("annulation").getString("RCOD"));
+                            annulation.setRmsg(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                                    .getJSONObject("annulation").getString("RMSG"));
+                            getPrepaidDechargementResponse.setAnnulation(annulation);
+                        //}
+                        getPrepaidDechargementResponse.setReference(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                        .getString("NOOPER"));
+                        getPrepaidDechargementResponse.setResultat(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                        .getString("CCOD"));
+                        getPrepaidDechargementResponse.setTexte(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                        .getString("CMSG"));
+                        tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
 
-                    if (obj.getJSONObject("dechargementCarte").getJSONObject("response").toString().contains("RCOD"))
+                        tracking.setDateResponse(Instant.now());
+                        tracking.setEndPointTr(filiale.getEndPoint());
+                        tracking.setLoginActeur(login);
+                        tracking.setDateRequest(Instant.now());
+                        tracking.setResponseTr(result);
+                        tracking.setTokenTr(tab[1]);
+                        trackingService.save(tracking);
+                        return getPrepaidDechargementResponse;
+                    }
+                    
 
+                    if (obj.getJSONObject("dechargementCarte").getJSONObject("response").toString().contains("00"))
                     {
+                    log.info("res sucess 00= [{}]", result);
 
-                        log.info("trace10");
                         getPrepaidDechargementResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                         getPrepaidDechargementResponse.setDateResponse(Instant.now());
                         getPrepaidDechargementResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
@@ -475,12 +537,27 @@ public class ApiService {
                         tracking.setDateRequest(Instant.now());
                         tracking.setResponseTr(result);
                         tracking.setTokenTr(tab[1]);
+                    }else {
+                    log.info("res echec diff 00= [{}]", result);
+
+                        getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                        getPrepaidDechargementResponse.setDateResponse(Instant.now());
+                        getPrepaidDechargementResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                        getPrepaidDechargementResponse.setReference("");
+                        getPrepaidDechargementResponse.setResultat(
+                                obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RCOD"));
+                        getPrepaidDechargementResponse.setTexte(
+                                obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RMSG"));
+                        tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
+
+                        tracking.setDateResponse(Instant.now());
+                        tracking.setEndPointTr(filiale.getEndPoint());
+                        tracking.setLoginActeur(login);
+                        tracking.setDateRequest(Instant.now());
+                        tracking.setResponseTr(result);
+                        tracking.setTokenTr(tab[1]);
                     }
-                    /*-----  MEL 04022020----*/
-                    // obj = new JSONObject(result);
-                    os.close();
-                    log.info("trace10:05022020" + result);
-                    /*------Remplissage reponse ---*/
+                    os.close(); 
 
                 }
             } catch (Exception e) {
@@ -491,8 +568,8 @@ public class ApiService {
                 getPrepaidDechargementResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
                 getPrepaidDechargementResponse.setDateResponse(Instant.now());
                 getPrepaidDechargementResponse
-                        .setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
-                log.error("errorrr==", e.getMessage());
+                        .setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getStackTrace());
+                log.error("errorrr== [{}]", e);
 
             }
 
