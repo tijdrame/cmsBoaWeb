@@ -30,6 +30,7 @@ import com.boa.web.request.ChargementCardRequest;
 import com.boa.web.request.ChargementCarteWso2Request;
 import com.boa.web.request.CheckBankActivateCardRequest;
 import com.boa.web.request.GetCardAuthRestrictionsRequest;
+import com.boa.web.request.GetCardsByDigitalIdRequest;
 import com.boa.web.request.PrepareCardToCardTransferRequest;
 import com.boa.web.request.PrepareChangeCardOptionRequest;
 import com.boa.web.response.Annulation;
@@ -2320,5 +2321,214 @@ public class ParamFilialeService {
         tracking.setDateRequest(Instant.now());
         return tracking;
     }
+
+	public GetCardsResponse getCardsByDigitalId(GetCardsByDigitalIdRequest cardsRequest, HttpServletRequest request) {
+		Map<String, String> theMap = identifierService.findAll();
+        Map<String, String> typeMap = typeIdentifService.findAll();
+        Optional<User> user = userService.getUserWithAuthorities();
+        String login = user.isPresent() ? user.get().getLogin() : "";
+        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCards");
+        Tracking tracking = new Tracking();
+        GetCardsResponse genericResponse = new GetCardsResponse();
+        //Client client = new Client();
+        String autho = request.getHeader("Authorization");
+        String[] tab = autho.split("Bearer");
+        /*try {
+            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            if (client == null) {
+                genericResponse = (GetCardsResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
+                        ICodeDescResponse.CLIENT_ABSENT_CODE, ICodeDescResponse.CLIENT_ABSENT_DESC,
+                        request.getRequestURI(), tab[1]);
+                return genericResponse;
+            }
+        } catch (IOException e1) {
+            log.info("error = [{}]", e1.getMessage());
+        }*/
+        if (filiale == null) {
+            genericResponse = (GetCardsResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
+                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.SERVICE_ABSENT_DESC,
+                    request.getRequestURI(), tab[1]);
+
+            return genericResponse;
+        }
+        try {
+            URL url = new URL(filiale.getEndPoint());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            String jsonString = "";
+            jsonString = new JSONObject().put("idClient", cardsRequest.getDigitalId()).put("langue", cardsRequest.getLangue())
+                    //.put("pays", cardsRequest.getPays()).put("variant", cardsRequest.getVariant())
+                    //.put("catCarte", cardsRequest.getCatCarte())
+                    .toString();
+            tracking.setRequestTr(jsonString);
+            OutputStream os = conn.getOutputStream();
+            byte[] postDataBytes = jsonString.getBytes();
+            String result = "";
+
+            os.write(postDataBytes);
+            os.flush();
+
+            BufferedReader br = null;
+            JSONObject obj = new JSONObject();
+            if (conn != null && conn.getResponseCode() == 200) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                result = br.readLine();
+                log.info("result == [{}]", result);
+                // System.out.println("result==" + result);
+                obj = new JSONObject(result);
+                if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
+                        .contains("client-card-identifier")) {
+                    genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
+                    tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
+
+                    tracking.setDateResponse(Instant.now());
+                    tracking.setEndPointTr(filiale.getEndPoint());
+                    tracking.setLoginActeur(login);
+
+                    tracking.setResponseTr(result);
+                    // System.out.println("tab 1=" + tab[1]);
+                    tracking.setTokenTr(tab[1]);
+                    trackingService.save(tracking);
+                    return genericResponse;
+                }
+                JSONArray jsonArray = null;
+                JSONObject jsonObject = null;
+                if (obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-cards-response")
+                        .get("card") instanceof JSONArray)
+                    jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-cards-response")
+                            .getJSONArray("card");
+                else
+                    jsonObject = obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-cards-response")
+                            .getJSONObject("card");
+                if (jsonArray != null) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Card card = new Card();
+                        JSONObject myObj = jsonArray.getJSONObject(i);
+                        card.setClientCardIdentifier(myObj.getString("client-card-identifier"));
+                        card.setEmbossedName(myObj.getString("embossed-name"));
+                        card.setNumber(myObj.getString("number"));
+                        card.setCurrency(myObj.getString("currency"));
+                        card.setAvailableBalance(myObj.getInt("available-balance"));
+                        Type type = new Type();
+                        String identif = myObj.getJSONObject("type").getString("identifier");
+                        type.setDefaultIdentifier(typeMap.get(identif));
+                        type.setDescription(myObj.getJSONObject("type").getString("description"));
+                        card.setType(type);
+                        card.setCategory(myObj.getString("category"));
+                        card.setBrand(myObj.getString("brand"));
+                        Status status = new Status();
+                        JSONObject sObject = myObj.getJSONObject("status");
+                        if (sObject.toString().contains("identifier")) {
+                            status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
+                            status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
+                        }
+                        if (sObject.toString().contains("description"))
+                            status.setDescription(myObj.getJSONObject("status").getString("description"));
+                        card.setStatus(status);
+                        card.setActive(myObj.getBoolean("active"));
+                        card.setPinNotSet(myObj.getBoolean("pinNotSet"));
+                        card.setExpiryDate(myObj.getString("expiry-date"));
+                        card.setReissuable(myObj.getBoolean("reissuable"));
+                        card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
+                        card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
+
+                        // System.out.println("linked-accounts===+++"
+                        // + myObj.getJSONObject("linked-accounts").getString("account-identifier"));
+                        String str = myObj.getJSONObject("linked-accounts").getString("account-identifier");
+
+                        card.setLinkedAccounts(str);
+                        genericResponse.getCard().add(card);
+
+                    }
+                } else if (jsonObject != null) {
+                    Card card = new Card();
+                    JSONObject myObj = jsonObject;// jsonArray.getJSONObject(i);
+                    card.setClientCardIdentifier(myObj.getString("client-card-identifier"));
+                    card.setEmbossedName(myObj.getString("embossed-name"));
+                    card.setNumber(myObj.getString("number"));
+                    card.setCurrency(myObj.getString("currency"));
+                    card.setAvailableBalance(myObj.getInt("available-balance"));
+                    Type type = new Type();
+                    String identif = myObj.getJSONObject("type").getString("identifier");
+                    type.setDefaultIdentifier(typeMap.get(identif));
+                    type.setDescription(myObj.getJSONObject("type").getString("description"));
+                    card.setType(type);
+                    card.setCategory(myObj.getString("category"));
+                    card.setBrand(myObj.getString("brand"));
+                    Status status = new Status();
+                    JSONObject sObject = myObj.getJSONObject("status");
+                    if (sObject.toString().contains("identifier")) {
+                        status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
+                        status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
+                    }
+
+                    if (sObject.toString().contains("description"))
+                        status.setDescription(myObj.getJSONObject("status").getString("description"));
+                    card.setStatus(status);
+                    card.setActive(myObj.getBoolean("active"));
+                    card.setPinNotSet(myObj.getBoolean("pinNotSet"));
+                    card.setExpiryDate(myObj.getString("expiry-date"));
+                    card.setReissuable(myObj.getBoolean("reissuable"));
+                    card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
+                    card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
+
+                    // System.out.println("linked-accounts===+++"
+                    // + myObj.getJSONObject("linked-accounts").getString("account-identifier"));
+                    String str = myObj.getJSONObject("linked-accounts").getString("account-identifier");
+
+                    card.setLinkedAccounts(str);
+                    genericResponse.getCard().add(card);
+                }
+
+                genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
+
+                tracking.setDateResponse(Instant.now());
+                tracking.setEndPointTr(filiale.getEndPoint());
+                tracking.setLoginActeur(login);
+                tracking.setDateRequest(Instant.now());
+                tracking.setResponseTr(result);
+                // System.out.println("tab 1=" + tab[1]);
+                tracking.setTokenTr(tab[1]);
+
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                result = br.readLine();
+                log.info("result == [{}]", result);
+                // System.out.println("result==" + result);
+                obj = new JSONObject(result);
+                tracking.setCodeResponse(ICodeDescResponse.ECHEC_DESCRIPTION + "");
+                tracking.responseTr(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
+                tracking.dateResponse(Instant.now()).endPointTr(request.getRequestURI());
+                genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(
+                        ICodeDescResponse.ECHEC_DESCRIPTION + " Message=" + obj.getJSONObject("Envelope")
+                                .getJSONObject("Body").getJSONObject("Fault").getJSONObject("detail").toString());
+
+            }
+            os.close();
+        } catch (Exception e) {
+            tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
+            tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
+            tracking.dateResponse(Instant.now()).endPointTr(request.getRequestURI());
+            genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
+            genericResponse.setDateResponse(Instant.now());
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
+            log.error("errorrr== [{}]", e);
+
+        }
+        trackingService.save(tracking);
+        return genericResponse;
+	}
 
 }

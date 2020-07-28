@@ -1,5 +1,6 @@
 package com.boa.web.web.rest;
 
+import com.boa.api.request.GetCardsByDigitalIdRequest;
 import com.boa.web.domain.ParamFiliale;
 import com.boa.web.request.CardHistoryRequest;
 import com.boa.web.request.CardlessRequest;
@@ -188,6 +189,21 @@ public class ParamFilialeResource {
             return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(cardsResponse);
         }
         cardsResponse = paramFilialeService.getCards(cardsRequest, request);
+        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(cardsResponse);
+    }
+
+    @PostMapping("/getCardsByDigitalId")
+    public ResponseEntity<GetCardsResponse> getCardsByDigitalId(@RequestBody com.boa.web.request.GetCardsByDigitalIdRequest cardsRequest, HttpServletRequest request)
+            throws URISyntaxException {
+        log.debug("REST request to getCards : {}", cardsRequest);
+        GetCardsResponse cardsResponse = new GetCardsResponse();
+        if (controleParam(cardsRequest.getDigitalId()) || controleParam(cardsRequest.getLangue())) {
+            cardsResponse.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
+            cardsResponse.setDateResponse(Instant.now());
+            cardsResponse.setDescription(ICodeDescResponse.PARAM_DESCRIPTION);
+            return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(cardsResponse);
+        }
+        cardsResponse = paramFilialeService.getCardsByDigitalId(cardsRequest, request);
         return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(cardsResponse);
     }
 
