@@ -192,7 +192,7 @@ public class ParamFilialeResource {
         return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(cardsResponse);
     }
 
-    @PostMapping("/getCardsByDigitalId")
+    @PostMapping("/getCardsByDigitalId") 
     public ResponseEntity<GetCardsResponse> getCardsByDigitalId(@RequestBody com.boa.web.request.GetCardsByDigitalIdRequest cardsRequest, HttpServletRequest request)
             throws URISyntaxException {
         log.debug("REST request to getCards : {}", cardsRequest);
