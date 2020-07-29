@@ -37,9 +37,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/cmsboaweb
-    username: postgres
-    password: passer
+    url: jdbc:postgresql://10.132.71.184:5432/ccboawebdb
+    username: user_ccboaweb
+    password: 2jDtNQ4GeRKyMjW7MfPi
     hikari:
       poolName: Hikari
       auto-commit: false

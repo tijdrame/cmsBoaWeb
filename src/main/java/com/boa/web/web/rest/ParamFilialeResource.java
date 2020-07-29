@@ -1,6 +1,5 @@
 package com.boa.web.web.rest;
 
-import com.boa.api.request.GetCardsByDigitalIdRequest;
 import com.boa.web.domain.ParamFiliale;
 import com.boa.web.request.CardHistoryRequest;
 import com.boa.web.request.CardlessRequest;
@@ -441,7 +440,7 @@ public class ParamFilialeResource {
                 .body(response);
     }
 
-    private Boolean controleParam(String param) {
+    public Boolean controleParam(String param) {
         Boolean flag = false;
         if (StringUtils.isEmpty(param))
             flag = true;
