@@ -584,8 +584,8 @@ public class ParamFilialeService {
                 // System.out.println("type==="+myObj.getString("type"));
                 // String identif = myObj.getJSONObject("type").getString("identifier");
                 // type.setDefaultIdentifier(typeMap.get(identif));
-                type.setDefaultIdentifier(myObj.getJSONObject("type").getString("default-identifier"));
-                type.setDescription(myObj.getJSONObject("type").getString("description"));
+                type.setDefaultIdentifier(myObj.getJSONObject("type").getString("description").substring(0,1).toUpperCase());//Prend la 1ere lettre de description
+                type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());// A mettre en majuscule
                 cardDetails.setType(type);
                 cardDetails.setCategory(myObj.getString("category"));
                 cardDetails.setBrand(myObj.getString("brand"));
@@ -2415,9 +2415,10 @@ public class ParamFilialeService {
                         card.setCurrency(myObj.getString("currency"));
                         card.setAvailableBalance(myObj.getInt("available-balance"));
                         Type type = new Type();
-                        String identif = myObj.getJSONObject("type").getString("identifier");
-                        type.setDefaultIdentifier(typeMap.get(identif));
-                        type.setDescription(myObj.getJSONObject("type").getString("description"));
+                        //String identif = myObj.getJSONObject("type").getString("identifier"); //
+                        //type.setDefaultIdentifier(typeMap.get(identif));
+                        type.setDefaultIdentifier(myObj.getJSONObject("type").getString("description").substring(0,1).toUpperCase());
+                        type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());
                         card.setType(type);
                         card.setCategory(myObj.getString("category"));
                         card.setBrand(myObj.getString("brand"));
