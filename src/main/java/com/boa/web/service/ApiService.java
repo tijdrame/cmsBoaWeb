@@ -613,7 +613,7 @@ public class ApiService {
         log.info("InstitutionID  == [{}]", prepareCardToOwnCardTransferRequest.getInstitutionId());
 
         try {
-            client = paramFilialeService.callApiIdClient(prepareCardToOwnCardTransferRequest.getCompte(),
+            client = paramFilialeService.callApiIdClientByIdCard(prepareCardToOwnCardTransferRequest.getSourceCardId(),
                     prepareCardToOwnCardTransferRequest.getInstitutionId());
             log.info("client  == [{}]", client);
             if (client == null) {
@@ -817,7 +817,7 @@ public class ApiService {
         Client client = new Client();
 
         try {
-            client = paramFilialeService.callApiIdClient(executeCardToOwnCardTransferRequest.getCompte(),
+            client = paramFilialeService.callApiIdClientByIdCard(executeCardToOwnCardTransferRequest.getSourceCardId(),
                     executeCardToOwnCardTransferRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (ExecuteCardToOwnCardTransferResponse) paramFilialeService.clientAbsent(
@@ -1260,7 +1260,7 @@ public class ApiService {
             return genericResponse;
         }
         try {
-            client = paramFilialeService.callApiIdClient(executeBankActivateCardRequest.getCompte(),
+            client = paramFilialeService.callApiIdClientByIdCard(executeBankActivateCardRequest.getCartIdentif(),
                     executeBankActivateCardRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (ExecuteBankActivateCardResponse) paramFilialeService.clientAbsent(genericResponse,

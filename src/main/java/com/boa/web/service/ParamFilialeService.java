@@ -379,7 +379,7 @@ public class ParamFilialeService {
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCartIdentif(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (PrepareChangeCardOptionResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
@@ -654,7 +654,8 @@ public class ParamFilialeService {
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCartIdentif(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (CardLimitResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
                         ICodeDescResponse.CLIENT_ABSENT_CODE, ICodeDescResponse.CLIENT_ABSENT_DESC,
@@ -1034,7 +1035,8 @@ public class ParamFilialeService {
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCartIdentif(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (ChangeCardLimitResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
@@ -1379,7 +1381,8 @@ public class ParamFilialeService {
             return genericResponse;
         }
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCardclidentifier(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (PrepareCardToCardTransferResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
@@ -1541,7 +1544,8 @@ public class ParamFilialeService {
             return genericResponse;
         }
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCardidentif(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (ExecuteCardToCardTransferResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
@@ -1702,7 +1706,8 @@ public class ParamFilialeService {
             return genericResponse;
         }
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCartIdentif(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (CheckBankActivateCardResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
@@ -1840,7 +1845,8 @@ public class ParamFilialeService {
             return genericResponse;
         }
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCartIdentif(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (GetCardAuthRestrictionsResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
@@ -2005,7 +2011,8 @@ public class ParamFilialeService {
             return genericResponse;
         }
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCartIdentif(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (ChangeCardAuthRestrictionResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
