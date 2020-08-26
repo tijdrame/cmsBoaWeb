@@ -157,7 +157,7 @@ public class ParamFilialeService {
      */
     public GetCardsResponse getCards(CardsRequest cardsRequest, HttpServletRequest request) {
         Map<String, String> theMap = identifierService.findAll();
-        Map<String, String> typeMap = typeIdentifService.findAll();
+        //Map<String, String> typeMap = typeIdentifService.findAll();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCards");
@@ -809,7 +809,8 @@ public class ParamFilialeService {
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         try {
-            client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCartIdentif(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (GetCardHistoryResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
@@ -2169,6 +2170,61 @@ public class ParamFilialeService {
         return client;
     }
 
+    /**
+     * Modifications du 26/08/2020 Utilisation du Card_Id au lieu de Compte
+     */
+
+
+
+    public Client callApiIdClientByIdCard(String newcard_id, String institutionId) throws IOException {
+        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("apiIdClientByIdCard");
+        if (filiale == null) {
+            return null;
+        }
+        Client client = null;
+        URL url = new URL(filiale.getEndPoint());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setDoOutput(true);
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        String jsonString = "";
+        try {
+            jsonString = new JSONObject().put("cardId", newcard_id).put("institutionId", institutionId).toString();
+            OutputStream os = conn.getOutputStream();
+            byte[] postDataBytes = jsonString.getBytes();
+            String result = "";
+
+            os.write(postDataBytes);
+            os.flush();
+
+            BufferedReader br = null;
+            JSONObject obj = new JSONObject();
+            if (conn != null && conn.getResponseCode() == ICodeDescResponse.SUCCES_CODE) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                result = br.readLine();
+                log.info("result call api client == [{}]", result);
+                // System.out.println("result==####µµµµµ" + result);
+                obj = new JSONObject(result);
+                if (obj.isNull("infoClient"))
+                    // if (!obj.getJSONObject("infoClient").toString().contains("idClient"))
+                    return null;
+                client = new Client();
+                client.setIdClient(obj.getJSONObject("infoClient").getJSONObject("infoClient").getString("idClient"));
+            }
+            os.close();
+
+        } catch (JSONException e) {
+            return null;
+        }
+
+        return client;
+    }
+
+
+     /**
+      * End Modification du 26/08/2020
+      */
     /**
      * Methode pour logger si le client est absent
      * 

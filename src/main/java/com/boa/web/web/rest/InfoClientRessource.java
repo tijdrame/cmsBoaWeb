@@ -3,14 +3,11 @@ package com.boa.web.web.rest;
 
 import java.net.URISyntaxException;
 import java.time.Instant;
-
 import javax.servlet.http.HttpServletRequest;
-
 import com.boa.web.request.GetInfoClientRequest;
 import com.boa.web.response.GetInfoClientResponse;
 import com.boa.web.service.InfoClientService;
 import com.boa.web.service.util.ICodeDescResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
