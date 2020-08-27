@@ -795,7 +795,12 @@ public class ParamFilialeService {
         return genericResponse;
     }
 
+
     /**
+     * Modifications du 27/08/2020 Controle sur les champs optionnels de retour sur la getCardHistoryProxy
+     */
+
+       /**
      * @param cardsRequest
      * @param request
      * @return GetCardHistoryResponse
@@ -898,6 +903,391 @@ public class ParamFilialeService {
                         type.setDescription(myObj.getJSONObject("type").getString("description"));
                         operation.setType(type);
                         Amount amount = new Amount();
+                        //Controle de l'objet amount
+                        if(myObj.getJSONObject("amount")!= null){
+                            amount.setAmount(myObj.getJSONObject("amount").getDouble("amount"));
+                            amount.setCurrency(myObj.getJSONObject("amount").getString("currency"));
+                            operation.setAmount(amount);
+                        }else{
+                            amount.setAmount(0.0);
+                            amount.setCurrency("");
+                            operation.setAmount(amount);
+                        }
+
+                        // Controle de l'objet description
+                        if(myObj.getString("description") != null){
+                            operation.setDescription(myObj.getString("description"));
+                        }else{
+                            operation.setDescription("");
+                        }
+                        
+                        if(myObj.getBoolean("is-reversal")){
+                            operation.setIsReversal(myObj.getBoolean("is-reversal"));
+                        }else{
+                            operation.setIsReversal(false);
+                        }
+                        State state = new State();
+                        if(myObj.getJSONObject("state") != null){
+                            state.setIdentifier(myObj.getJSONObject("state").getString("identifier"));
+                            state.setDescription(myObj.getJSONObject("state").getString("description"));
+                        }else{
+                            state.setIdentifier("");
+                            state.setDescription("");
+                        }
+                       
+                        operation.setState(state);
+                        Address address = new Address();
+                        Country country = new Country();
+
+                        if(myObj.getJSONObject("address") != null){
+                            if(myObj.getJSONObject("address").getJSONObject("country") != null){
+                                country.setName(myObj.getJSONObject("address").getJSONObject("country").getString("name"));
+                                country.setAlpha2Code(myObj.getJSONObject("address").getJSONObject("country").getString("alpha-2-code"));
+                                country.setAlpha3Code(myObj.getJSONObject("address").getJSONObject("country").getString("alpha-3-code"));
+                                country.setNumber3Code(myObj.getJSONObject("address").getJSONObject("country").getInt("number-3-code"));
+                                address.setCountry(country);
+                            }else{
+                                country.setName("");
+                                country.setAlpha2Code("");
+                                country.setAlpha3Code("");
+                                country.setNumber3Code(0);
+                                address.setCountry(country);
+                            }
+                            address.setCity(myObj.getJSONObject("address").getString("city"));
+                            address.setAddress(myObj.getJSONObject("address").getString("address"));
+                            operation.setAddress(address);
+                        }else{
+                                country.setName("");
+                                country.setAlpha2Code("");
+                                country.setAlpha3Code("");
+                                country.setNumber3Code(0);
+                                address.setCountry(country);
+                                address.setCity("");
+                                address.setAddress("");
+                                operation.setAddress(address);
+                        }
+                        operation.setIsHold(myObj.getBoolean("is-hold"));
+                        ResultingBalance resultingBalance = new ResultingBalance();
+                        if(myObj.getJSONObject("resulting-balance") != null){
+                            resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
+                            resultingBalance.setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
+                        }else{
+                            resultingBalance.setAmount(0);
+                            resultingBalance.setCurrency("");
+                        }
+                        operation.setResultingBalance(resultingBalance);
+                        if(myObj.getString("direction") != null){
+                            operation.setDirection(myObj.getString("direction"));
+                        }else{
+                            operation.setDirection("");
+                        }
+                        if(myObj.getInt("mcc") >= 0){
+                            operation.setMcc(myObj.getInt("mcc"));
+                        }else{
+                            operation.setMcc(0);
+                        }
+                        
+                        genericResponse.getOperation().add(operation);
+
+                    }
+                } else if (jsonObject != null) {
+                    Operation operation = new Operation();
+                    JSONObject myObj = jsonObject;
+                    /*operation.setDatetime(myObj.getString("datetime"));
+                    operation.setIdentifier(myObj.getString("identifier"));
+                    Type type = new Type();
+                    type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier"));
+                    type.setDescription(myObj.getJSONObject("type").getString("description"));
+                    operation.setType(type);
+                    Amount amount = new Amount();
+                    amount.setAmount(myObj.getJSONObject("amount").getDouble("amount"));
+                    amount.setCurrency(myObj.getJSONObject("amount").getString("currency"));
+                    operation.setAmount(amount);
+                    operation.setDescription(myObj.getString("description"));
+                    operation.setIsReversal(myObj.getBoolean("is-reversal"));
+                    State state = new State();
+                    state.setIdentifier(myObj.getJSONObject("state").getString("identifier"));
+                    state.setDescription(myObj.getJSONObject("state").getString("description"));
+                    operation.setState(state);
+                    Address address = new Address();
+                    Country country = new Country();
+                    country.setName(myObj.getJSONObject("address").getJSONObject("country").getString("name"));
+                    country.setAlpha2Code(
+                            myObj.getJSONObject("address").getJSONObject("country").getString("alpha-2-code"));
+                    country.setAlpha3Code(
+                            myObj.getJSONObject("address").getJSONObject("country").getString("alpha-3-code"));
+                    country.setNumber3Code(
+                            myObj.getJSONObject("address").getJSONObject("country").getInt("number-3-code"));
+                    address.setCountry(country);
+                    address.setCity(myObj.getJSONObject("address").getString("city"));
+                    address.setAddress(myObj.getJSONObject("address").getString("address"));
+                    operation.setAddress(address);
+                    operation.setIsHold(myObj.getBoolean("is-hold"));
+                    ResultingBalance resultingBalance = new ResultingBalance();
+                    resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
+                    resultingBalance.setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
+                    operation.setResultingBalance(resultingBalance);
+                    operation.setDirection(myObj.getString("direction"));
+                    operation.setMcc(myObj.getInt("mcc"));
+                    genericResponse.getOperation().add(operation);*/
+
+
+                    operation.setDatetime(myObj.getString("datetime"));
+                        operation.setIdentifier(myObj.getString("identifier"));
+                        Type type = new Type();
+                        type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier"));
+                        type.setDescription(myObj.getJSONObject("type").getString("description"));
+                        operation.setType(type);
+                        Amount amount = new Amount();
+                        //Controle de l'objet amount
+                        if(myObj.getJSONObject("amount")!= null){
+                            amount.setAmount(myObj.getJSONObject("amount").getDouble("amount"));
+                            amount.setCurrency(myObj.getJSONObject("amount").getString("currency"));
+                            operation.setAmount(amount);
+                        }else{
+                            amount.setAmount(0.0);
+                            amount.setCurrency("");
+                            operation.setAmount(amount);
+                        }
+
+                        // Controle de l'objet description
+                        if(myObj.getString("description") != null){
+                            operation.setDescription(myObj.getString("description"));
+                        }else{
+                            operation.setDescription("");
+                        }
+                        
+                        if(myObj.getBoolean("is-reversal")){
+                            operation.setIsReversal(myObj.getBoolean("is-reversal"));
+                        }else{
+                            operation.setIsReversal(false);
+                        }
+                        State state = new State();
+                        if(myObj.getJSONObject("state") != null){
+                            state.setIdentifier(myObj.getJSONObject("state").getString("identifier"));
+                            state.setDescription(myObj.getJSONObject("state").getString("description"));
+                        }else{
+                            state.setIdentifier("");
+                            state.setDescription("");
+                        }
+                       
+                        operation.setState(state);
+                        Address address = new Address();
+                        Country country = new Country();
+
+                        if(myObj.getJSONObject("address") != null){
+                            if(myObj.getJSONObject("address").getJSONObject("country") != null){
+                                country.setName(myObj.getJSONObject("address").getJSONObject("country").getString("name"));
+                                country.setAlpha2Code(myObj.getJSONObject("address").getJSONObject("country").getString("alpha-2-code"));
+                                country.setAlpha3Code(myObj.getJSONObject("address").getJSONObject("country").getString("alpha-3-code"));
+                                country.setNumber3Code(myObj.getJSONObject("address").getJSONObject("country").getInt("number-3-code"));
+                                address.setCountry(country);
+                            }else{
+                                country.setName("");
+                                country.setAlpha2Code("");
+                                country.setAlpha3Code("");
+                                country.setNumber3Code(0);
+                                address.setCountry(country);
+                            }
+                            address.setCity(myObj.getJSONObject("address").getString("city"));
+                            address.setAddress(myObj.getJSONObject("address").getString("address"));
+                            operation.setAddress(address);
+                        }else{
+                                country.setName("");
+                                country.setAlpha2Code("");
+                                country.setAlpha3Code("");
+                                country.setNumber3Code(0);
+                                address.setCountry(country);
+                                address.setCity("");
+                                address.setAddress("");
+                                operation.setAddress(address);
+                        }
+                        operation.setIsHold(myObj.getBoolean("is-hold"));
+                        ResultingBalance resultingBalance = new ResultingBalance();
+                        if(myObj.getJSONObject("resulting-balance") != null){
+                            resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
+                            resultingBalance.setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
+                        }else{
+                            resultingBalance.setAmount(0);
+                            resultingBalance.setCurrency("");
+                        }
+                        operation.setResultingBalance(resultingBalance);
+                        if(myObj.getString("direction") != null){
+                            operation.setDirection(myObj.getString("direction"));
+                        }else{
+                            operation.setDirection("");
+                        }
+                        if(myObj.getInt("mcc") >= 0){
+                            operation.setMcc(myObj.getInt("mcc"));
+                        }else{
+                            operation.setMcc(0);
+                        }
+                        
+                        genericResponse.getOperation().add(operation);
+
+
+                }
+                // }
+
+                genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
+
+                tracking.setDateResponse(Instant.now());
+                tracking.setEndPointTr(filiale.getEndPoint());
+                tracking.setLoginActeur(login);
+                tracking.setDateRequest(Instant.now());
+                tracking.setResponseTr(result);
+                tracking.setTokenTr(tab[1]);
+
+            } else {
+                br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                result = br.readLine();
+                log.info("getCardHistoryProxy result error == [{}]", result);
+                genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
+
+                tracking.setDateResponse(Instant.now());
+                tracking.setEndPointTr(filiale.getEndPoint());
+                tracking.setLoginActeur(login);
+
+                tracking.setResponseTr(result);
+                tracking.setTokenTr(tab[1]);
+                trackingService.save(tracking);
+                return genericResponse;
+            }
+            os.close();
+        } catch (Exception e) {
+            // pb interpretation resp
+            tracking.setCodeResponse(ICodeDescResponse.FILIALE_ABSENT_CODE + "");
+            tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
+            tracking.responseTr(ICodeDescResponse.FILIALE_ABSENT_DESC);
+            tracking.dateResponse(Instant.now());
+            genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
+            genericResponse.setDateResponse(Instant.now());
+            genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
+            log.error("errorrr==[{}]", e.getMessage());
+
+        }
+        trackingService.save(tracking);
+        return genericResponse;
+    }
+
+
+    /**
+     *  Fin de la Modification de la methode getCardHistoryProxy
+     */
+
+
+    /**
+     * @param cardsRequest
+     * @param request
+     * @return GetCardHistoryResponse
+     */
+    public GetCardHistoryResponse getCardHistoryProxyOld(CardHistoryRequest cardsRequest, HttpServletRequest request) {
+        Optional<User> user = userService.getUserWithAuthorities();
+        String login = user.isPresent() ? user.get().getLogin() : "";
+        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardHistoryProxy");
+        Tracking tracking = new Tracking();
+        GetCardHistoryResponse genericResponse = new GetCardHistoryResponse();
+        Client client = new Client();
+        String autho = request.getHeader("Authorization");
+        String[] tab = autho.split("Bearer");
+        try {
+            //client = this.callApiIdClient(cardsRequest.getCompte(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCartIdentif(), cardsRequest.getInstitutionId());
+            if (client == null) {
+                genericResponse = (GetCardHistoryResponse) clientAbsent(genericResponse, tracking,
+                        request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
+                        ICodeDescResponse.CLIENT_ABSENT_DESC, request.getRequestURI(), tab[1]);
+
+                return genericResponse;
+            }
+        } catch (IOException e1) {
+            log.info("error = [{}]", e1.getMessage());
+        }
+        if (filiale == null) {
+            genericResponse = (GetCardHistoryResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
+                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.SERVICE_ABSENT_DESC,
+                    request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
+        try {
+            URL url = new URL(filiale.getEndPoint());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            String jsonString = "";
+            jsonString = new JSONObject().put("idClient", client.getIdClient()).put("langue", cardsRequest.getLangue())
+                    .put("pays", cardsRequest.getPays()).put("variant", cardsRequest.getVariant())
+                    .put("cartIdentif", cardsRequest.getCartIdentif()).put("startNum", cardsRequest.getStartNum())
+                    .put("maxCount", cardsRequest.getMaxCount()).put("dateFrom", cardsRequest.getDateFrom())
+                    .put("dateTo", cardsRequest.getDateTo()).put("hold", cardsRequest.getHold()).toString();
+            tracking.setRequestTr(jsonString);
+            OutputStream os = conn.getOutputStream();
+            byte[] postDataBytes = jsonString.getBytes();
+            String result = "";
+
+            os.write(postDataBytes);
+            os.flush();
+
+            BufferedReader br = null;
+            JSONObject obj = new JSONObject();
+            if (conn != null && conn.getResponseCode() == 200) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                result = br.readLine();
+                log.info("getCardHistoryProxy result ok == [{}]", result);
+                obj = new JSONObject(result);
+                if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("operation")) {
+                    genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse.setDescription(ICodeDescResponse.HSTORIQUE_VIDE);
+                    tracking.setCodeResponse(ICodeDescResponse.HSTORIQUE_VIDE + "");
+
+                    tracking.setDateResponse(Instant.now());
+                    tracking.setEndPointTr(filiale.getEndPoint());
+                    tracking.setLoginActeur(login);
+
+                    tracking.setResponseTr(result);
+                    tracking.setTokenTr(tab[1]);
+                    trackingService.save(tracking);
+                    return genericResponse;
+                }
+                log.info("bef jsarray");
+                /*
+                 * JSONObject objResult = obj.getJSONObject("Envelope").getJSONObject("Body")
+                 * .getJSONObject("get-card-history-response").getJSONObject("operation");
+                 * JSONArray jsonArray = null;5 log.info("after jsarray");
+                 */
+
+                JSONArray jsonArray = null;
+                JSONObject jsonObject = null;
+                if (obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-card-history-response")
+                        .get("operation") instanceof JSONArray)
+                    jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
+                            .getJSONObject("get-card-history-response").getJSONArray("operation");
+                else
+                    jsonObject = obj.getJSONObject("Envelope").getJSONObject("Body")
+                            .getJSONObject("get-card-history-response").getJSONObject("operation");
+                if (jsonArray != null) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Operation operation = new Operation();
+                        JSONObject myObj = jsonArray.getJSONObject(i);
+                        operation.setDatetime(myObj.getString("datetime"));
+                        operation.setIdentifier(myObj.getString("identifier"));
+                        Type type = new Type();
+                        type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier"));
+                        type.setDescription(myObj.getJSONObject("type").getString("description"));
+                        operation.setType(type);
+                        Amount amount = new Amount();
+
+
+
                         amount.setAmount(myObj.getJSONObject("amount").getDouble("amount"));
                         amount.setCurrency(myObj.getJSONObject("amount").getString("currency"));
                         operation.setAmount(amount);
