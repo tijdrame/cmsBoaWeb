@@ -1089,8 +1089,18 @@ public class ParamFilialeService {
                                 country.setNumber3Code(0);
                                 address.setCountry(country);
                             }
-                            address.setCity(myObj.getJSONObject("address").getString("city"));
-                            address.setAddress(myObj.getJSONObject("address").getString("address"));
+                            if(myObj.getJSONObject("address").getString("city") != null){
+                                address.setCity(myObj.getJSONObject("address").getString("city"));
+                            }else{
+                                address.setCity("");
+                            }
+                            
+                            if(myObj.getJSONObject("address").getString("address") != null){
+                                address.setAddress(myObj.getJSONObject("address").getString("address"));
+                            }else{
+                                address.setAddress("");
+                            }
+                            
                             operation.setAddress(address);
                         }else{
                                 country.setName("");
