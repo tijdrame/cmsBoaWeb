@@ -457,10 +457,10 @@ public class ApiService {
                     getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     getPrepaidDechargementResponse.setDateResponse(Instant.now());
                     getPrepaidDechargementResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
-                    getPrepaidDechargementResponse.setResultat(obj.getJSONObject("dechargementCarte").getJSONObject("response")
-                    .getString("RCOD"));
-                    getPrepaidDechargementResponse.setTexte(obj.getJSONObject("dechargementCarte").getJSONObject("response")
-                                    .getString("RMSG"));
+                    getPrepaidDechargementResponse.setResultat(
+                            obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RCOD"));
+                    getPrepaidDechargementResponse.setTexte(
+                            obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RMSG"));
                     tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
 
                     tracking.setDateResponse(Instant.now());
@@ -471,7 +471,7 @@ public class ApiService {
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
                     log.info("err == [{}]", result);
-                    return getPrepaidDechargementResponse;                    
+                    return getPrepaidDechargementResponse;
 
                 }
                 if (conn != null && conn.getResponseCode() > 0) {
@@ -479,31 +479,34 @@ public class ApiService {
                     result = br.readLine();
                     log.info("result dechargement =========================== [{}]", result);
                     obj = new JSONObject(result);
-                    if(obj.getJSONObject("dechargementCarte").getJSONObject("response").toString().contains("annulation"))
-                        log.info("in annulation ", obj.getJSONObject("dechargementCarte").
-                        getJSONObject("response").getJSONObject("annulation").toString());
-                    
-                    if (obj.getJSONObject("dechargementCarte").getJSONObject("response").toString().contains("annulation")){
-                        log.info("in annulation ", obj.getJSONObject("dechargementCarte").
-                        getJSONObject("response").getJSONObject("annulation").toString());
+                    if (obj.getJSONObject("dechargementCarte").getJSONObject("response").toString()
+                            .contains("annulation"))
+                        log.info("in annulation ", obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                                .getJSONObject("annulation").toString());
+
+                    if (obj.getJSONObject("dechargementCarte").getJSONObject("response").toString()
+                            .contains("annulation")) {
+                        log.info("in annulation ", obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                                .getJSONObject("annulation").toString());
                         getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                         getPrepaidDechargementResponse.setDateResponse(Instant.now());
                         getPrepaidDechargementResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
-                        //if (!obj.getJSONObject("dechargementCarte").getJSONObject("response").getJSONObject("annulation")
-                          //      .toString().contains(null)) {
-                            Annulation annulation = new Annulation();
-                            annulation.setRcod(obj.getJSONObject("dechargementCarte").getJSONObject("response")
-                                    .getJSONObject("annulation").getString("RCOD"));
-                            annulation.setRmsg(obj.getJSONObject("dechargementCarte").getJSONObject("response")
-                                    .getJSONObject("annulation").getString("RMSG"));
-                            getPrepaidDechargementResponse.setAnnulation(annulation);
-                        //}
-                        getPrepaidDechargementResponse.setReference(obj.getJSONObject("dechargementCarte").getJSONObject("response")
-                        .getString("NOOPER"));
-                        getPrepaidDechargementResponse.setResultat(obj.getJSONObject("dechargementCarte").getJSONObject("response")
-                        .getString("CCOD"));
-                        getPrepaidDechargementResponse.setTexte(obj.getJSONObject("dechargementCarte").getJSONObject("response")
-                        .getString("CMSG"));
+                        // if
+                        // (!obj.getJSONObject("dechargementCarte").getJSONObject("response").getJSONObject("annulation")
+                        // .toString().contains(null)) {
+                        Annulation annulation = new Annulation();
+                        annulation.setRcod(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                                .getJSONObject("annulation").getString("RCOD"));
+                        annulation.setRmsg(obj.getJSONObject("dechargementCarte").getJSONObject("response")
+                                .getJSONObject("annulation").getString("RMSG"));
+                        getPrepaidDechargementResponse.setAnnulation(annulation);
+                        // }
+                        getPrepaidDechargementResponse.setReference(
+                                obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("NOOPER"));
+                        getPrepaidDechargementResponse.setResultat(
+                                obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("CCOD"));
+                        getPrepaidDechargementResponse.setTexte(
+                                obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("CMSG"));
                         tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
 
                         tracking.setDateResponse(Instant.now());
@@ -515,11 +518,9 @@ public class ApiService {
                         trackingService.save(tracking);
                         return getPrepaidDechargementResponse;
                     }
-                    
 
-                    if (obj.getJSONObject("dechargementCarte").getJSONObject("response").toString().contains("00"))
-                    {
-                    log.info("res sucess 00= [{}]", result);
+                    if (obj.getJSONObject("dechargementCarte").getJSONObject("response").toString().contains("00")) {
+                        log.info("res sucess 00= [{}]", result);
 
                         getPrepaidDechargementResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                         getPrepaidDechargementResponse.setDateResponse(Instant.now());
@@ -537,8 +538,8 @@ public class ApiService {
                         tracking.setDateRequest(Instant.now());
                         tracking.setResponseTr(result);
                         tracking.setTokenTr(tab[1]);
-                    }else {
-                    log.info("res echec diff 00= [{}]", result);
+                    } else {
+                        log.info("res echec diff 00= [{}]", result);
 
                         getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                         getPrepaidDechargementResponse.setDateResponse(Instant.now());
@@ -557,7 +558,7 @@ public class ApiService {
                         tracking.setResponseTr(result);
                         tracking.setTokenTr(tab[1]);
                     }
-                    os.close(); 
+                    os.close();
 
                 }
             } catch (Exception e) {
@@ -736,12 +737,33 @@ public class ApiService {
 
                     log.info("Mouhcine1 Log Here");
 
-                    JSONObject myObj = obj.getJSONObject("Envelope").getJSONObject("Body")
-                            .getJSONObject("prepare-card-to-own-card-transfer-response").getJSONObject("operation-info")
-                            .getJSONObject("fee");
+                    JSONObject myObj;
 
-                    genericResponse.getFee().setAmount(Double.parseDouble(myObj.getString("amount")));
-                    genericResponse.getFee().setCurrency(myObj.getString("currency"));
+                    // Test des elements 28/08/2020
+                    if (obj.getJSONObject("Envelope").getJSONObject("Body")
+                            .getJSONObject("prepare-card-to-own-card-transfer-response")
+                            .getJSONObject("operation-info") != null) {// test operation-info
+
+                        if (obj.getJSONObject("Envelope").getJSONObject("Body")
+                                .getJSONObject("prepare-card-to-own-card-transfer-response")
+                                .getJSONObject("operation-info").getJSONObject("fee") != null) {// test sur l'objet fees
+
+                            myObj = obj.getJSONObject("Envelope").getJSONObject("Body")
+                                    .getJSONObject("prepare-card-to-own-card-transfer-response")
+                                    .getJSONObject("operation-info").getJSONObject("fee");
+
+                            genericResponse.getFee().setAmount(Double.parseDouble(myObj.getString("amount")));
+                            genericResponse.getFee().setCurrency(myObj.getString("currency"));
+
+                        } else {// fin test objet fee
+                            genericResponse.getFee().setAmount(0.0);
+                            genericResponse.getFee().setCurrency("");
+                        }
+
+                    } else {// fin test operation-info
+                        genericResponse.getFee().setAmount(0.0);
+                        genericResponse.getFee().setCurrency("");
+                    }
 
                     // genericResponse.setAmount(myObj.getString("amount"));
                     // genericResponse.setCurrency(myObj.getString("currency"));
@@ -813,9 +835,7 @@ public class ApiService {
                     ICodeDescResponse.SERVICE_ABSENT_DESC, request.getRequestURI(), tab[1]);
             return genericResponse;
         }
-
         Client client = new Client();
-
         try {
             client = paramFilialeService.callApiIdClientByIdCard(executeCardToOwnCardTransferRequest.getSourceCardId(),
                     executeCardToOwnCardTransferRequest.getInstitutionId());
@@ -825,67 +845,43 @@ public class ApiService {
                         ICodeDescResponse.CLIENT_ABSENT_DESC, request.getRequestURI(), tab[1]);
                 return genericResponse;
             }
-
-            log.info("ELM1");
-
         } catch (IOException e1) {
             log.info("error = [{}]", e1.getMessage());
         }
-        // executeCardToOwnCardTransferRequest.setClidentifier(client.getIdClient());
-        log.info("ELM2");
-
         try {
             URL url = new URL(filiale.getEndPoint());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
-
             String jsonString = "";
-
             jsonString = new JSONObject().put("opidentifier", executeCardToOwnCardTransferRequest.getidoperation())
                     .put("clidentifier", client.getIdClient())
                     .put("langage", executeCardToOwnCardTransferRequest.getlangue())
-                    // .put("country", executeCardToOwnCardTransferRequest.getPays())
-                    // .put("variant", executeCardToOwnCardTransferRequest.getVariant())
                     .put("srcaccnumb", executeCardToOwnCardTransferRequest.getsourceCardId())
                     .put("tcardclident", executeCardToOwnCardTransferRequest.getreceiverCardId())
                     .put("amount", executeCardToOwnCardTransferRequest.getMontant())
-                    .put("currency", executeCardToOwnCardTransferRequest.getCurrency())
-                    // .put("cardnumber", executeCardToOwnCardTransferRequest.getreceiverCardId())
-                    // .put("cardidentif", executeCardToOwnCardTransferRequest.gets)
-                    // .put("entkey", executeCardToOwnCardTransferRequest.getEntkey())
-                    // .put("etval", executeCardToOwnCardTransferRequest.getEntval())
-                    .toString();
+                    .put("currency", executeCardToOwnCardTransferRequest.getCurrency()).toString();
 
             log.info("jsonString 11022020 : {}", jsonString);
-
-            log.info("ELM3");
             tracking.setRequestTr(jsonString);
             OutputStream os = conn.getOutputStream();
             byte[] postDataBytes = jsonString.getBytes();
             String result = "";
-            log.info("ELM33");
             os.write(postDataBytes);
             os.flush();
-            log.info("ELM333");
             BufferedReader br = null;
-            log.info("ELM43");
             JSONObject obj = new JSONObject();
 
             if (conn.getResponseCode() == 500) {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
-                // System.out.println("err=" + result);
                 log.info("err == [{}]", result);
                 obj = new JSONObject(result);
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("Fault").getJSONObject("detail")
                         .getJSONObject("business-fault").toString().contains("rejected-operation-exception")) {
-
                     genericResponse.setFaultCode(obj.getJSONObject("Envelope").getJSONObject("Body")
                             .getJSONObject("Fault").getString("faultcode"));
-                    // genericResponse.setFaultString(obj.getJSONObject("Envelope").getJSONObject("Body")
-                    // .getJSONObject("Fault").getString("faultstring"));
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setFaultString(obj.getJSONObject("Envelope").getJSONObject("Body")
@@ -894,7 +890,6 @@ public class ApiService {
                     genericResponse.setDescription(obj.getJSONObject("Envelope").getJSONObject("Body")
                             .getJSONObject("Fault").getJSONObject("detail").getJSONObject("business-fault")
                             .getJSONObject("rejected-operation-exception").getString("message-for-client"));
-                    // TODO 11022020
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
@@ -913,62 +908,55 @@ public class ApiService {
                 result = br.readLine();
                 log.info("result == [{}]", result);
                 obj = new JSONObject(result);
-
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("execute-card-to-own-card-transfer-response")) {
-
-                    // TODO 11022020
-
                     genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
-
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
                     tracking.setLoginActeur(login);
-
                     tracking.setResponseTr(result);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
                     return genericResponse;
 
                 }
-
-                // JSONObject myObj1 = obj.getJSONObject("Envelope").getJSONObject("Body")
-                // .getJSONObject("Fault");
-                // Todo
-
-                // genericResponse.setFaultcode(myObj.getString("faultcode"));
-                // genericResponse.setFaultstring(myObj.getString("faultstring"));
-
-                if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("Fault")) {
-
-                }
-
-                JSONObject myObj = obj.getJSONObject("Envelope").getJSONObject("Body")
-                        .getJSONObject("execute-card-to-own-card-transfer-response").getJSONObject("operation-info");
-
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("execute-card-to-own-card-transfer-response")) {
-
                     log.info("Here ELM");
-                    // genericResponse.setDatetime(myObj.getString("datetime"));
-                    genericResponse.getType().setDescription(myObj.getJSONObject("type").getString("description"));
-                    genericResponse.getType().setIdentifier(myObj.getJSONObject("type").getString("identifier"));
-
-                    genericResponse.setIdentifier(myObj.getString("identifier"));
-                    // genericResponse.setType(myObj.getJSONObject("type").getString("identifier"));
-                    // genericResponse.setType(myObj.getJSONObject("type").getString("description"));
-
-                    genericResponse.getAmount()
-                            .setAmount(Double.parseDouble(myObj.getJSONObject("amount").getString("amount")));
-                    genericResponse.getAmount().setCurrency(myObj.getJSONObject("amount").getString("currency"));
-
-                    // genericResponse.setAmount(myObj.getJSONObject("amount").getString("amount"));
-                    // genericResponse.setCurrency(myObj.getJSONObject("amount").getString("currency"));
-
-                    genericResponse.setIshold(myObj.getString("is-hold"));
+                    if (obj.getJSONObject("Envelope").getJSONObject("Body")
+                            .getJSONObject("execute-card-to-own-card-transfer-response")
+                            .getJSONObject("operation-info") != null) {// test operation-info
+                        JSONObject myObj = obj.getJSONObject("Envelope").getJSONObject("Body")
+                                .getJSONObject("execute-card-to-own-card-transfer-response")
+                                .getJSONObject("operation-info");
+                        if (myObj.getJSONObject("type") != null) {
+                            genericResponse.getType()
+                                    .setDescription(myObj.getJSONObject("type").getString("description"));
+                            genericResponse.getType()
+                                    .setIdentifier(myObj.getJSONObject("type").getString("identifier"));
+                        } else {
+                            genericResponse.getType().setDescription("");
+                            genericResponse.getType().setIdentifier("");
+                        }
+                        if (myObj.getString("identifier") != null) {
+                            genericResponse.setIdentifier(myObj.getString("identifier"));
+                        } else {
+                            genericResponse.setIdentifier("");
+                        }
+                        if (myObj.getJSONObject("amount") != null) {
+                            genericResponse.getAmount()
+                                    .setAmount(Double.parseDouble(myObj.getJSONObject("amount").getString("amount")));
+                            genericResponse.getAmount()
+                                    .setCurrency(myObj.getJSONObject("amount").getString("currency"));
+                        } else {
+                            genericResponse.getAmount().setAmount(0.0);
+                            genericResponse.getAmount().setCurrency("");
+                        }
+                        genericResponse.setIshold(myObj.getString("is-hold"));
+                    }
                     genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
@@ -978,9 +966,25 @@ public class ApiService {
                     tracking.setLoginActeur(login);
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
-                    // System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
 
+                } else {
+                    genericResponse.getType().setDescription("");
+                    genericResponse.getType().setIdentifier("");
+                    genericResponse.setIdentifier("");
+                    genericResponse.getAmount().setAmount(0.0);
+                    genericResponse.getAmount().setCurrency("");
+                    genericResponse.setIshold("");
+                    genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
+                    tracking.setDateResponse(Instant.now());
+                    tracking.setEndPointTr(filiale.getEndPoint());
+                    tracking.setLoginActeur(login);
+                    tracking.setDateRequest(Instant.now());
+                    tracking.setResponseTr(result);
+                    tracking.setTokenTr(tab[1]);
                 }
 
             }
@@ -1177,34 +1181,10 @@ public class ApiService {
                     log.info("MEL3");
                     return idClientResponse;
                 }
-
-                // Si un champ est null
-
-                log.info("MEL4");
-                System.out
-                        .println("obj resp==" + obj.getJSONObject("infoClient").getJSONObject("infoClient").toString());
-                // PrepareChangeCardOption cardOption = new PrepareChangeCardOption();
                 JSONObject jsonArray = obj.getJSONObject("infoClient").getJSONObject("infoClient");
-
-                log.info("MEL44");
                 idClientResponse.setIdClient((jsonArray.get("idClient").toString()));
                 idClientResponse.setCompte((jsonArray.get("compte").toString()));
                 idClientResponse.setInstitutionId((jsonArray.get("institutionId").toString()));
-
-                log.info("MEL5");
-                /*
-                 * HiddenInput hiddenInput = new HiddenInput();
-                 * hiddenInput.setIdentifier(obj.getJSONObject("Envelope").getJSONObject("Body")
-                 * .getJSONObject("id-client").getJSONObject("hidden-input")
-                 * .getString("identifier"));
-                 * hiddenInput.setValue(obj.getJSONObject("Envelope").getJSONObject("Body")
-                 * .getJSONObject("id-client").getJSONObject("hidden-input")
-                 * .getString("value"));
-                 */
-                // cardOption.setHiddenInput(hiddenInput);
-
-                // idClientResponse.setPrepareChangeCardOption(cardOption);
-                log.info("MEL6");
                 idClientResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 idClientResponse.setDateResponse(Instant.now());
                 idClientResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
@@ -1217,14 +1197,10 @@ public class ApiService {
                 System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
                 tracking.setRequestTr(request.getRequestURI());
-
             }
         } catch (Exception e) {
-
             log.error("errorrr==[{}]", e.getMessage());
-
         }
-
         trackingService.save(tracking);
         idClientResponse.setCode(ICodeDescResponse.SUCCES_CODE);
         idClientResponse.setDateResponse(Instant.now());
@@ -1245,7 +1221,6 @@ public class ApiService {
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         log.info("trace0 :MEL21022020");
-
         Tracking tracking = new Tracking();
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
@@ -1268,31 +1243,23 @@ public class ApiService {
                         ICodeDescResponse.CLIENT_ABSENT_DESC, request.getRequestURI(), tab[1]);
                 return genericResponse;
             }
-
             log.info("trace4 :MEL21022020");
-
         } catch (IOException e1) {
             log.info("error = [{}]", e1.getMessage());
         }
-
         log.info("trace5 :MEL21022020");
-
         try {
             URL url = new URL(filiale.getEndPoint());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
-
             String jsonString = "";
-
             jsonString = new JSONObject().put("idClient", client.getIdClient())
                     .put("langue", executeBankActivateCardRequest.getLangue())
                     .put("cartIdentif", executeBankActivateCardRequest.getCartIdentif())
                     .put("operationIdentif", executeBankActivateCardRequest.getIdoperation()).toString();
-
             log.info("jsonString MEL21022020 : {}", jsonString);
-
             tracking.setRequestTr(jsonString);
             OutputStream os = conn.getOutputStream();
             byte[] postDataBytes = jsonString.getBytes();
@@ -1308,12 +1275,10 @@ public class ApiService {
                 log.info("err == [{}]", result);
                 obj = new JSONObject(result);
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("Fault")) {
-
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setFaultstring(obj.getJSONObject("Envelope").getJSONObject("Body")
                             .getJSONObject("Fault").getString("faultstring"));
-
                     tracking.setCodeResponse(ICodeDescResponse.CLIENT_ABSENT_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
@@ -1327,15 +1292,10 @@ public class ApiService {
             }
 
             if (conn != null && conn.getResponseCode() > 0) {
-                log.info("ELM4");
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
                 obj = new JSONObject(result);
-
-                // JSONArray jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
-                // .getJSONObject("complete-change-card-option-response").getJSONArray("string-input");
-
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("complete-change-card-option-response")) {
                     genericResponse.setAction(obj.getJSONObject("Envelope").getJSONObject("Body")
