@@ -740,9 +740,8 @@ public class ApiService {
                     JSONObject myObj;
 
                     // Test des elements 28/08/2020
-                    if (obj.getJSONObject("Envelope").getJSONObject("Body")
-                            .getJSONObject("prepare-card-to-own-card-transfer-response")
-                            .getJSONObject("operation-info") != null) {// test operation-info
+                    if (!obj.getJSONObject("Envelope").getJSONObject("Body")
+                            .getJSONObject("prepare-card-to-own-card-transfer-response").isNull("operation-info")) {// test operation-info
 
                         if (obj.getJSONObject("Envelope").getJSONObject("Body")
                                 .getJSONObject("prepare-card-to-own-card-transfer-response")
@@ -926,9 +925,8 @@ public class ApiService {
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("execute-card-to-own-card-transfer-response")) {
                     log.info("Here ELM");
-                    if (obj.getJSONObject("Envelope").getJSONObject("Body")
-                            .getJSONObject("execute-card-to-own-card-transfer-response")
-                            .getJSONObject("operation-info") != null) {// test operation-info
+                    if (!obj.getJSONObject("Envelope").getJSONObject("Body")
+                            .getJSONObject("execute-card-to-own-card-transfer-response").isNull("operation-info")) {// test operation-info
                         JSONObject myObj = obj.getJSONObject("Envelope").getJSONObject("Body")
                                 .getJSONObject("execute-card-to-own-card-transfer-response")
                                 .getJSONObject("operation-info");
