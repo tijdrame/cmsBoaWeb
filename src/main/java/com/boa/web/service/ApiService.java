@@ -89,8 +89,10 @@ public class ApiService {
             return genericResponse;
         }
         try {
-            client = paramFilialeService.callApiIdClient(getCardBankActivationParametersRequest.getCompte(),
-                    getCardBankActivationParametersRequest.getInstitutionId());
+            client = this.paramFilialeService.callApiIdClientByIdCard(
+                getCardBankActivationParametersRequest.getCartIdentif(), 
+            getCardBankActivationParametersRequest.getInstitutionId());
+            
             if (client == null) {
                 genericResponse = (GetCardBankActivationParametersResponse) paramFilialeService.clientAbsent(
                         genericResponse, tracking, request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,

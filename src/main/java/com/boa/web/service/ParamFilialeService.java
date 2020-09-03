@@ -913,22 +913,22 @@ public class ParamFilialeService {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         Operation operation = new Operation();
                         JSONObject myObj = jsonArray.getJSONObject(i);
-                        operation.setDatetime(myObj.getString("datetime") != null ? myObj.getString("datetime") : "");
+                        operation.setDatetime(myObj.toString().contains("datetime") ? myObj.getString("datetime") : "");
                         operation.setIdentifier(
-                                myObj.getString("identifier") != null ? myObj.getString("identifier") : "");
+                                !myObj.isNull("identifier") ? myObj.getString("identifier") : "");
                         Type type = new Type();
-                        if (myObj.getJSONObject("type") != null) {
-                            type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier") != null
+                        if (!myObj.isNull("type")) {
+                            type.setDefaultIdentifier(myObj.getJSONObject("type").toString().contains("identifier")
                                     ? myObj.getJSONObject("type").getString("identifier")
                                     : "");
-                            type.setDescription(myObj.getJSONObject("type").getString("description") != null
+                            type.setDescription(myObj.getJSONObject("type").toString().contains("description")
                                     ? myObj.getJSONObject("type").getString("description")
                                     : "");
                         }
 
                         operation.setType(type);
                         Amount amount = new Amount();
-                        if (myObj.getJSONObject("amount") != null) {
+                        if (!myObj.isNull("amount")) {
                             amount.setAmount(myObj.getJSONObject("amount").getDouble("amount"));
                             amount.setCurrency(myObj.getJSONObject("amount").getString("currency"));
                         } else {
@@ -937,19 +937,19 @@ public class ParamFilialeService {
                         }
 
                         operation.setAmount(amount);
-                        if (myObj.getString("description") != null) {
+                        if (!myObj.isNull("description")) {
                             operation.setDescription(myObj.getString("description"));
                         } else {
                             operation.setDescription("");
                         }
 
-                        if (myObj.getBoolean("is-reversal")) {
+                        if (!myObj.isNull("is-reversal")) {
                             operation.setIsReversal(myObj.getBoolean("is-reversal"));
                         } else {
                             operation.setIsReversal(false);
                         }
                         State state = new State();
-                        if (myObj.getJSONObject("state") != null) {
+                        if (!myObj.isNull("state")) {
                             state.setIdentifier(myObj.getJSONObject("state").getString("identifier"));
                             state.setDescription(myObj.getJSONObject("state").getString("description"));
                         } else {
@@ -961,7 +961,7 @@ public class ParamFilialeService {
                         Address address = new Address();
                         Country country = new Country();
 
-                        if (myObj.getJSONObject("address") != null) {
+                        if (myObj.toString().contains("address")) {
                             if (myObj.getJSONObject("address").toString().contains("country")) {
                                 country.setName(myObj.getJSONObject("address").getJSONObject("country")
                                         .getString("name") != null
@@ -974,12 +974,13 @@ public class ParamFilialeService {
                                                         "alpha-2-code")
                                                 : "");
                                 country.setAlpha3Code(myObj.getJSONObject("address").getJSONObject("country")
-                                        .getString("alpha-3-code") != null
+                                        .toString().contains("alpha-3-code")
                                                 ? myObj.getJSONObject("address").getJSONObject("country").getString(
                                                         "alpha-3-code")
                                                 : "");
-                                country.setNumber3Code(myObj.getJSONObject("address").getJSONObject("country")
-                                        .getInt("number-3-code"));
+                                country.setNumber3Code(myObj.getJSONObject("address").getJSONObject("country").toString()
+                                .contains("number-3-code")?myObj.getJSONObject("address").getJSONObject("country")
+                                        .getInt("number-3-code"):0);
                                 address.setCountry(country);
                             } else {
                                 country.setName("");
@@ -988,7 +989,7 @@ public class ParamFilialeService {
                                 country.setNumber3Code(0);
                                 address.setCountry(country);
                             }
-                            if (myObj.getJSONObject("address").getString("city") != null) {
+                            if (!myObj.getJSONObject("address").isNull("city") ) {
                                 address.setCity(myObj.getJSONObject("address").getString("city"));
                             } else {
                                 address.setCity("");
@@ -1014,7 +1015,7 @@ public class ParamFilialeService {
                         if (!myObj.isNull("is-hold"))
                             operation.setIsHold(myObj.getBoolean("is-hold"));
                         ResultingBalance resultingBalance = new ResultingBalance();
-                        if (myObj.getJSONObject("resulting-balance") != null) {
+                        if (myObj.toString().contains("resulting-balance")) {
                             if (!myObj.getJSONObject("resulting-balance").isNull("amount"))
                                 resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
                             if (!myObj.getJSONObject("resulting-balance").isNull("currency"))
@@ -1025,7 +1026,7 @@ public class ParamFilialeService {
                             resultingBalance.setCurrency("");
                         }
                         operation.setResultingBalance(resultingBalance);
-                        if (myObj.getString("direction") != null) {
+                        if (myObj.toString().contains("direction")) {
                             operation.setDirection(myObj.getString("direction"));
                         } else {
                             operation.setDirection("");
@@ -1042,20 +1043,20 @@ public class ParamFilialeService {
                 } else if (jsonObject != null) {
                     Operation operation = new Operation();
                     JSONObject myObj = jsonObject;
-                    operation.setDatetime(myObj.getString("datetime") != null ? myObj.getString("datetime") : "");
-                    operation.setIdentifier(myObj.getString("identifier") != null ? myObj.getString("identifier") : "");
+                    operation.setDatetime(myObj.toString().contains("datetime") ? myObj.getString("datetime") : "");
+                    operation.setIdentifier(myObj.toString().contains("identifier") ? myObj.getString("identifier") : "");
                     Type type = new Type();
-                    if (myObj.getJSONObject("type") != null) {
-                        type.setDefaultIdentifier(myObj.getJSONObject("type").getString("identifier") != null
+                    if (!myObj.isNull("type")) {
+                        type.setDefaultIdentifier(myObj.getJSONObject("type").toString().contains("identifier")
                                 ? myObj.getJSONObject("type").getString("identifier")
                                 : "");
-                        type.setDescription(myObj.getJSONObject("type").getString("description") != null
+                        type.setDescription(myObj.getJSONObject("type").toString().contains("description")
                                 ? myObj.getJSONObject("type").getString("description")
                                 : "");
                     }
                     operation.setType(type);
                     Amount amount = new Amount();
-                    if (myObj.getJSONObject("amount") != null) {
+                    if (myObj.toString().contains("amount")) {
                         amount.setAmount(myObj.getJSONObject("amount").getDouble("amount"));
                         amount.setCurrency(myObj.getJSONObject("amount").getString("currency"));
                     } else {
@@ -1063,19 +1064,19 @@ public class ParamFilialeService {
                         amount.setCurrency("");
                     }
                     operation.setAmount(amount);
-                    if (myObj.getString("description") != null) {
+                    if (myObj.toString().contains("description")) {
                         operation.setDescription(myObj.getString("description"));
                     } else {
                         operation.setDescription("");
                     }
 
-                    if (myObj.getBoolean("is-reversal")) {
+                    if (myObj.toString().contains("is-reversal")) {
                         operation.setIsReversal(myObj.getBoolean("is-reversal"));
                     } else {
                         operation.setIsReversal(false);
                     }
                     State state = new State();
-                    if (myObj.getJSONObject("state") != null) {
+                    if (myObj.toString().contains("state")) {
                         state.setIdentifier(myObj.getJSONObject("state").getString("identifier"));
                         state.setDescription(myObj.getJSONObject("state").getString("description"));
                     } else {
@@ -1087,7 +1088,7 @@ public class ParamFilialeService {
                     Address address = new Address();
                     Country country = new Country();
 
-                    if (myObj.getJSONObject("address") != null) {
+                    if (myObj.toString().contains("address")) {
                         if (myObj.getJSONObject("address").toString().contains("country")) {
                             country.setName(
                                     myObj.getJSONObject("address").getJSONObject("country").getString("name") != null
@@ -1141,7 +1142,7 @@ public class ParamFilialeService {
                     if (!myObj.isNull("is-hold"))
                         operation.setIsHold(myObj.getBoolean("is-hold"));
                     ResultingBalance resultingBalance = new ResultingBalance();
-                    if (myObj.getJSONObject("resulting-balance") != null) {
+                    if (myObj.toString().contains("resulting-balance")) {
                         if (!myObj.getJSONObject("resulting-balance").isNull("amount"))
                             resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
                         if (!myObj.getJSONObject("resulting-balance").isNull("currency"))
@@ -2170,7 +2171,7 @@ public class ParamFilialeService {
             return genericResponse;
         }
         try {
-            client = this.callApiIdClientByIdCard(cardsRequest.getCardidentif(), cardsRequest.getInstitutionId());
+            client = this.callApiIdClientByIdCard(cardsRequest.getCardclidentifier(), cardsRequest.getInstitutionId());
             if (client == null) {
                 genericResponse = (ExecuteCardToCardTransferResponse) clientAbsent(genericResponse, tracking,
                         request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
