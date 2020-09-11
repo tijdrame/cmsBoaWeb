@@ -15,6 +15,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBContext;
 
+import com.boa.web.domain.CodeVisuel;
 import com.boa.web.domain.ParamFiliale;
 import com.boa.web.domain.ParamIdentifier;
 import com.boa.web.domain.Tracking;
@@ -96,14 +97,17 @@ public class ParamFilialeService {
     private final UserService userService;
     private final ParamIdentifierService identifierService;
     private final TypeIdentifService typeIdentifService;
+    private final CodeVisuelService codeVisuelService;
 
     public ParamFilialeService(ParamFilialeRepository paramFilialeRepository, TrackingService trackingService,
-            UserService userService, ParamIdentifierService identifierService, TypeIdentifService typeIdentifService) {
+            UserService userService, ParamIdentifierService identifierService, TypeIdentifService typeIdentifService,
+            CodeVisuelService codeVisuelService) {
         this.paramFilialeRepository = paramFilialeRepository;
         this.trackingService = trackingService;
         this.userService = userService;
         this.identifierService = identifierService;
         this.typeIdentifService = typeIdentifService;
+        this.codeVisuelService = codeVisuelService;
     }
 
     /**
@@ -158,6 +162,7 @@ public class ParamFilialeService {
      */
     public GetCardsResponse getCards(CardsRequest cardsRequest, HttpServletRequest request) {
         Map<String, String> theMap = identifierService.findAll();
+        // Map<String, CodeVisuel> mapCodeVisuel = codeVisuelService.findAll();
         // Map<String, String> typeMap = typeIdentifService.findAll();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
@@ -245,6 +250,12 @@ public class ParamFilialeService {
                         card.setClientCardIdentifier(myObj.getString("client-card-identifier"));
                         card.setEmbossedName(myObj.getString("embossed-name"));
                         card.setNumber(myObj.getString("number"));
+                        String strNumber = myObj.getString("number");// .substring(0,7);
+                        Long number = Long.valueOf(strNumber);
+                        Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
+                        if (codeVisuel.isPresent())
+                            card.setBrand(codeVisuel.get().getCode());
+                        // card.setBrand(myObj.getString("brand"));
                         card.setCurrency(myObj.getString("currency"));
                         card.setAvailableBalance(myObj.getInt("available-balance"));
                         Type type = new Type();
@@ -254,7 +265,6 @@ public class ParamFilialeService {
                         type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());
                         card.setType(type);
                         card.setCategory(myObj.getString("category"));
-                        card.setBrand(myObj.getString("brand"));
                         Status status = new Status();
                         JSONObject sObject = myObj.getJSONObject("status");
                         if (sObject.toString().contains("identifier")) {
@@ -293,8 +303,13 @@ public class ParamFilialeService {
                             myObj.getJSONObject("type").getString("description").substring(0, 1).toUpperCase());
                     type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());
                     card.setType(type);
+                    String strNumber = myObj.getString("number");// .substring(0,7);
+                    Long number = Long.valueOf(strNumber);
+                    Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
+                    if (codeVisuel.isPresent())
+                        card.setBrand(codeVisuel.get().getCode());
                     card.setCategory(myObj.getString("category"));
-                    card.setBrand(myObj.getString("brand"));
+                    // card.setBrand(myObj.getString("brand"));
                     Status status = new Status();
                     JSONObject sObject = myObj.getJSONObject("status");
                     if (sObject.toString().contains("identifier")) {
@@ -595,8 +610,13 @@ public class ParamFilialeService {
                 type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());// A mettre en
                                                                                                         // majuscule
                 cardDetails.setType(type);
+                String strNumber = myObj.getString("number");// .substring(0,7);
+                Long number = Long.valueOf(strNumber);
+                Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
+                if (codeVisuel.isPresent())
+                    cardDetails.setBrand(codeVisuel.get().getCode());
                 cardDetails.setCategory(myObj.getString("category"));
-                cardDetails.setBrand(myObj.getString("brand"));
+                // cardDetails.setBrand(myObj.getString("brand"));
                 Status status = new Status();
                 status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
                 status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
@@ -759,34 +779,36 @@ public class ParamFilialeService {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         CardLimit_ cardLimit = new CardLimit_();
                         JSONObject myObj = jsonArray.getJSONObject(i);
-                        cardLimit.setType(myObj.getString("@type"));
-                        cardLimit.setIdentifier(myObj.getInt("identifier"));
-                        cardLimit.setName(myObj.getString("name"));
-                        cardLimit.setDescription(myObj.getString("currency"));
-                        cardLimit.setIsActive(myObj.getBoolean("is-active"));
-                        cardLimit.setIsChangeable(myObj.getBoolean("is-changeable"));
-                        cardLimit.setIsPermanent(myObj.getBoolean("is-permanent"));
-                        cardLimit.setCurrency(myObj.getString("currency"));
-                        cardLimit.setValue(myObj.getInt("value"));
-                        cardLimit.setUsedValue(myObj.getInt("used-value"));
-                        cardLimit.setIsPerTransaction(myObj.getBoolean("is-per-transaction"));
+                        cardLimit.setType(myObj.isNull("@type")?"":myObj.getString("@type"));
+                        cardLimit.setIdentifier(myObj.isNull("identifier")?0:myObj.getInt("identifier"));
+                        cardLimit.setName(myObj.isNull("name")?"":myObj.getString("name"));
+                        cardLimit.setDescription(myObj.isNull("description")?"":myObj.getString("description"));
+                        cardLimit.setIsActive(myObj.isNull("is-active")?false:myObj.getBoolean("is-active"));
+                        cardLimit.setIsChangeable(myObj.isNull("is-changeable")?false:myObj.getBoolean("is-changeable"));
+                        cardLimit.setIsPermanent(myObj.isNull("is-permanent")?false:myObj.getBoolean("is-permanent"));
+                        cardLimit.setCurrency(myObj.isNull("currency")?"":myObj.getString("currency"));
+                        cardLimit.setExpiryDatetime(myObj.isNull("expiry-datetime")?"":myObj.getString("expiry-datetime"));
+                        cardLimit.setValue(myObj.isNull("value")?0:myObj.getInt("value"));
+                        cardLimit.setUsedValue(myObj.isNull("used-value")?0:myObj.getInt("used-value"));
+                        cardLimit.setIsPerTransaction(myObj.isNull("is-per-transaction")?false:myObj.getBoolean("is-per-transaction"));
                         genericResponse.getCardLimit().add(cardLimit);
 
                     }
                 } else if (jsonObject != null) {
                     JSONObject myObj = jsonObject;
                     CardLimit_ cardLimit = new CardLimit_();
-                    cardLimit.setType(myObj.getString("@type"));
-                    cardLimit.setIdentifier(myObj.getInt("identifier"));
-                    cardLimit.setName(myObj.getString("name"));
-                    cardLimit.setDescription(myObj.getString("currency"));
-                    cardLimit.setIsActive(myObj.getBoolean("is-active"));
-                    cardLimit.setIsChangeable(myObj.getBoolean("is-changeable"));
-                    cardLimit.setIsPermanent(myObj.getBoolean("is-permanent"));
-                    cardLimit.setCurrency(myObj.getString("currency"));
-                    cardLimit.setValue(myObj.getInt("value"));
-                    cardLimit.setUsedValue(myObj.getInt("used-value"));
-                    cardLimit.setIsPerTransaction(myObj.getBoolean("is-per-transaction"));
+                    cardLimit.setType(myObj.isNull("@type")?"":myObj.getString("@type"));
+                    cardLimit.setIdentifier(myObj.isNull("identifier")?0:myObj.getInt("identifier"));
+                    cardLimit.setName(myObj.isNull("name")?"":myObj.getString("name"));
+                    cardLimit.setDescription(myObj.isNull("description")?"":myObj.getString("description"));
+                    cardLimit.setIsActive(myObj.isNull("is-active")?false:myObj.getBoolean("is-active"));
+                    cardLimit.setIsChangeable(myObj.isNull("is-changeable")?false:myObj.getBoolean("is-changeable"));
+                    cardLimit.setIsPermanent(myObj.isNull("is-permanent")?false:myObj.getBoolean("is-permanent"));
+                    cardLimit.setCurrency(myObj.isNull("currency")?"":myObj.getString("currency"));
+                    cardLimit.setValue(myObj.isNull("value")?0:myObj.getInt("value"));
+                    cardLimit.setUsedValue(myObj.isNull("used-value")?0:myObj.getInt("used-value"));
+                    cardLimit.setIsPerTransaction(myObj.isNull("is-per-transaction")?false:myObj.getBoolean("is-per-transaction"));
+                    cardLimit.setExpiryDatetime(myObj.isNull("expiry-datetime")?"":myObj.getString("expiry-datetime"));
                     genericResponse.getCardLimit().add(cardLimit);
                 }
 
@@ -914,8 +936,7 @@ public class ParamFilialeService {
                         Operation operation = new Operation();
                         JSONObject myObj = jsonArray.getJSONObject(i);
                         operation.setDatetime(myObj.toString().contains("datetime") ? myObj.getString("datetime") : "");
-                        operation.setIdentifier(
-                                !myObj.isNull("identifier") ? myObj.getString("identifier") : "");
+                        operation.setIdentifier(!myObj.isNull("identifier") ? myObj.getString("identifier") : "");
                         Type type = new Type();
                         if (!myObj.isNull("type")) {
                             type.setDefaultIdentifier(myObj.getJSONObject("type").toString().contains("identifier")
@@ -973,14 +994,16 @@ public class ParamFilialeService {
                                                 ? myObj.getJSONObject("address").getJSONObject("country").getString(
                                                         "alpha-2-code")
                                                 : "");
-                                country.setAlpha3Code(myObj.getJSONObject("address").getJSONObject("country")
-                                        .toString().contains("alpha-3-code")
-                                                ? myObj.getJSONObject("address").getJSONObject("country").getString(
-                                                        "alpha-3-code")
+                                country.setAlpha3Code(myObj.getJSONObject("address").getJSONObject("country").toString()
+                                        .contains("alpha-3-code")
+                                                ? myObj.getJSONObject("address").getJSONObject("country")
+                                                        .getString("alpha-3-code")
                                                 : "");
-                                country.setNumber3Code(myObj.getJSONObject("address").getJSONObject("country").toString()
-                                .contains("number-3-code")?myObj.getJSONObject("address").getJSONObject("country")
-                                        .getInt("number-3-code"):0);
+                                country.setNumber3Code(myObj.getJSONObject("address").getJSONObject("country")
+                                        .toString().contains("number-3-code")
+                                                ? myObj.getJSONObject("address").getJSONObject("country")
+                                                        .getInt("number-3-code")
+                                                : 0);
                                 address.setCountry(country);
                             } else {
                                 country.setName("");
@@ -989,7 +1012,7 @@ public class ParamFilialeService {
                                 country.setNumber3Code(0);
                                 address.setCountry(country);
                             }
-                            if (!myObj.getJSONObject("address").isNull("city") ) {
+                            if (!myObj.getJSONObject("address").isNull("city")) {
                                 address.setCity(myObj.getJSONObject("address").getString("city"));
                             } else {
                                 address.setCity("");
@@ -1044,7 +1067,8 @@ public class ParamFilialeService {
                     Operation operation = new Operation();
                     JSONObject myObj = jsonObject;
                     operation.setDatetime(myObj.toString().contains("datetime") ? myObj.getString("datetime") : "");
-                    operation.setIdentifier(myObj.toString().contains("identifier") ? myObj.getString("identifier") : "");
+                    operation.setIdentifier(
+                            myObj.toString().contains("identifier") ? myObj.getString("identifier") : "");
                     Type type = new Type();
                     if (!myObj.isNull("type")) {
                         type.setDefaultIdentifier(myObj.getJSONObject("type").toString().contains("identifier")
@@ -2464,12 +2488,13 @@ public class ParamFilialeService {
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                 obj = obj.getJSONObject("Envelope").getJSONObject("Body")
                         .getJSONObject("execute-change-card-option-response").getJSONObject("output-string-field");
-                genericResponse.setHidden(obj.getBoolean("hidden"));
-                genericResponse.setIdentifier(obj.getString("identifier"));
-                genericResponse.setImportant(obj.getBoolean("important"));
-                genericResponse.setLabel(obj.getString("label"));
-                genericResponse.setStereotype(obj.getString("stereotype"));
-                genericResponse.setValue(obj.getInt("value"));
+                genericResponse.setHidden(obj.toString().contains("hidden") ? obj.getBoolean("hidden") : false);
+                genericResponse.setIdentifier(obj.toString().contains("identifier") ? obj.getString("identifier") : "");
+                genericResponse
+                        .setImportant(obj.toString().contains("important") ? obj.getBoolean("important") : false);
+                genericResponse.setLabel(obj.toString().contains("label") ? obj.getString("label") : "");
+                genericResponse.setStereotype(obj.toString().contains("stereotype") ? obj.getString("stereotype") : "");
+                genericResponse.setValue(obj.toString().contains("value") ? obj.getInt("value") : 0);
 
                 tracking.setResponseTr(result);
                 // System.out.println("tab 1=" + tab[1]);
@@ -3050,7 +3075,7 @@ public class ParamFilialeService {
 
     public GetCardsResponse getCardsByDigitalId(GetCardsByDigitalIdRequest cardsRequest, HttpServletRequest request) {
         Map<String, String> theMap = identifierService.findAll();
-        Map<String, String> typeMap = typeIdentifService.findAll();
+        // Map<String, String> typeMap = typeIdentifService.findAll();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCards");
@@ -3148,7 +3173,12 @@ public class ParamFilialeService {
                         type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());
                         card.setType(type);
                         card.setCategory(myObj.getString("category"));
-                        card.setBrand(myObj.getString("brand"));
+                        String strNumber = myObj.getString("number");
+                        Long number = Long.valueOf(strNumber);
+                        Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
+                        if (codeVisuel.isPresent())
+                            card.setBrand(codeVisuel.get().getCode());
+                        // card.setBrand(myObj.getString("brand"));
                         Status status = new Status();
                         JSONObject sObject = myObj.getJSONObject("status");
                         if (sObject.toString().contains("identifier")) {
@@ -3192,7 +3222,12 @@ public class ParamFilialeService {
                     // type.setDescription(myObj.getJSONObject("type").getString("description"));
                     card.setType(type);
                     card.setCategory(myObj.getString("category"));
-                    card.setBrand(myObj.getString("brand"));
+                    String strNumber = myObj.getString("number");
+                        Long number = Long.valueOf(strNumber);
+                        Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
+                        if (codeVisuel.isPresent())
+                            card.setBrand(codeVisuel.get().getCode());
+                    // card.setBrand(myObj.getString("brand"));
                     Status status = new Status();
                     JSONObject sObject = myObj.getJSONObject("status");
                     if (sObject.toString().contains("identifier")) {
@@ -3264,4 +3299,8 @@ public class ParamFilialeService {
         return genericResponse;
     }
 
+    public static void main(String[] args) {
+        String st = "012345689";
+        System.out.println("res=" + st.substring(0, 7));
+    }
 }

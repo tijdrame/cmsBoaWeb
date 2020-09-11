@@ -22,6 +22,7 @@ public class CardLimit_ {
     private String name;
     @JsonProperty("description")
     private String description;
+    
     @JsonProperty("is-active")
     private Boolean isActive;
     @JsonProperty("is-changeable")
@@ -36,6 +37,9 @@ public class CardLimit_ {
     private Integer usedValue;
     @JsonProperty("is-per-transaction")
     private Boolean isPerTransaction;
+
+    @JsonProperty("expiry-datetime")
+    private String expiryDatetime;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -157,6 +161,33 @@ public class CardLimit_ {
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+    }
+
+    public Boolean isIsActive() {
+        return this.isActive;
+    }
+
+    public Boolean isIsChangeable() {
+        return this.isChangeable;
+    }
+
+    public Boolean isIsPermanent() {
+        return this.isPermanent;
+    }
+
+    public Boolean isIsPerTransaction() {
+        return this.isPerTransaction;
+    }
+
+    public String getExpiryDatetime() {
+        return this.expiryDatetime;
+    }
+
+    public void setExpiryDatetime(String expiryDatetime) {
+        this.expiryDatetime = expiryDatetime;
+    }
+    public void setAdditionalProperties(Map<String,Object> additionalProperties) {
+        this.additionalProperties = additionalProperties;
     }
 
 }
