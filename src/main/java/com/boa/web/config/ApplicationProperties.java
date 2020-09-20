@@ -10,4 +10,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 public class ApplicationProperties {
+
+    private Integer maxTime;
+
+    public Integer getMaxTime() {
+        return this.maxTime;
+    }
+
+    public void setMaxTime(Integer maxTime) {
+        this.maxTime = maxTime;
+    }
+
 }

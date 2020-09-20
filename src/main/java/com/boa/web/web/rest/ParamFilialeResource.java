@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Null;
@@ -188,7 +190,9 @@ public class ParamFilialeResource {
             return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(cardsResponse);
         }
         cardsResponse = paramFilialeService.getCards(cardsRequest, request);
-        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(cardsResponse);
+        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+        //.cacheControl(doCache())
+        .body(cardsResponse);
     }
 
     @PostMapping("/getCardsByDigitalId") 
@@ -310,6 +314,9 @@ public class ParamFilialeResource {
         chargeCardResponse = paramFilialeService.chargeCardResponse(cardsRequest, request);
         return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(chargeCardResponse);
     }
+    /*public CacheControl doCache() {
+        return CacheControl.maxAge(10, TimeUnit.MINUTES); 
+    }*/
 
     @PostMapping("/prepareCardToCardTransfer")
     public ResponseEntity<PrepareCardToCardTransferResponse> prepareCardToCardTransfer(

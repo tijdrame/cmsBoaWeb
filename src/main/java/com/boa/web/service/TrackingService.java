@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,5 +70,11 @@ public class TrackingService {
     public void delete(Long id) {
         log.debug("Request to delete Tracking : {}", id);
         trackingRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<List<Tracking>> findByCriteira(String idClient, String serviceCalling) {
+        log.debug("Request to get Tracking : {}", idClient);
+        return trackingRepository.findByRequestTrContainsAndEndPointTrContainsOrderByIdDesc(idClient, serviceCalling);
     }
 }
