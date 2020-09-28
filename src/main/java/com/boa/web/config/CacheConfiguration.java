@@ -47,6 +47,7 @@ public class CacheConfiguration {
             createCache(cm, com.boa.web.domain.ParamIdentifier.class.getName());
             createCache(cm, com.boa.web.domain.TypeIdentif.class.getName());
             createCache(cm, com.boa.web.domain.CodeVisuel.class.getName());
+            //createCache(cm, com.boa.web.response.GetCardsResponse.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

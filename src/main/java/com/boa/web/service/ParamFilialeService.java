@@ -9,7 +9,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +169,10 @@ public class ParamFilialeService {
      * @param request
      * @return GetCardsResponse
      */
-    // @Cacheable("card")
+    /*
+     * @Cacheable("GetCardsResponse" //key = "#cardsRequest" //, condition =
+     * "#number>10" )
+     */
     public GetCardsResponse getCards(CardsRequest cardsRequest, HttpServletRequest request) {
         Map<String, String> theMap = identifierService.findAll();
         // Map<String, CodeVisuel> mapCodeVisuel = codeVisuelService.findAll();
@@ -461,7 +466,20 @@ public class ParamFilialeService {
         card.setStatus(status);
         card.setActive(myObj.getBoolean("active"));
         card.setPinNotSet(myObj.getBoolean("pinNotSet"));
-        card.setExpiryDate(myObj.getString("expiry-date"));
+        String[] tabDate = myObj.getString("expiry-date").split("\\+");
+        // String [] tabDate =
+        // "2019-10-01+03:00".split("\\+");//myObj.getString("expiry-date").split("\\+");
+        tabDate = tabDate[0].split("-");
+        LocalDate tempDate = LocalDate.of(Integer.parseInt(tabDate[0]), Integer.parseInt(tabDate[1]),
+                Integer.parseInt(tabDate[2]));
+        if (tempDate.getDayOfMonth() == 1) {
+            tempDate = tempDate.minusMonths(1);
+            tempDate = tempDate.with(TemporalAdjusters.lastDayOfMonth());
+            card.setExpiryDate(tempDate.toString() + "+03:00");
+        } else {
+            card.setExpiryDate(myObj.getString("expiry-date"));
+        }
+
         card.setReissuable(myObj.getBoolean("reissuable"));
         card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
         card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
@@ -717,7 +735,21 @@ public class ParamFilialeService {
                 cardDetails.setStatus(status);
                 cardDetails.setActive(myObj.getBoolean("active"));
                 cardDetails.setPinNotSet(myObj.getBoolean("pinNotSet"));
-                cardDetails.setExpiryDate(myObj.getString("expiry-date"));
+                //cardDetails.setExpiryDate(myObj.getString("expiry-date"));
+                String[] tabDate = myObj.getString("expiry-date").split("\\+");
+                // String [] tabDate =
+                // "2019-10-01+03:00".split("\\+");//myObj.getString("expiry-date").split("\\+");
+                tabDate = tabDate[0].split("-");
+                LocalDate tempDate = LocalDate.of(Integer.parseInt(tabDate[0]), Integer.parseInt(tabDate[1]),
+                        Integer.parseInt(tabDate[2]));
+                if (tempDate.getDayOfMonth() == 1) {
+                    tempDate = tempDate.minusMonths(1);
+                    tempDate = tempDate.with(TemporalAdjusters.lastDayOfMonth());
+                    cardDetails.setExpiryDate(tempDate.toString() + "+03:00");
+                } else {
+                    cardDetails.setExpiryDate(myObj.getString("expiry-date"));
+                }
+
                 cardDetails.setReissuable(myObj.getBoolean("reissuable"));
                 cardDetails.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
                 cardDetails.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
@@ -3194,46 +3226,47 @@ public class ParamFilialeService {
          * e1.getMessage()); }
          */
         Instant now = Instant.now();
-            Optional<List<Tracking>> listTracks = trackingService.findByCriteira(cardsRequest.getDigitalId(),"apiIdClientByIdCardProxy");
-            if (listTracks.isPresent()) {
-                Tracking itTracking = listTracks.get().get(0);
-                if (now.isBefore(
-                        itTracking.getDateResponse().plus(applicationProperties.getMaxTime(), ChronoUnit.MINUTES))) {
-                    try {
-                        JSONObject obj = new JSONObject(itTracking.getResponseTr());
-                        JSONArray jsonArray = null;
-                        JSONObject jsonObject = null;
-                        Card card = new Card();
-                        if (obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-cards-response")
-                                .get("card") instanceof JSONArray) {
-                            jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
-                                    .getJSONObject("get-cards-response").getJSONArray("card");
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                card = constructCard(jsonArray.getJSONObject(i), theMap);
-                                genericResponse.getCard().add(card);
-                            }
-                        } else {
-                            jsonObject = obj.getJSONObject("Envelope").getJSONObject("Body")
-                                    .getJSONObject("get-cards-response").getJSONObject("card");
-                            card = constructCard(jsonObject, theMap);
+        Optional<List<Tracking>> listTracks = trackingService.findByCriteira(cardsRequest.getDigitalId(),
+                "apiIdClientByIdCardProxy");
+        if (listTracks.isPresent()) {
+            Tracking itTracking = listTracks.get().get(0);
+            if (now.isBefore(
+                    itTracking.getDateResponse().plus(applicationProperties.getMaxTime(), ChronoUnit.MINUTES))) {
+                try {
+                    JSONObject obj = new JSONObject(itTracking.getResponseTr());
+                    JSONArray jsonArray = null;
+                    JSONObject jsonObject = null;
+                    Card card = new Card();
+                    if (obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-cards-response")
+                            .get("card") instanceof JSONArray) {
+                        jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
+                                .getJSONObject("get-cards-response").getJSONArray("card");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            card = constructCard(jsonArray.getJSONObject(i), theMap);
                             genericResponse.getCard().add(card);
-
                         }
-                        genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
-                        genericResponse.setDateResponse(Instant.now());
-                        genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
-                        return genericResponse;
+                    } else {
+                        jsonObject = obj.getJSONObject("Envelope").getJSONObject("Body")
+                                .getJSONObject("get-cards-response").getJSONObject("card");
+                        card = constructCard(jsonObject, theMap);
+                        genericResponse.getCard().add(card);
 
-                    } catch (JSONException e) {
-                        genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
-                        genericResponse.setDateResponse(Instant.now());
-                        genericResponse
-                                .setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
-                        log.error("errorrr== [{}]", e);
                     }
-                }
+                    genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    return genericResponse;
 
+                } catch (JSONException e) {
+                    genericResponse.setCode(ICodeDescResponse.FILIALE_ABSENT_CODE);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse
+                            .setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
+                    log.error("errorrr== [{}]", e);
+                }
             }
+
+        }
         if (filiale == null) {
             genericResponse = (GetCardsResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
                     ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.SERVICE_ABSENT_DESC,
@@ -3306,110 +3339,96 @@ public class ParamFilialeService {
                     genericResponse.getCard().add(card);
                 }
 
-
-                /*if (obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-cards-response")
-                        .get("card") instanceof JSONArray)
-                    jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-cards-response")
-                            .getJSONArray("card");
-                else
-                    jsonObject = obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("get-cards-response")
-                            .getJSONObject("card");
-                if (jsonArray != null) {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        Card card = new Card();
-                        JSONObject myObj = jsonArray.getJSONObject(i);
-                        card.setClientCardIdentifier(myObj.getString("client-card-identifier"));
-                        card.setEmbossedName(myObj.getString("embossed-name"));
-                        card.setNumber(myObj.getString("number"));
-                        card.setCurrency(myObj.getString("currency"));
-                        card.setAvailableBalance(myObj.getInt("available-balance"));
-                        Type type = new Type();
-                        // String identif = myObj.getJSONObject("type").getString("identifier"); //
-                        // type.setDefaultIdentifier(typeMap.get(identif));
-                        type.setDefaultIdentifier(
-                                myObj.getJSONObject("type").getString("description").substring(0, 1).toUpperCase());
-                        type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());
-                        card.setType(type);
-                        card.setCategory(myObj.getString("category"));
-                        String strNumber = myObj.getString("number");
-                        Long number = Long.valueOf(strNumber);
-                        Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
-                        if (codeVisuel.isPresent())
-                            card.setBrand(codeVisuel.get().getCode());
-                        // card.setBrand(myObj.getString("brand"));
-                        Status status = new Status();
-                        JSONObject sObject = myObj.getJSONObject("status");
-                        if (sObject.toString().contains("identifier")) {
-                            status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
-                            status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
-                        }
-                        if (sObject.toString().contains("description"))
-                            status.setDescription(myObj.getJSONObject("status").getString("description"));
-                        card.setStatus(status);
-                        card.setActive(myObj.getBoolean("active"));
-                        card.setPinNotSet(myObj.getBoolean("pinNotSet"));
-                        card.setExpiryDate(myObj.getString("expiry-date"));
-                        card.setReissuable(myObj.getBoolean("reissuable"));
-                        card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
-                        card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
-
-                        // System.out.println("linked-accounts===+++"
-                        // + myObj.getJSONObject("linked-accounts").getString("account-identifier"));
-                        String str = myObj.getJSONObject("linked-accounts").getString("account-identifier");
-
-                        card.setLinkedAccounts(str);
-                        genericResponse.getCard().add(card);
-
-                    }
-                } else if (jsonObject != null) {
-                    Card card = new Card();
-                    JSONObject myObj = jsonObject;// jsonArray.getJSONObject(i);
-                    card.setClientCardIdentifier(myObj.getString("client-card-identifier"));
-                    card.setEmbossedName(myObj.getString("embossed-name"));
-                    card.setNumber(myObj.getString("number"));
-                    card.setCurrency(myObj.getString("currency"));
-                    card.setAvailableBalance(myObj.getInt("available-balance"));
-                    Type type = new Type();
-                    
-                     //String identif = myObj.getJSONObject("type").getString("identifier");
-                     // type.setDefaultIdentifier(typeMap.get(identif));
-                     
-                    type.setDefaultIdentifier(
-                            myObj.getJSONObject("type").getString("description").substring(0, 1).toUpperCase());
-                    type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());
-                    // type.setDescription(myObj.getJSONObject("type").getString("description"));
-                    card.setType(type);
-                    card.setCategory(myObj.getString("category"));
-                    String strNumber = myObj.getString("number");
-                    Long number = Long.valueOf(strNumber);
-                    Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
-                    if (codeVisuel.isPresent())
-                        card.setBrand(codeVisuel.get().getCode());
-                    // card.setBrand(myObj.getString("brand"));
-                    Status status = new Status();
-                    JSONObject sObject = myObj.getJSONObject("status");
-                    if (sObject.toString().contains("identifier")) {
-                        status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
-                        status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
-                    }
-
-                    if (sObject.toString().contains("description"))
-                        status.setDescription(myObj.getJSONObject("status").getString("description"));
-                    card.setStatus(status);
-                    card.setActive(myObj.getBoolean("active"));
-                    card.setPinNotSet(myObj.getBoolean("pinNotSet"));
-                    card.setExpiryDate(myObj.getString("expiry-date"));
-                    card.setReissuable(myObj.getBoolean("reissuable"));
-                    card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
-                    card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
-
-                    // System.out.println("linked-accounts===+++"
-                    // + myObj.getJSONObject("linked-accounts").getString("account-identifier"));
-                    String str = myObj.getJSONObject("linked-accounts").getString("account-identifier");
-
-                    card.setLinkedAccounts(str);
-                    genericResponse.getCard().add(card);
-                }*/
+                /*
+                 * if (obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject(
+                 * "get-cards-response") .get("card") instanceof JSONArray) jsonArray =
+                 * obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject(
+                 * "get-cards-response") .getJSONArray("card"); else jsonObject =
+                 * obj.getJSONObject("Envelope").getJSONObject("Body").getJSONObject(
+                 * "get-cards-response") .getJSONObject("card"); if (jsonArray != null) { for
+                 * (int i = 0; i < jsonArray.length(); i++) { Card card = new Card(); JSONObject
+                 * myObj = jsonArray.getJSONObject(i);
+                 * card.setClientCardIdentifier(myObj.getString("client-card-identifier"));
+                 * card.setEmbossedName(myObj.getString("embossed-name"));
+                 * card.setNumber(myObj.getString("number"));
+                 * card.setCurrency(myObj.getString("currency"));
+                 * card.setAvailableBalance(myObj.getInt("available-balance")); Type type = new
+                 * Type(); // String identif =
+                 * myObj.getJSONObject("type").getString("identifier"); // //
+                 * type.setDefaultIdentifier(typeMap.get(identif)); type.setDefaultIdentifier(
+                 * myObj.getJSONObject("type").getString("description").substring(0,
+                 * 1).toUpperCase());
+                 * type.setDescription(myObj.getJSONObject("type").getString("description").
+                 * toUpperCase()); card.setType(type);
+                 * card.setCategory(myObj.getString("category")); String strNumber =
+                 * myObj.getString("number"); Long number = Long.valueOf(strNumber);
+                 * Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
+                 * if (codeVisuel.isPresent()) card.setBrand(codeVisuel.get().getCode()); //
+                 * card.setBrand(myObj.getString("brand")); Status status = new Status();
+                 * JSONObject sObject = myObj.getJSONObject("status"); if
+                 * (sObject.toString().contains("identifier")) {
+                 * status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
+                 * status.setDefaultIdentifier(theMap.get(status.getIdentifier())); } if
+                 * (sObject.toString().contains("description"))
+                 * status.setDescription(myObj.getJSONObject("status").getString("description"))
+                 * ; card.setStatus(status); card.setActive(myObj.getBoolean("active"));
+                 * card.setPinNotSet(myObj.getBoolean("pinNotSet"));
+                 * card.setExpiryDate(myObj.getString("expiry-date"));
+                 * card.setReissuable(myObj.getBoolean("reissuable"));
+                 * card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"))
+                 * ; card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
+                 * 
+                 * // System.out.println("linked-accounts===+++" // +
+                 * myObj.getJSONObject("linked-accounts").getString("account-identifier"));
+                 * String str =
+                 * myObj.getJSONObject("linked-accounts").getString("account-identifier");
+                 * 
+                 * card.setLinkedAccounts(str); genericResponse.getCard().add(card);
+                 * 
+                 * } } else if (jsonObject != null) { Card card = new Card(); JSONObject myObj =
+                 * jsonObject;// jsonArray.getJSONObject(i);
+                 * card.setClientCardIdentifier(myObj.getString("client-card-identifier"));
+                 * card.setEmbossedName(myObj.getString("embossed-name"));
+                 * card.setNumber(myObj.getString("number"));
+                 * card.setCurrency(myObj.getString("currency"));
+                 * card.setAvailableBalance(myObj.getInt("available-balance")); Type type = new
+                 * Type();
+                 * 
+                 * //String identif = myObj.getJSONObject("type").getString("identifier"); //
+                 * type.setDefaultIdentifier(typeMap.get(identif));
+                 * 
+                 * type.setDefaultIdentifier(
+                 * myObj.getJSONObject("type").getString("description").substring(0,
+                 * 1).toUpperCase());
+                 * type.setDescription(myObj.getJSONObject("type").getString("description").
+                 * toUpperCase()); //
+                 * type.setDescription(myObj.getJSONObject("type").getString("description"));
+                 * card.setType(type); card.setCategory(myObj.getString("category")); String
+                 * strNumber = myObj.getString("number"); Long number = Long.valueOf(strNumber);
+                 * Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
+                 * if (codeVisuel.isPresent()) card.setBrand(codeVisuel.get().getCode()); //
+                 * card.setBrand(myObj.getString("brand")); Status status = new Status();
+                 * JSONObject sObject = myObj.getJSONObject("status"); if
+                 * (sObject.toString().contains("identifier")) {
+                 * status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
+                 * status.setDefaultIdentifier(theMap.get(status.getIdentifier())); }
+                 * 
+                 * if (sObject.toString().contains("description"))
+                 * status.setDescription(myObj.getJSONObject("status").getString("description"))
+                 * ; card.setStatus(status); card.setActive(myObj.getBoolean("active"));
+                 * card.setPinNotSet(myObj.getBoolean("pinNotSet"));
+                 * card.setExpiryDate(myObj.getString("expiry-date"));
+                 * card.setReissuable(myObj.getBoolean("reissuable"));
+                 * card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"))
+                 * ; card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
+                 * 
+                 * // System.out.println("linked-accounts===+++" // +
+                 * myObj.getJSONObject("linked-accounts").getString("account-identifier"));
+                 * String str =
+                 * myObj.getJSONObject("linked-accounts").getString("account-identifier");
+                 * 
+                 * card.setLinkedAccounts(str); genericResponse.getCard().add(card); }
+                 */
 
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
