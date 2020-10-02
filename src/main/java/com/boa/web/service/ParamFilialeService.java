@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -162,6 +163,15 @@ public class ParamFilialeService {
     public void delete(Long id) {
         log.debug("Request to delete ParamFiliale : {}", id);
         paramFilialeRepository.deleteById(id);
+    }
+
+    public void invalidateCache(String idClient){
+        Optional<List<Tracking>> listTracks = trackingService.findByCriteira(idClient, "getCardProxy");
+        if (listTracks.isPresent()) {
+            Tracking itTracking = listTracks.get().get(0);
+            itTracking.setDateResponse(itTracking.getDateResponse().plus(-applicationProperties.getMaxTime(), ChronoUnit.MINUTES));
+            // trackingService.save(itTracking);
+        }
     }
 
     /**
@@ -2406,6 +2416,9 @@ public class ParamFilialeService {
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+
+                invalidateCache(client.getIdClient());
+
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body")
                         .getJSONObject("execute-card-to-card-transfer-response").isNull("operation-info")) {// test de
                                                                                                             // operation

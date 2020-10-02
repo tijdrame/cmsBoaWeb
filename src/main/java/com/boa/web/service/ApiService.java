@@ -90,9 +90,9 @@ public class ApiService {
         }
         try {
             client = this.paramFilialeService.callApiIdClientByIdCard(
-                getCardBankActivationParametersRequest.getCartIdentif(), 
-            getCardBankActivationParametersRequest.getInstitutionId());
-            
+                    getCardBankActivationParametersRequest.getCartIdentif(),
+                    getCardBankActivationParametersRequest.getInstitutionId());
+
             if (client == null) {
                 genericResponse = (GetCardBankActivationParametersResponse) paramFilialeService.clientAbsent(
                         genericResponse, tracking, request.getRequestURI(), ICodeDescResponse.CLIENT_ABSENT_CODE,
@@ -743,7 +743,8 @@ public class ApiService {
 
                     // Test des elements 28/08/2020
                     if (!obj.getJSONObject("Envelope").getJSONObject("Body")
-                            .getJSONObject("prepare-card-to-own-card-transfer-response").isNull("operation-info")) {// test operation-info
+                            .getJSONObject("prepare-card-to-own-card-transfer-response").isNull("operation-info")) {// test
+                                                                                                                    // operation-info
 
                         if (obj.getJSONObject("Envelope").getJSONObject("Body")
                                 .getJSONObject("prepare-card-to-own-card-transfer-response")
@@ -928,7 +929,8 @@ public class ApiService {
                         .contains("execute-card-to-own-card-transfer-response")) {
                     log.info("Here ELM");
                     if (!obj.getJSONObject("Envelope").getJSONObject("Body")
-                            .getJSONObject("execute-card-to-own-card-transfer-response").isNull("operation-info")) {// test operation-info
+                            .getJSONObject("execute-card-to-own-card-transfer-response").isNull("operation-info")) {// test
+                                                                                                                    // operation-info
                         JSONObject myObj = obj.getJSONObject("Envelope").getJSONObject("Body")
                                 .getJSONObject("execute-card-to-own-card-transfer-response")
                                 .getJSONObject("operation-info");
@@ -960,6 +962,9 @@ public class ApiService {
                     genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+
+                    paramFilialeService.invalidateCache(client.getIdClient());
+
                     tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
@@ -1303,6 +1308,9 @@ public class ApiService {
                     genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+
+                    paramFilialeService.invalidateCache(client.getIdClient());
+
                     tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
