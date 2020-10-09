@@ -19,6 +19,7 @@
     <include file="config/liquibase/changelog/20200703094601_added_entity_ParamIdentifier.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200709121000_added_entity_TypeIdentif.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200904143036_added_entity_CodeVisuel.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201009133013_added_entity_ParamGeneral.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

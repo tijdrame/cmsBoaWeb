@@ -12,6 +12,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import com.boa.web.domain.ParamFiliale;
+import com.boa.web.domain.ParamGeneral;
 import com.boa.web.domain.Tracking;
 import com.boa.web.domain.User;
 import com.boa.web.repository.ParamFilialeRepository;
@@ -56,13 +57,15 @@ public class ApiService {
     private final TrackingService trackingService;
     private final UserService userService;
     private final ParamFilialeService paramFilialeService;
+    private final ParamGeneralService paramGeneralService;
 
     public ApiService(ParamFilialeRepository paramFilialeRepository, ParamFilialeService paramFilialeService,
-            UserService userService, TrackingService trackingService) {
+            UserService userService, TrackingService trackingService, ParamGeneralService paramGeneralService) {
         this.paramFilialeRepository = paramFilialeRepository;
         this.trackingService = trackingService;
         this.userService = userService;
         this.paramFilialeService = paramFilialeService;
+        this.paramGeneralService = paramGeneralService;
     }
 
     /*
@@ -329,6 +332,14 @@ public class ApiService {
             return getPrepaidDechargementResponse;
         }
 
+        Optional<ParamGeneral> optionalPM = paramGeneralService.findByCodeAndPays(ICodeDescResponse.COMPTE_DAP, GetPrepaidDechargement.getPays());
+        if(!optionalPM.isPresent()){
+            getPrepaidDechargementResponse = (GetPrepaidDechargementResponse) paramFilialeService.clientAbsent(getPrepaidDechargementResponse, tracking, request.getRequestURI(),
+                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.COMPTE_DAP_ABSENT,
+                    request.getRequestURI(), tab[1]);
+            return getPrepaidDechargementResponse;
+        }
+
         log.info("trace2:05022020");
 
         try {
@@ -432,6 +443,7 @@ public class ApiService {
                 builder.append("<refrel>" + GetPrepaidDechargement.getRefRel() + "</refrel>");
                 builder.append("<reftrans>" + "nil" + "</reftrans>");
                 builder.append("<val>" + "V" + "</val>");
+                builder.append("<compteDap>" + optionalPM.get().getVarString1() + "</compteDap>");
                 builder.append("</dechargement></body>");
 
                 tracking.setRequestTr(builder.toString());

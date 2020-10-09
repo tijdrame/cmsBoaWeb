@@ -15,8 +15,10 @@ public interface ICodeDescResponse {
     public static String SUCCES_DESCRIPTION = "Operation effectuee avec succes";
     public static String FILIALE_ABSENT_DESC = "Une erreur est survenue";
     public static String CLIENT_ABSENT_DESC = "Numero Client absent dans nos livres";
-    public static String PARAM_ABSENT_DESC = "Parametre non trouve!";
-    public static String SERVICE_ABSENT_DESC = "Service non parametre!";
+    public static String PARAM_ABSENT_DESC = "Parametre non trouve.";
+    public static String SERVICE_ABSENT_DESC = "Service non parametre.";
+    public static String COMPTE_DAP_ABSENT = "Compte DAP non parametre pour ce pays.";
+    public static String COMPTE_DAP = "COMPTEDAP";
     public static String HSTORIQUE_VIDE = "Historique de carte vide!";
 
     /*-------------*/

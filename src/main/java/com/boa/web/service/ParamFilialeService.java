@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBContext;
 import com.boa.web.config.ApplicationProperties;
 import com.boa.web.domain.CodeVisuel;
 import com.boa.web.domain.ParamFiliale;
+import com.boa.web.domain.ParamGeneral;
 import com.boa.web.domain.ParamIdentifier;
 import com.boa.web.domain.Tracking;
 import com.boa.web.domain.User;
@@ -107,10 +108,12 @@ public class ParamFilialeService {
     private final TypeIdentifService typeIdentifService;
     private final CodeVisuelService codeVisuelService;
     private final ApplicationProperties applicationProperties;
+    private final ParamGeneralService paramGeneralService;
 
     public ParamFilialeService(ParamFilialeRepository paramFilialeRepository, TrackingService trackingService,
             UserService userService, ParamIdentifierService identifierService, TypeIdentifService typeIdentifService,
-            CodeVisuelService codeVisuelService, ApplicationProperties applicationProperties) {
+            CodeVisuelService codeVisuelService, ApplicationProperties applicationProperties,
+            ParamGeneralService paramGeneralService) {
         this.paramFilialeRepository = paramFilialeRepository;
         this.trackingService = trackingService;
         this.userService = userService;
@@ -118,6 +121,7 @@ public class ParamFilialeService {
         this.typeIdentifService = typeIdentifService;
         this.codeVisuelService = codeVisuelService;
         this.applicationProperties = applicationProperties;
+        this.paramGeneralService = paramGeneralService;
     }
 
     /**
@@ -1757,6 +1761,13 @@ public class ParamFilialeService {
                     request.getRequestURI(), tab[1]);
             return genericResponse;
         }
+        Optional<ParamGeneral> optionalPM = paramGeneralService.findByCodeAndPays(ICodeDescResponse.COMPTE_DAP, cardsRequest.getPays());
+        if(!optionalPM.isPresent()){
+            genericResponse = (ChargeCardResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
+                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.COMPTE_DAP_ABSENT,
+                    request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
         try {
             CardsDetailRequest cardsDetailRequest = new CardsDetailRequest();
             cardsDetailRequest.setCartIdentif(cardsRequest.getCartIdentifTarget());
@@ -1812,6 +1823,7 @@ public class ParamFilialeService {
                 builder.append("<refrel>" + carteWso2Request.getRefrel() + "</refrel>");
                 builder.append("<reftrans>" + carteWso2Request.getReftrans() + "</reftrans>");
                 builder.append("<val>" + carteWso2Request.getVal() + "</val>");
+                builder.append("<compteDap>" + optionalPM.get().getVarString1() + "</compteDap>");
                 builder.append("</chargement></body>");
 
                 tracking.setRequestTr(builder.toString());
