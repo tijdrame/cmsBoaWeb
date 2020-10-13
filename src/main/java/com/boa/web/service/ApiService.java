@@ -546,6 +546,8 @@ public class ApiService {
                                 obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RMSG"));
                         tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
 
+                        paramFilialeService.invalidateCache(cardsDetailResponse.getCard().getClientCardIdentifier());
+
                         tracking.setDateResponse(Instant.now());
                         tracking.setEndPointTr(filiale.getEndPoint());
                         tracking.setLoginActeur(login);

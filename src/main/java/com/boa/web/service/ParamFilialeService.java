@@ -1911,6 +1911,7 @@ public class ParamFilialeService {
                         genericResponse.setDateResponse(Instant.now());
                         genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                         // genericResponse.setReference("");
+                        invalidateCache(cardsDetailResponse.getCard().getClientCardIdentifier());
                         genericResponse.setReference(obj.getJSONObject("chargementCarte").getJSONObject("response")
                                 .getJSONObject("chargement").getString("NOOPER"));
                         genericResponse.setResultat(
