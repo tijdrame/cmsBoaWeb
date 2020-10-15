@@ -96,7 +96,7 @@ public class ApiResource {
         public ResponseEntity<GetPrepaidDechargementResponse> GetPrepaidDechargement(
                         @RequestBody GetPrepaidDechargementRequest getPrepaidDechargement, HttpServletRequest request)
                         throws URISyntaxException {
-                log.debug("REST request to getPrepaidDechargement : {}", getPrepaidDechargement);
+                log.info("REST request to getPrepaidDechargement : {}", getPrepaidDechargement);
 
                 GetPrepaidDechargementResponse getPrepaidDechargementtResponse = apiService
                                 .GetPrepaidDechargement(getPrepaidDechargement, request);

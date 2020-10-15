@@ -119,4 +119,23 @@ public class GetPrepaidDechargementRequest {
 		this.pays = pays;
 	}
 
+	@Override
+	public String toString() {
+		return "{" +
+			" institutionId='" + institutionId + "'" +
+			", compteTarget='" + compteTarget + "'" +
+			", cartIdentifSource='" + cartIdentifSource + "'" +
+			", compteCardSource='" + compteCardSource + "'" +
+			", montant='" + montant + "'" +
+			", montantFrais='" + montantFrais + "'" +
+			", dateTrans='" + dateTrans + "'" +
+			", refRel='" + refRel + "'" +
+			", libelle='" + libelle + "'" +
+			", reftrans='" + reftrans + "'" +
+			", pays='" + pays + "'" +
+			", langue='" + langue + "'" +
+			", variant='" + variant + "'" +
+			"}";
+	}
+
 }

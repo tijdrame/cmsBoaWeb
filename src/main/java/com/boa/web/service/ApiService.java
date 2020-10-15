@@ -447,7 +447,7 @@ public class ApiService {
                 builder.append("</dechargement></body>");
 
                 tracking.setRequestTr(builder.toString());
-                log.info("carteWso2Request [{}]", builder.toString());
+                log.info("dechargement Wso2 Request [{}]", builder.toString());
                 OutputStream os = conn.getOutputStream();
                 byte[] postDataBytes = builder.toString().getBytes();
                 result = "";
