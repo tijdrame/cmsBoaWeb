@@ -318,7 +318,7 @@ public class ApiService {
         Tracking tracking = new Tracking();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
-        log.info("trace0 :05022020");
+        log.info("GetPrepaidDechargement :[{}]", GetPrepaidDechargement);
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         GetPrepaidDechargementResponse getPrepaidDechargementResponse = new GetPrepaidDechargementResponse();
