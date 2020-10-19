@@ -38,6 +38,7 @@ import com.boa.web.request.ChangeCardRequest;
 import com.boa.web.request.ChargementCardRequest;
 import com.boa.web.request.ChargementCarteWso2Request;
 import com.boa.web.request.CheckBankActivateCardRequest;
+import com.boa.web.request.ConsultationSoldeRequest;
 import com.boa.web.request.GetCardAuthRestrictionsRequest;
 import com.boa.web.request.GetCardsByDigitalIdRequest;
 import com.boa.web.request.PrepareCardToCardTransferRequest;
@@ -49,6 +50,7 @@ import com.boa.web.response.ChangeCardAuthRestrictionResponse;
 import com.boa.web.response.ChargeCardResponse;
 import com.boa.web.response.CheckBankActivateCardResponse;
 import com.boa.web.response.Client;
+import com.boa.web.response.ConsultationSoldeResponse;
 import com.boa.web.response.ExecuteCardToCardTransferResponse;
 import com.boa.web.response.GenericResponse;
 import com.boa.web.response.GetCardsDetailResponse;
@@ -79,6 +81,8 @@ import com.boa.web.response.prepareChangeCardOption.HiddenInput;
 import com.boa.web.response.prepareChangeCardOption.Information;
 import com.boa.web.response.prepareChangeCardOption.PrepareChangeCardOption;
 import com.boa.web.service.util.ICodeDescResponse;
+import com.boa.web.service.util.Utils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hamcrest.core.IsNull;
 import org.slf4j.Logger;
@@ -91,6 +95,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * Service Implementation for managing {@link ParamFiliale}.
@@ -109,11 +114,12 @@ public class ParamFilialeService {
     private final CodeVisuelService codeVisuelService;
     private final ApplicationProperties applicationProperties;
     private final ParamGeneralService paramGeneralService;
+    private final Utils utils;
 
     public ParamFilialeService(ParamFilialeRepository paramFilialeRepository, TrackingService trackingService,
             UserService userService, ParamIdentifierService identifierService, TypeIdentifService typeIdentifService,
             CodeVisuelService codeVisuelService, ApplicationProperties applicationProperties,
-            ParamGeneralService paramGeneralService) {
+            ParamGeneralService paramGeneralService, Utils utils) {
         this.paramFilialeRepository = paramFilialeRepository;
         this.trackingService = trackingService;
         this.userService = userService;
@@ -122,6 +128,7 @@ public class ParamFilialeService {
         this.codeVisuelService = codeVisuelService;
         this.applicationProperties = applicationProperties;
         this.paramGeneralService = paramGeneralService;
+        this.utils = utils;
     }
 
     /**
@@ -169,11 +176,12 @@ public class ParamFilialeService {
         paramFilialeRepository.deleteById(id);
     }
 
-    public void invalidateCache(String idClient){
+    public void invalidateCache(String idClient) {
         Optional<List<Tracking>> listTracks = trackingService.findByCriteira(idClient, "getCardProxy");
         if (listTracks.isPresent()) {
             Tracking itTracking = listTracks.get().get(0);
-            itTracking.setDateResponse(itTracking.getDateResponse().plus(-applicationProperties.getMaxTime(), ChronoUnit.MINUTES));
+            itTracking.setDateResponse(
+                    itTracking.getDateResponse().plus(-applicationProperties.getMaxTime(), ChronoUnit.MINUTES));
             // trackingService.save(itTracking);
         }
     }
@@ -749,7 +757,7 @@ public class ParamFilialeService {
                 cardDetails.setStatus(status);
                 cardDetails.setActive(myObj.getBoolean("active"));
                 cardDetails.setPinNotSet(myObj.getBoolean("pinNotSet"));
-                //cardDetails.setExpiryDate(myObj.getString("expiry-date"));
+                // cardDetails.setExpiryDate(myObj.getString("expiry-date"));
                 String[] tabDate = myObj.getString("expiry-date").split("\\+");
                 // String [] tabDate =
                 // "2019-10-01+03:00".split("\\+");//myObj.getString("expiry-date").split("\\+");
@@ -1761,11 +1769,12 @@ public class ParamFilialeService {
                     request.getRequestURI(), tab[1]);
             return genericResponse;
         }
-        Optional<ParamGeneral> optionalPM = paramGeneralService.findByCodeAndPays(ICodeDescResponse.COMPTE_DAP, cardsRequest.getPays());
-        if(!optionalPM.isPresent()){
+        Optional<ParamGeneral> optionalPM = paramGeneralService.findByCodeAndPays(ICodeDescResponse.COMPTE_DAP,
+                cardsRequest.getPays());
+        if (!optionalPM.isPresent()) {
             genericResponse = (ChargeCardResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
-                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.COMPTE_DAP_ABSENT,
-                    request.getRequestURI(), tab[1]);
+                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.COMPTE_DAP_ABSENT, request.getRequestURI(),
+                    tab[1]);
             return genericResponse;
         }
         try {
@@ -3505,5 +3514,105 @@ public class ParamFilialeService {
     public static void main(String[] args) {
         String st = "012345689";
         System.out.println("res=" + st.substring(0, 7));
+    }
+
+    public ConsultationSoldeResponse consultationSolde(ConsultationSoldeRequest soldeRequest,
+            HttpServletRequest request) {
+        log.info("consultationSolde [{}]", soldeRequest);
+        Optional<User> user = userService.getUserWithAuthorities();
+        String login = user.isPresent() ? user.get().getLogin() : "";
+        Tracking tracking = new Tracking();
+        ConsultationSoldeResponse genericResp = new ConsultationSoldeResponse();
+        String autho = request.getHeader("Authorization");
+        String[] tab = autho.split("Bearer");
+        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("consultationSolde");
+        String result = "";
+        try {
+
+            if (filiale == null) {
+                genericResp = (ConsultationSoldeResponse) clientAbsent(genericResp, tracking, request.getRequestURI(),
+                        ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.SERVICE_ABSENT_DESC,
+                        request.getRequestURI(), tab[1]);
+
+                return genericResp;
+            }
+            CardsDetailRequest cardsDetailRequest = new CardsDetailRequest();
+            cardsDetailRequest.setCartIdentif(soldeRequest.getCartIdentif());
+            cardsDetailRequest.setCompte(soldeRequest.getCompte());
+            cardsDetailRequest.setInstitutionId(null);
+            cardsDetailRequest.setLangue(soldeRequest.getLangue());
+            cardsDetailRequest.setPays(soldeRequest.getPays());
+            cardsDetailRequest.setVariant(null);
+            GetCardsDetailResponse cardsDetailResponse = getCardDetails(cardsDetailRequest, request);
+            if (cardsDetailResponse.getCode() == 200) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("<body><consultationSoldeEpay>");
+                builder.append("<compte>" + soldeRequest.getCompte() + "</compte>");
+                builder.append("<numcarte>" + cardsDetailResponse.getCard().getNumberCard() + "</numcarte>");
+                builder.append("<datexpir>" + cardsDetailResponse.getCard().getExpiryDate() + "</datexpir>");
+                builder.append("<country>" + soldeRequest.getPays() + "</country>");
+                builder.append("</body></consultationSoldeEpay>");
+                BufferedReader br = null;
+                JSONObject obj = new JSONObject();
+                // String result = "";
+                HttpURLConnection conn = utils.doConnexion(filiale.getEndPoint(), builder.toString(), "application/xml",
+                        null);
+                if (conn != null && conn.getResponseCode() == 200) {
+                    br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    String ligne = br.readLine();
+                    while (ligne != null) {
+                        result += ligne;
+                        ligne = br.readLine();
+                    }
+                    log.info("consultationSolde result ===== [{}]", result);
+                    ObjectMapper mapper = new ObjectMapper();
+                    Map<String, Object> map = mapper.readValue(result, Map.class);
+                    obj = new JSONObject(result);
+                    obj = obj.getJSONObject("epayResponse");
+                    genericResp.setData(map);
+                    if (obj.toString() != null && obj.toString().contains("code") && obj.getString("code").equals("00")) {
+                        genericResp.setCode(ICodeDescResponse.SUCCES_CODE);
+                        genericResp.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                        genericResp.setDateResponse(Instant.now());
+                        tracking = createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
+                                genericResp.toString(), soldeRequest.toString());
+                    } else {
+                        genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
+                        genericResp.setDateResponse(Instant.now());
+                        genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                        tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                                genericResp.toString(), soldeRequest.toString());
+                    }
+                } else {
+                    br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                    String ligne = br.readLine();
+                    while (ligne != null) {
+                        result += ligne;
+                        ligne = br.readLine();
+                    }
+                    log.info("resp envoi error =====> [{}]", result);
+                    if (!StringUtils.isEmpty(result)) {
+                        ObjectMapper mapper = new ObjectMapper();
+                        Map<String, Object> map = mapper.readValue(result, Map.class);
+                        genericResp.setData(map);
+                    }
+
+                    genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
+                    genericResp.setDateResponse(Instant.now());
+                    genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    tracking = createTracking(ICodeDescResponse.ECHEC_CODE, request.getRequestURI(),
+                            genericResp.toString(), soldeRequest.toString());
+                }
+
+            }
+        } catch (Exception e) {
+            log.error("Exception in consultationSoldeMultiCompte [{}]", e);
+            genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
+            genericResp.setDateResponse(Instant.now());
+            genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + " " + e.getMessage());
+            tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
+        }
+        trackingService.save(tracking);
+        return genericResp;
     }
 }

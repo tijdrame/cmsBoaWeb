@@ -9,6 +9,7 @@ import com.boa.web.request.ChangeCardAuthRestrictionRequest;
 import com.boa.web.request.ChangeCardRequest;
 import com.boa.web.request.ChargementCardRequest;
 import com.boa.web.request.CheckBankActivateCardRequest;
+import com.boa.web.request.ConsultationSoldeRequest;
 import com.boa.web.request.GetCardAuthRestrictionsRequest;
 import com.boa.web.request.PrepareCardToCardTransferRequest;
 import com.boa.web.request.PrepareChangeCardOptionRequest;
@@ -17,6 +18,7 @@ import com.boa.web.response.CardlessResponse;
 import com.boa.web.response.ChangeCardAuthRestrictionResponse;
 import com.boa.web.response.ChargeCardResponse;
 import com.boa.web.response.CheckBankActivateCardResponse;
+import com.boa.web.response.ConsultationSoldeResponse;
 import com.boa.web.response.ExecuteCardToCardTransferResponse;
 import com.boa.web.response.GetCardsDetailResponse;
 import com.boa.web.response.GetCardsResponse;
@@ -443,6 +445,27 @@ public class ParamFilialeResource {
         }
         
         response = paramFilialeService.cardlessChargement(cardsRequest, request);
+        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                .body(response);
+    }
+
+    @PostMapping("/consultationSolde")
+    public ResponseEntity<ConsultationSoldeResponse> consultationSolde(
+            @RequestBody ConsultationSoldeRequest soldeRequest, HttpServletRequest request) throws URISyntaxException {
+        log.info("REST request to consultationSolde :======= [{}]", soldeRequest);
+        ConsultationSoldeResponse response = new ConsultationSoldeResponse();
+        if (controleParam(soldeRequest.getCartIdentif()) || controleParam(soldeRequest.getCompte())||
+        controleParam(soldeRequest.getLangue()) || controleParam(soldeRequest.getPays())
+        ) {
+            log.info("param ko======");
+            response.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
+            response.setDateResponse(Instant.now());
+            response.setDescription(ICodeDescResponse.PARAM_DESCRIPTION);
+            return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                    .body(response);
+        }
+        
+        response = paramFilialeService.consultationSolde(soldeRequest, request);
         return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
                 .body(response);
     }
