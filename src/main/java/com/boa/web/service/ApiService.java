@@ -444,6 +444,7 @@ public class ApiService {
                 builder.append("<reftrans>" + "nil" + "</reftrans>");
                 builder.append("<val>" + "V" + "</val>");
                 builder.append("<compteDap>" + optionalPM.get().getVarString1() + "</compteDap>");
+                builder.append("<codopsc>" + optionalPM.get().getVarString3() + "</codopsc>");
                 builder.append("</dechargement></body>");
 
                 tracking.setRequestTr(builder.toString());

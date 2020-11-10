@@ -1833,6 +1833,7 @@ public class ParamFilialeService {
                 builder.append("<reftrans>" + carteWso2Request.getReftrans() + "</reftrans>");
                 builder.append("<val>" + carteWso2Request.getVal() + "</val>");
                 builder.append("<compteDap>" + optionalPM.get().getVarString1() + "</compteDap>");
+                builder.append("<codopsc>" + optionalPM.get().getVarString2() + "</codopsc>");
                 builder.append("</chargement></body>");
 
                 tracking.setRequestTr(builder.toString());
