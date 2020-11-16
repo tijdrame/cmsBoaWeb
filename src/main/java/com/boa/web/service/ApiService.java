@@ -419,7 +419,7 @@ public class ApiService {
 
                 StringBuilder builder = new StringBuilder();
                 builder.append("<body><dechargement>");
-                builder.append("<codopsc>" + "GAB" + "</codopsc>");
+                // builder.append("<codopsc>" + "GAB" + "</codopsc>");
                 builder.append("<comptec>" + GetPrepaidDechargement.getCompteTarget() + "</comptec>");
                 builder.append("<compted>" + GetPrepaidDechargement.getCompteCardSource() + "</compted>");
                 builder.append("<country>" + GetPrepaidDechargement.getPays() + "</country>");

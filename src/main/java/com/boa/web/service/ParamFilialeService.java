@@ -1817,7 +1817,7 @@ public class ParamFilialeService {
 
                 StringBuilder builder = new StringBuilder();
                 builder.append("<body><chargement>");
-                builder.append("<codopsc>" + carteWso2Request.getCodopsc() + "</codopsc>");
+                // builder.append("<codopsc>" + carteWso2Request.getCodopsc() + "</codopsc>");
                 builder.append("<comptec>" + carteWso2Request.getComptec() + "</comptec>");
                 builder.append("<compted>" + carteWso2Request.getCompted() + "</compted>");
                 builder.append("<country>" + carteWso2Request.getCountry() + "</country>");
