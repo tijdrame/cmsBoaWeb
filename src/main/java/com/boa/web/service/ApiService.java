@@ -547,7 +547,7 @@ public class ApiService {
                                 obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RMSG"));
                         tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
 
-                        paramFilialeService.invalidateCache(cardsDetailResponse.getCard().getClientCardIdentifier());
+                        //paramFilialeService.invalidateCache(cardsDetailResponse.getCard().getClientCardIdentifier());
 
                         tracking.setDateResponse(Instant.now());
                         tracking.setEndPointTr(filiale.getEndPoint());
@@ -978,7 +978,7 @@ public class ApiService {
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
 
-                    paramFilialeService.invalidateCache(client.getIdClient());
+                    //paramFilialeService.invalidateCache(client.getIdClient());
 
                     tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
                     tracking.setDateResponse(Instant.now());
@@ -1324,7 +1324,7 @@ public class ApiService {
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
 
-                    paramFilialeService.invalidateCache(client.getIdClient());
+                    //paramFilialeService.invalidateCache(client.getIdClient());
 
                     tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
                     tracking.setDateResponse(Instant.now());

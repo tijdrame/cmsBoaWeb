@@ -176,7 +176,7 @@ public class ParamFilialeService {
         paramFilialeRepository.deleteById(id);
     }
 
-    public void invalidateCache(String idClient) {
+    /*public void invalidateCache(String idClient) {
         Optional<List<Tracking>> listTracks = trackingService.findByCriteira(idClient, "getCardProxy");
         if (listTracks.isPresent()) {
             Tracking itTracking = listTracks.get().get(0);
@@ -184,7 +184,7 @@ public class ParamFilialeService {
                     itTracking.getDateResponse().plus(-applicationProperties.getMaxTime(), ChronoUnit.MINUTES));
             // trackingService.save(itTracking);
         }
-    }
+    }*/
 
     /**
      * @param cardsRequest
@@ -215,7 +215,7 @@ public class ParamFilialeService {
                         request.getRequestURI(), tab[1]);
                 return genericResponse;
             }
-            Instant now = Instant.now();
+            /*Instant now = Instant.now();
             Optional<List<Tracking>> listTracks = trackingService.findByCriteira(client.getIdClient(), "getCardProxy");
             if (listTracks.isPresent()) {
                 Tracking itTracking = listTracks.get().get(0);
@@ -255,7 +255,7 @@ public class ParamFilialeService {
                     }
                 }
 
-            }
+            }*/
 
         } catch (IOException e1) {
             log.info("error = [{}]", e1.getMessage());
@@ -1921,7 +1921,7 @@ public class ParamFilialeService {
                         genericResponse.setDateResponse(Instant.now());
                         genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                         // genericResponse.setReference("");
-                        invalidateCache(cardsDetailResponse.getCard().getClientCardIdentifier());
+                        //invalidateCache(cardsDetailResponse.getCard().getClientCardIdentifier());
                         genericResponse.setReference(obj.getJSONObject("chargementCarte").getJSONObject("response")
                                 .getJSONObject("chargement").getString("NOOPER"));
                         genericResponse.setResultat(
@@ -2440,7 +2440,7 @@ public class ParamFilialeService {
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
 
-                invalidateCache(client.getIdClient());
+                //--------invalidateCache(client.getIdClient());
 
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body")
                         .getJSONObject("execute-card-to-card-transfer-response").isNull("operation-info")) {// test de
@@ -3261,7 +3261,7 @@ public class ParamFilialeService {
          * return genericResponse; } } catch (IOException e1) { log.info("error = [{}]",
          * e1.getMessage()); }
          */
-        Instant now = Instant.now();
+        /*Instant now = Instant.now();
         Optional<List<Tracking>> listTracks = trackingService.findByCriteira(cardsRequest.getDigitalId(),
                 "apiIdClientByIdCardProxy");
         if (listTracks.isPresent()) {
@@ -3302,7 +3302,7 @@ public class ParamFilialeService {
                 }
             }
 
-        }
+        }*/
         if (filiale == null) {
             genericResponse = (GetCardsResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
                     ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.SERVICE_ABSENT_DESC,
