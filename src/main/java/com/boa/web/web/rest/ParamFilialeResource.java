@@ -11,9 +11,11 @@ import com.boa.web.request.ChargementCardRequest;
 import com.boa.web.request.CheckBankActivateCardRequest;
 import com.boa.web.request.ConsultationSoldeRequest;
 import com.boa.web.request.GetCardAuthRestrictionsRequest;
+import com.boa.web.request.GetCommissionRequest;
 import com.boa.web.request.PrepareCardToCardTransferRequest;
 import com.boa.web.request.PrepareChangeCardOptionRequest;
 import com.boa.web.request.PrepareToCardFirstRequest;
+import com.boa.web.request.VerifSeuilRequest;
 import com.boa.web.response.CardlessResponse;
 import com.boa.web.response.ChangeCardAuthRestrictionResponse;
 import com.boa.web.response.ChargeCardResponse;
@@ -22,8 +24,10 @@ import com.boa.web.response.ConsultationSoldeResponse;
 import com.boa.web.response.ExecuteCardToCardTransferResponse;
 import com.boa.web.response.GetCardsDetailResponse;
 import com.boa.web.response.GetCardsResponse;
+import com.boa.web.response.GetCommissionResponse;
 import com.boa.web.response.PrepareCardToCardTransferResponse;
 import com.boa.web.response.PrepareChangeCardOptionResponse;
+import com.boa.web.response.VerifSeuilResponse;
 import com.boa.web.response.cardhistory.GetCardHistoryResponse;
 import com.boa.web.response.cardlimit.CardLimitResponse;
 import com.boa.web.response.cardsrequest.Card;
@@ -470,7 +474,50 @@ public class ParamFilialeResource {
                 .body(response);
     }
 
-    public Boolean controleParam(String param) {
+    @PostMapping("/verifSeuil")
+    public ResponseEntity<VerifSeuilResponse> verifSeuil(
+            @RequestBody VerifSeuilRequest vRequest, HttpServletRequest request) throws URISyntaxException {
+        log.info("REST request to verifSeuil :======= [{}]", vRequest);
+        VerifSeuilResponse response = new VerifSeuilResponse();
+        if (controleParam(vRequest.getCodeOperation()) || controleParam(vRequest.getCompte())||
+        controleParam(vRequest.getLangue()) || controleParam(vRequest.getMontant())|| controleParam(vRequest.getCountry())
+        ) {
+            log.info("param ko======");
+            response.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
+            response.setDateResponse(Instant.now());
+            response.setDescription(ICodeDescResponse.PARAM_DESCRIPTION);
+            return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                    .body(response);
+        }
+        
+        response = paramFilialeService.verifSeuil(vRequest, request);
+        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                .body(response);
+    }
+
+    @PostMapping("/getCommission")
+    public ResponseEntity<GetCommissionResponse> getCommission(
+            @RequestBody GetCommissionRequest cRequest, HttpServletRequest request) throws URISyntaxException {
+        log.info("REST request to getCommission :======= [{}]", cRequest);
+        GetCommissionResponse response = new GetCommissionResponse();
+        if (controleParam(cRequest.getCodeOperation()) || 
+        controleParam(cRequest.getLangue()) || controleParam(cRequest.getMontant())
+        || controleParam(cRequest.getCompte())|| controleParam(cRequest.getCountry())
+        ) {
+            log.info("param ko======");
+            response.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
+            response.setDateResponse(Instant.now());
+            response.setDescription(ICodeDescResponse.PARAM_DESCRIPTION);
+            return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                    .body(response);
+        }
+        
+        response = paramFilialeService.getCommission(cRequest, request);
+        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                .body(response);
+    }
+
+    public Boolean controleParam(Object param) {
         Boolean flag = false;
         if (StringUtils.isEmpty(param))
             flag = true;

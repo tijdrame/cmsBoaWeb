@@ -28,6 +28,8 @@ public interface ICodeDescResponse {
     
     public static Integer INSTITUTION_ABSENT_CODE = 407;
     public static String INSTITUTION_ABSENT_DESC = "Parametre client Absent";
+    public static String SEUIL_LIMITE = "Seuil limite dépassee.";
+    public static String FRAIS_NON_REMONTEE = "Frais non remontee.";
     /*------*/
 
 }

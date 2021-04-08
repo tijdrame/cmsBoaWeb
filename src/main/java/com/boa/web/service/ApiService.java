@@ -20,18 +20,22 @@ import com.boa.web.request.CardsDetailRequest;
 import com.boa.web.request.ExecuteBankActivateCardRequest;
 import com.boa.web.request.ExecuteCardToOwnCardTransferRequest;
 import com.boa.web.request.GetCardBankActivationParametersRequest;
+import com.boa.web.request.GetCommissionRequest;
 import com.boa.web.request.GetPrepaidDechargementRequest;
 import com.boa.web.request.IdClientRequest;
 import com.boa.web.request.PrepareCardToOwnCardTransferRequest;
+import com.boa.web.request.VerifSeuilRequest;
 import com.boa.web.response.Annulation;
 import com.boa.web.response.Client;
 import com.boa.web.response.ExecuteBankActivateCardResponse;
 import com.boa.web.response.ExecuteCardToOwnCardTransferResponse;
 import com.boa.web.response.GetCardBankActivationParametersResponse;
 import com.boa.web.response.GetCardsDetailResponse;
+import com.boa.web.response.GetCommissionResponse;
 import com.boa.web.response.GetPrepaidDechargementResponse;
 import com.boa.web.response.IdClientResponse;
 import com.boa.web.response.PrepareCardToOwnCardTransferResponse;
+import com.boa.web.response.VerifSeuilResponse;
 import com.boa.web.response.prepareChangeCardOption.HiddenInput;
 import com.boa.web.response.prepareChangeCardOption.Information;
 import com.boa.web.service.util.ICodeDescResponse;
@@ -388,6 +392,30 @@ public class ApiService {
             /*---- Transformation JSON to XML----*/
             // epayChargementRequestXml=
             try {
+                VerifSeuilRequest vRequest = new VerifSeuilRequest();
+            vRequest.codeOperation(optionalPM.get().getVarString3()).compte(GetPrepaidDechargement.getCompteCardSource())
+            .country(GetPrepaidDechargement.getPays())
+            .langue(GetPrepaidDechargement.getLangue()).montant(Double.valueOf(GetPrepaidDechargement.getMontant()));
+            VerifSeuilResponse seuilResponse =  paramFilialeService.verifSeuil(vRequest, request);
+            if(seuilResponse==null || seuilResponse.getCode()!=200){
+                getPrepaidDechargementResponse = (GetPrepaidDechargementResponse)paramFilialeService.clientAbsent(getPrepaidDechargementResponse, tracking, request.getRequestURI(),
+                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.SEUIL_LIMITE, request.getRequestURI(),
+                    tab[1]);
+            return getPrepaidDechargementResponse;
+            }
+            GetCommissionRequest commissionRequest = new GetCommissionRequest();
+            commissionRequest.codeOperation(optionalPM.get().getVarString3()).compte(GetPrepaidDechargement.getCompteCardSource())
+            .country(GetPrepaidDechargement.getPays())
+            .devise("").montant(Double.valueOf(GetPrepaidDechargement.getMontant())).langue(GetPrepaidDechargement.getLangue());
+            GetCommissionResponse commissionResponse = paramFilialeService.getCommission(commissionRequest, request);
+            if(commissionResponse==null || commissionResponse.getCode()!=200){
+                getPrepaidDechargementResponse = (GetPrepaidDechargementResponse) paramFilialeService.clientAbsent(getPrepaidDechargementResponse, tracking, request.getRequestURI(),
+                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.FRAIS_NON_REMONTEE, request.getRequestURI(),
+                    tab[1]);
+            return getPrepaidDechargementResponse;
+            }
+
+
                 URL url = new URL(filiale.getEndPoint());
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setDoOutput(true);
@@ -438,7 +466,8 @@ public class ApiService {
                 builder.append("<dispo>" + "DISPONIBLE" + "</dispo>");
                 builder.append("<libelle>" + GetPrepaidDechargement.getLibelle() + "</libelle>");
                 builder.append("<mntdev>" + GetPrepaidDechargement.getMontant() + "</mntdev>");
-                builder.append("<mntfrais>" + GetPrepaidDechargement.getMontantFrais() + "</mntfrais>");
+                // builder.append("<mntfrais>" + GetPrepaidDechargement.getMontantFrais() + "</mntfrais>");
+                builder.append("<mntfrais>" + commissionResponse.getMontantCommission() + "</mntfrais>");
                 builder.append("<numcarte>" + cardsDetailResponse.getCard().getNumberCard() + "</numcarte>");
                 builder.append("<refrel>" + GetPrepaidDechargement.getRefRel() + "</refrel>");
                 builder.append("<reftrans>" + "nil" + "</reftrans>");
