@@ -16,7 +16,7 @@ public class BillingAmount {
     @JsonProperty("@type")
     private String type;
     @JsonProperty("amount")
-    private Integer amount;
+    private Double amount;
     @JsonProperty("currency")
     private String currency;
     @JsonIgnore
@@ -33,12 +33,12 @@ public class BillingAmount {
     }
 
     @JsonProperty("amount")
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
     @JsonProperty("amount")
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

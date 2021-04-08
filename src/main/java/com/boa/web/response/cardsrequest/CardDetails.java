@@ -20,7 +20,7 @@ public class CardDetails {
     @JsonProperty("currency")
     private String currency;
     @JsonProperty("available-balance")
-    private Integer availableBalance;
+    private Double availableBalance;
     @JsonProperty("type")
     private Type type;
     @JsonProperty("category")
@@ -95,12 +95,12 @@ public class CardDetails {
     }
 
     @JsonProperty("available-balance")
-    public Integer getAvailableBalance() {
+    public Double getAvailableBalance() {
         return availableBalance;
     }
 
     @JsonProperty("available-balance")
-    public void setAvailableBalance(Integer availableBalance) {
+    public void setAvailableBalance(Double availableBalance) {
         this.availableBalance = availableBalance;
     }
 
