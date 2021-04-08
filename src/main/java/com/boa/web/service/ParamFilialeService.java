@@ -729,7 +729,7 @@ public class ParamFilialeService {
                 // [{}]",
                 // cardDetails.getNumberCard(), cardDetails.getClientCardIdentifier());
                 cardDetails.setCurrency(myObj.getString("currency"));
-                cardDetails.setAvailableBalance(myObj.getInt("available-balance"));
+                cardDetails.setAvailableBalance(myObj.getDouble("available-balance"));
                 Type type = new Type();
                 // BeanUtils.copyProperties(myObj.getJSONObject("type"), type);
                 // System.out.println("type==="+myObj.getString("type"));
@@ -1194,12 +1194,12 @@ public class ParamFilialeService {
                         ResultingBalance resultingBalance = new ResultingBalance();
                         if (myObj.toString().contains("resulting-balance")) {
                             if (!myObj.getJSONObject("resulting-balance").isNull("amount"))
-                                resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
+                                resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getDouble("amount"));
                             if (!myObj.getJSONObject("resulting-balance").isNull("currency"))
                                 resultingBalance
                                         .setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
                         } else {
-                            resultingBalance.setAmount(0);
+                            resultingBalance.setAmount(0d);
                             resultingBalance.setCurrency("");
                         }
                         operation.setResultingBalance(resultingBalance);
@@ -1322,12 +1322,12 @@ public class ParamFilialeService {
                     ResultingBalance resultingBalance = new ResultingBalance();
                     if (myObj.toString().contains("resulting-balance")) {
                         if (!myObj.getJSONObject("resulting-balance").isNull("amount"))
-                            resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
+                            resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getDouble("amount"));
                         if (!myObj.getJSONObject("resulting-balance").isNull("currency"))
                             resultingBalance
                                     .setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
                     } else {
-                        resultingBalance.setAmount(0);
+                        resultingBalance.setAmount(0d);
                         resultingBalance.setCurrency("");
                     }
                     operation.setResultingBalance(resultingBalance);
@@ -1524,7 +1524,7 @@ public class ParamFilialeService {
                         operation.setAddress(address);
                         operation.setIsHold(myObj.getBoolean("is-hold"));
                         ResultingBalance resultingBalance = new ResultingBalance();
-                        resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
+                        resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getDouble("amount"));
                         resultingBalance.setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
                         operation.setResultingBalance(resultingBalance);
                         operation.setDirection(myObj.getString("direction"));
@@ -1566,7 +1566,7 @@ public class ParamFilialeService {
                     operation.setAddress(address);
                     operation.setIsHold(myObj.getBoolean("is-hold"));
                     ResultingBalance resultingBalance = new ResultingBalance();
-                    resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getInt("amount"));
+                    resultingBalance.setAmount(myObj.getJSONObject("resulting-balance").getDouble("amount"));
                     resultingBalance.setCurrency(myObj.getJSONObject("resulting-balance").getString("currency"));
                     operation.setResultingBalance(resultingBalance);
                     operation.setDirection(myObj.getString("direction"));
