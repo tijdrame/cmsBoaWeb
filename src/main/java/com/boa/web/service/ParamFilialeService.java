@@ -470,7 +470,7 @@ public class ParamFilialeService {
             card.setBrand(codeVisuel.get().getCode());
         // card.setBrand(myObj.getString("brand"));
         card.setCurrency(myObj.getString("currency"));
-        card.setAvailableBalance(myObj.getInt("available-balance"));
+        card.setAvailableBalance(myObj.getDouble("available-balance"));
         Type type = new Type();
         // String identif = myObj.getJSONObject("type").getString("identifier");
         type.setDefaultIdentifier(myObj.getJSONObject("type").getString("description").substring(0, 1).toUpperCase());
