@@ -3658,10 +3658,13 @@ public class ParamFilialeService {
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                     tracking = createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(), result, tab[1]);
-                } else {
+                } else if (obj.toString() != null && !obj.isNull("seuil") && obj.getJSONObject("seuil").toString().contains("rcode") 
+                && !obj.getJSONObject("seuil").getString("rcode").equals("00")){
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setRCode(obj.getJSONObject("seuil").getString("rcode"));
+                    genericResponse.setRMessage(obj.getJSONObject("seuil").getString("rmessage"));
                     tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
                 }
             }else {
@@ -3726,10 +3729,13 @@ public class ParamFilialeService {
                     genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                     genericResponse.setMontantCommission(obj.getJSONObject("rcommission").getDouble("commission"));
                     tracking = createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(), result, tab[1]);
-                } else {
+                } else if (obj.toString() != null && !obj.isNull("rcommission") && obj.toString().contains("rcode") 
+                && !obj.getJSONObject("rcommission").getString("rcode").equals("00")){
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setRCode(obj.getJSONObject("rcommission").getString("rcode"));
+                    genericResponse.setRMessage(obj.getJSONObject("rcommission").getString("rmessage"));
                     tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
                 }
             } else {
