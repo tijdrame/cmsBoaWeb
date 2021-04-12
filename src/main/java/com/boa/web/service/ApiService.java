@@ -399,7 +399,8 @@ public class ApiService {
             VerifSeuilResponse seuilResponse =  paramFilialeService.verifSeuil(vRequest, request);
             if(seuilResponse==null || seuilResponse.getCode()!=200){
                 getPrepaidDechargementResponse = (GetPrepaidDechargementResponse)paramFilialeService.clientAbsent(getPrepaidDechargementResponse, tracking, request.getRequestURI(),
-                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.SEUIL_LIMITE, request.getRequestURI(),
+                    ICodeDescResponse.ECHEC_CODE, seuilResponse!=null?seuilResponse.getRMessage():ICodeDescResponse.SEUIL_LIMITE, 
+                    request.getRequestURI(),
                     tab[1]);
             return getPrepaidDechargementResponse;
             }
@@ -410,7 +411,8 @@ public class ApiService {
             GetCommissionResponse commissionResponse = paramFilialeService.getCommission(commissionRequest, request);
             if(commissionResponse==null || commissionResponse.getCode()!=200){
                 getPrepaidDechargementResponse = (GetPrepaidDechargementResponse) paramFilialeService.clientAbsent(getPrepaidDechargementResponse, tracking, request.getRequestURI(),
-                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.FRAIS_NON_REMONTEE, request.getRequestURI(),
+                    ICodeDescResponse.ECHEC_CODE, 
+                    commissionResponse!=null?commissionResponse.getRMessage():ICodeDescResponse.FRAIS_NON_REMONTEE, request.getRequestURI(),
                     tab[1]);
             return getPrepaidDechargementResponse;
             }

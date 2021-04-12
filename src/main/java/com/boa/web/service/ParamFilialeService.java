@@ -1769,7 +1769,7 @@ public class ParamFilialeService {
             VerifSeuilResponse seuilResponse =  verifSeuil(vRequest, request);
             if(seuilResponse==null || seuilResponse.getCode()!=200){
                 genericResponse = (ChargeCardResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
-                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.SEUIL_LIMITE, request.getRequestURI(),
+                    ICodeDescResponse.ECHEC_CODE, seuilResponse!=null?seuilResponse.getRMessage():ICodeDescResponse.SEUIL_LIMITE, request.getRequestURI(),
                     tab[1]);
             return genericResponse;
             }
@@ -1779,8 +1779,9 @@ public class ParamFilialeService {
             GetCommissionResponse commissionResponse = getCommission(commissionRequest, request);
             if(commissionResponse==null || commissionResponse.getCode()!=200){
                 genericResponse = (ChargeCardResponse) clientAbsent(genericResponse, tracking, request.getRequestURI(),
-                    ICodeDescResponse.FILIALE_ABSENT_CODE, ICodeDescResponse.FRAIS_NON_REMONTEE, request.getRequestURI(),
-                    tab[1]);
+                    ICodeDescResponse.ECHEC_CODE, 
+                    commissionResponse!=null?commissionResponse.getRMessage():ICodeDescResponse.FRAIS_NON_REMONTEE,
+                     request.getRequestURI(), tab[1]);
             return genericResponse;
             }
 
