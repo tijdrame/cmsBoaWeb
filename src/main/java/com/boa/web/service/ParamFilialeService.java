@@ -4019,10 +4019,9 @@ public class ParamFilialeService {
         } else {
             card.setExpiryDate(myObj.getString("expiry-date"));
         }
-        //TODO à décommenter 
-        /*card.setReissuable(myObj.getBoolean("reissuable"));
+        card.setReissuable(myObj.getBoolean("reissuable"));
         card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
-        card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));*/
+        card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
         //"linked-accounts": "[\"01137810000\",\"01137810000\"]",
         String str = myObj.getJSONObject("linked-accounts").getString("account-identifier");
 
