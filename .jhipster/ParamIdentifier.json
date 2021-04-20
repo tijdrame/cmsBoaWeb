@@ -22,5 +22,6 @@
   "databaseType": "sql",
   "readOnly": false,
   "jpaMetamodelFiltering": false,
-  "pagination": "pagination"
+  "pagination": "pagination",
+  "name": "ParamIdentifier"
 }

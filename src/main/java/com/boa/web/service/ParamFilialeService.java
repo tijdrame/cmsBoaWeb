@@ -34,8 +34,10 @@ import com.boa.web.request.ChargementCarteWso2Request;
 import com.boa.web.request.CheckBankActivateCardRequest;
 import com.boa.web.request.ConsultationSoldeRequest;
 import com.boa.web.request.GetCardAuthRestrictionsRequest;
+import com.boa.web.request.GetCardsBisRequest;
 import com.boa.web.request.GetCardsByDigitalIdRequest;
 import com.boa.web.request.GetCommissionRequest;
+import com.boa.web.request.GetListCompteRequest;
 import com.boa.web.request.PrepareCardToCardTransferRequest;
 import com.boa.web.request.PrepareChangeCardOptionRequest;
 import com.boa.web.request.VerifSeuilRequest;
@@ -51,6 +53,7 @@ import com.boa.web.response.GenericResponse;
 import com.boa.web.response.GetCardsDetailResponse;
 import com.boa.web.response.GetCardsResponse;
 import com.boa.web.response.GetCommissionResponse;
+import com.boa.web.response.GetListCompteResponse;
 import com.boa.web.response.PrepareCardToCardTransferResponse;
 import com.boa.web.response.PrepareChangeCardOptionResponse;
 import com.boa.web.response.Reply;
@@ -110,11 +113,13 @@ public class ParamFilialeService {
     private final ApplicationProperties applicationProperties;
     private final ParamGeneralService paramGeneralService;
     private final Utils utils;
+    private final InstitutionService institutionService;
 
     public ParamFilialeService(ParamFilialeRepository paramFilialeRepository, TrackingService trackingService,
             UserService userService, ParamIdentifierService identifierService, TypeIdentifService typeIdentifService,
             CodeVisuelService codeVisuelService, ApplicationProperties applicationProperties,
-            ParamGeneralService paramGeneralService, Utils utils) {
+            ParamGeneralService paramGeneralService, Utils utils,
+            InstitutionService institutionService) {
         this.paramFilialeRepository = paramFilialeRepository;
         this.trackingService = trackingService;
         this.userService = userService;
@@ -124,6 +129,7 @@ public class ParamFilialeService {
         this.applicationProperties = applicationProperties;
         this.paramGeneralService = paramGeneralService;
         this.utils = utils;
+        this.institutionService = institutionService;
     }
 
     /**
@@ -3510,11 +3516,6 @@ public class ParamFilialeService {
         return genericResponse;
     }
 
-    public static void main(String[] args) {
-        String st = "012345689";
-        System.out.println("res=" + st.substring(0, 7));
-    }
-
     public ConsultationSoldeResponse consultationSolde(ConsultationSoldeRequest soldeRequest,
             HttpServletRequest request) {
         log.info("consultationSolde [{}]", soldeRequest);
@@ -3754,5 +3755,285 @@ public class ParamFilialeService {
         }
         trackingService.save(tracking);
         return genericResponse;
+    }
+
+    public GetListCompteResponse getListComptes(GetListCompteRequest compteRequest, HttpServletRequest request) {
+        log.info("Enter in getListComptes=== [{}]", compteRequest);
+
+        Tracking tracking = new Tracking();
+        String autho = request.getHeader("Authorization");
+        String[] tab = autho.split("Bearer");
+        GetListCompteResponse genericResponse = new GetListCompteResponse();
+        tracking.setDateRequest(Instant.now());
+
+        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getListComptes");
+        if (filiale == null) {
+            genericResponse = (GetListCompteResponse) clientAbsent(genericResponse,
+                    tracking, request.getRequestURI(), ICodeDescResponse.FILIALE_ABSENT_CODE,
+                    ICodeDescResponse.SERVICE_ABSENT_DESC, request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
+
+        try {
+            String jsonStr = new JSONObject().put("country", compteRequest.getCountry())
+                    .put("comptes", compteRequest.getComptes()).toString();
+            log.info("Requete getListComptes wso2 = [{}]", jsonStr);
+            HttpURLConnection conn = utils.doConnexion(filiale.getEndPoint(), jsonStr, "application/json", null);
+            BufferedReader br = null;
+            JSONObject obj = new JSONObject();
+            String result = "";
+            log.info("resp code envoi getListComptes [{}]", (conn != null ? conn.getResponseCode() : ""));
+            if (conn != null && conn.getResponseCode() == 200) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String ligne = br.readLine();
+                while (ligne != null) {
+                    result += ligne;
+                    ligne = br.readLine();
+                }
+                // result = IOUtils.toString(conn.getInputStream(), "UTF-8");
+                log.info("getListComptes result ===== [{}]", result);
+                // if(result.contains(";")) result = result.replace(";", " ");
+                obj = new JSONObject(result);
+                obj = obj.getJSONObject("data");
+
+                if (obj.toString() != null && !obj.isNull("listaccounts")
+                        && obj.getJSONObject("listaccounts").getString("acode").equals("00")) {
+                    genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                    genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse.setAccounts(obj.getJSONObject("listaccounts").getString("accounts"));
+                    genericResponse.setAmessage(obj.getJSONObject("listaccounts").getString("amessage"));
+                    
+                    // genericResp.setUserCode(obj.getString("rucode"));
+                    tracking = createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
+                            genericResponse.toString(), compteRequest.toString());
+                } else if (obj.toString() != null && !obj.isNull("listaccounts")
+                && !obj.getJSONObject("listaccounts").getString("acode").equals("00")){
+                    genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setAmessage(obj.getJSONObject("listaccounts").getString("amessage"));
+                    tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                            genericResponse.toString(), tab[1]);
+                }
+            } else if (conn != null) {
+                /*br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                String ligne = br.readLine();
+                while (ligne != null) {
+                    result += ligne;
+                    ligne = br.readLine();
+                }
+                log.info("resp envoi error ===== [{}]", result);
+                obj = new JSONObject(result);*/
+                genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                genericResponse.toString(), tab[1]);
+            } else {
+                genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                genericResponse.toString(), tab[1]);
+            }
+        } catch (Exception e) {
+            log.error("Exception in newInward [{}]", e);
+            genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                e.getMessage(), tab[1]);
+        }
+        trackingService.save(tracking);
+        return genericResponse;
+    }
+
+    public GetCardsResponse getCardsBis(GetCardsBisRequest cardsRequest, HttpServletRequest request) {
+        Tracking tracking = new Tracking();
+        String autho = request.getHeader("Authorization");
+        String[] tab = autho.split("Bearer");
+        log.info("Enter in getCardsBis=== [{}]", cardsRequest);
+        GetCardsResponse genericResponse = new GetCardsResponse();
+        Map<String, String> institMap = institutionService.findAllBis();
+        if(institMap.get(cardsRequest.getInstitutionId())==null) {
+            genericResponse = (GetCardsResponse) clientAbsent(genericResponse,
+                    tracking, request.getRequestURI(), ICodeDescResponse.ECHEC_CODE,
+                    ICodeDescResponse.INSTITUTION_NON_PARAMETRE, request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
+        
+        tracking.setDateRequest(Instant.now());
+
+        GetListCompteRequest compteRequest = new GetListCompteRequest();
+        compteRequest.comptes(cardsRequest.getComptes())
+        .country(institMap.get(cardsRequest.getInstitutionId()))
+        ;
+        GetListCompteResponse compteResponse = getListComptes(compteRequest, request);
+        String comptes ="", resCompte="";
+        if(compteResponse.getCode()==200) {
+            comptes = compteResponse.getAccounts();
+            String [] tabComptes = comptes.split(",");
+            resCompte = "('";
+            for (int i=0; i<tabComptes.length;i++) {
+                if(i+1==tabComptes.length) resCompte += tabComptes[i];
+                else resCompte += tabComptes[i]+"','";
+            }
+            resCompte += "')";
+        //String res = "\"('"+tab[0]+"','"+tab[1]+"')\"";
+        }else {
+            resCompte = cardsRequest.getComptes();
+        }
+
+        ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardProxy_V2");
+        if (filiale == null) {
+            genericResponse = (GetCardsResponse) clientAbsent(genericResponse,
+                    tracking, request.getRequestURI(), ICodeDescResponse.FILIALE_ABSENT_CODE,
+                    ICodeDescResponse.SERVICE_ABSENT_DESC, request.getRequestURI(), tab[1]);
+            return genericResponse;
+        }
+        try {
+            Map<String, String> theMap = identifierService.findAll();
+            String jsonStr = new JSONObject().put("institutionId", cardsRequest.getInstitutionId())
+                    .put("comptes", resCompte).toString();
+            log.info("Requete getCardBis wso2 = [{}]", jsonStr);
+            HttpURLConnection conn = utils.doConnexion(filiale.getEndPoint(), jsonStr, "application/json", null);
+            BufferedReader br = null;
+            JSONObject obj = new JSONObject();
+            String result = "";
+            log.info("resp code envoi getCardBis [{}]", (conn != null ? conn.getResponseCode() : ""));
+            if (conn != null && conn.getResponseCode() == 200) {
+                br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String ligne = br.readLine();
+                while (ligne != null) {
+                    result += ligne;
+                    ligne = br.readLine();
+                }
+                // result = IOUtils.toString(conn.getInputStream(), "UTF-8");
+                log.info("getCardBis result ===== [{}]", result);
+                // if(result.contains(";")) result = result.replace(";", " ");
+                obj = new JSONObject(result);
+                obj = obj.getJSONObject("data");
+
+                if (obj.toString() != null && !obj.isNull("card")) {
+                    genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                    genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResponse.setDateResponse(Instant.now()); 
+                    Card card = new Card(); 
+                    JSONArray jsonArray = null;
+                    JSONObject jsonObject = null;
+                    if (obj.get("card") instanceof JSONArray) {
+                        jsonArray = obj.getJSONArray("card");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        card = constructCardBis(jsonArray.getJSONObject(i), theMap);
+                        Boolean flag = false;
+                        for (int j=0 ; j< genericResponse.getCard().size();j++) {
+                            if(genericResponse.getCard().get(j).getClientCardIdentifier().equals(card.getClientCardIdentifier())){
+                                flag = true;
+                                genericResponse.getCard().get(j).setLinkedAccounts(genericResponse.getCard().get(j).getLinkedAccounts()
+                                +","+card.getLinkedAccounts());
+                            }
+                        }
+                        if(!flag) 
+                            genericResponse.getCard().add(card);
+                        }
+                    } else {
+                        jsonObject = obj.getJSONObject("card");
+                        card = constructCard(jsonObject, theMap);
+                        genericResponse.getCard().add(card);
+                    }         
+                    tracking = createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
+                            genericResponse.toString(), compteRequest.toString());
+                } else {
+                    genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                            genericResponse.toString(), tab[1]);
+                }
+            } else if (conn != null) {
+                genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                genericResponse.toString(), tab[1]);
+            } else {
+                genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                genericResponse.toString(), tab[1]);
+            }
+        } catch (Exception e) {
+            log.error("Exception in getCards [{}]", e);
+            genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                genericResponse.setDateResponse(Instant.now());
+                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
+                e.getMessage(), tab[1]);
+        }
+        trackingService.save(tracking);
+        return genericResponse;
+    }
+
+    private Card constructCardBis(JSONObject myObj, Map<String, String> theMap) throws JSONException {
+        Card card = new Card();
+        card.setClientCardIdentifier(myObj.getString("client-card-identifier"));
+        card.setEmbossedName(myObj.getString("embossed-name"));
+        card.setNumber(myObj.getString("number"));
+        String strNumber = myObj.getString("number");// .substring(0,7);
+        Long number = Long.valueOf(strNumber);
+        Optional<CodeVisuel> codeVisuel = codeVisuelService.findBySearching(number);
+        if (codeVisuel.isPresent())
+            card.setBrand(codeVisuel.get().getCode());
+        // card.setBrand(myObj.getString("brand"));
+        card.setCurrency(myObj.getString("currency"));
+        card.setAvailableBalance(myObj.getDouble("available-balance"));
+        Type type = new Type();
+        // String identif = myObj.getJSONObject("type").getString("identifier");
+        type.setDefaultIdentifier(myObj.getJSONObject("type").getString("description").substring(0, 1).toUpperCase());
+        type.setDescription(myObj.getJSONObject("type").getString("description").toUpperCase());
+        card.setType(type);
+        card.setCategory(myObj.getString("category"));
+        Status status = new Status();
+        JSONObject sObject = myObj.getJSONObject("status");
+        if (sObject.toString().contains("identifier")) {
+            status.setIdentifier(myObj.getJSONObject("status").getString("identifier"));
+            status.setDefaultIdentifier(theMap.get(status.getIdentifier()));
+        }
+        if (sObject.toString().contains("description"))
+            status.setDescription(myObj.getJSONObject("status").getString("description"));
+        card.setStatus(status);
+        card.setActive(myObj.getBoolean("active"));
+        card.setPinNotSet(myObj.getBoolean("pinNotSet"));
+        String[] tabDate = myObj.getString("expiry-date").split("\\+");//.split("\\+")
+        // String [] tabDate =
+        // "2019-10-01+03:00".split("\\+");//myObj.getString("expiry-date").split("\\+");
+        tabDate = tabDate[0].split("-");
+        LocalDate tempDate = LocalDate.of(Integer.parseInt(tabDate[0]), Integer.parseInt(tabDate[1]),
+                Integer.parseInt(tabDate[2]));
+        if (tempDate.getDayOfMonth() == 1) {
+            tempDate = tempDate.minusMonths(1);
+            tempDate = tempDate.with(TemporalAdjusters.lastDayOfMonth());
+            card.setExpiryDate(tempDate.toString() + "+03:00");
+        } else {
+            card.setExpiryDate(myObj.getString("expiry-date"));
+        }
+        //TODO à décommenter 
+        /*card.setReissuable(myObj.getBoolean("reissuable"));
+        card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
+        card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));*/
+        //"linked-accounts": "[\"01137810000\",\"01137810000\"]",
+        String str = myObj.getJSONObject("linked-accounts").getString("account-identifier");
+
+        card.setLinkedAccounts(str);
+        return card;
+    }
+    public static void main(String[] args) {
+        String str = "02014000005,02014000018";
+        String [] tab = str.split(",");
+        String res = "('"+tab[0]+"','"+tab[1]+"')";
+        System.out.println(res);
+        //"('02014000005','0122200125500')"
     }
 }

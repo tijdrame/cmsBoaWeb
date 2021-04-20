@@ -2,17 +2,16 @@ package com.boa.web.domain;
 
 import java.io.Serializable;
 import javax.persistence.*;
-import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
- * A ParamIdentifier.
+ * A Institution.
  */
 @Entity
-@Table(name = "param_identifier")
+@Table(name = "institution")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ParamIdentifier implements Serializable {
+public class Institution implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -21,13 +20,14 @@ public class ParamIdentifier implements Serializable {
   @SequenceGenerator(name = "sequenceGenerator")
   private Long id;
 
-  @NotNull
-  @Column(name = "code", nullable = false)
-  private Integer code;
+  @Column(name = "institution_id")
+  private String institutionId;
 
-  @NotNull
-  @Column(name = "libelle", nullable = false)
-  private String libelle;
+  @Column(name = "pays")
+  private String pays;
+
+  @Column(name = "code")
+  private String code;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
   public Long getId() {
@@ -38,35 +38,48 @@ public class ParamIdentifier implements Serializable {
     this.id = id;
   }
 
-  public ParamIdentifier id(Long id) {
+  public Institution id(Long id) {
     this.id = id;
     return this;
   }
 
-  public Integer getCode() {
+  public String getInstitutionId() {
+    return this.institutionId;
+  }
+
+  public Institution institutionId(String institutionId) {
+    this.institutionId = institutionId;
+    return this;
+  }
+
+  public void setInstitutionId(String institutionId) {
+    this.institutionId = institutionId;
+  }
+
+  public String getPays() {
+    return this.pays;
+  }
+
+  public Institution pays(String pays) {
+    this.pays = pays;
+    return this;
+  }
+
+  public void setPays(String pays) {
+    this.pays = pays;
+  }
+
+  public String getCode() {
     return this.code;
   }
 
-  public ParamIdentifier code(Integer code) {
+  public Institution code(String code) {
     this.code = code;
     return this;
   }
 
-  public void setCode(Integer code) {
+  public void setCode(String code) {
     this.code = code;
-  }
-
-  public String getLibelle() {
-    return this.libelle;
-  }
-
-  public ParamIdentifier libelle(String libelle) {
-    this.libelle = libelle;
-    return this;
-  }
-
-  public void setLibelle(String libelle) {
-    this.libelle = libelle;
   }
 
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -76,10 +89,10 @@ public class ParamIdentifier implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ParamIdentifier)) {
+    if (!(o instanceof Institution)) {
       return false;
     }
-    return id != null && id.equals(((ParamIdentifier) o).id);
+    return id != null && id.equals(((Institution) o).id);
   }
 
   @Override
@@ -91,10 +104,11 @@ public class ParamIdentifier implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "ParamIdentifier{" +
+        return "Institution{" +
             "id=" + getId() +
-            ", code=" + getCode() +
-            ", libelle='" + getLibelle() + "'" +
+            ", institutionId='" + getInstitutionId() + "'" +
+            ", pays='" + getPays() + "'" +
+            ", code='" + getCode() + "'" +
             "}";
     }
 }

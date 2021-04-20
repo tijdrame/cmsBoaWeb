@@ -59,7 +59,7 @@ public class ParamIdentifierService {
         log.debug("Request to get all ParamIdentifiers");
         List <ParamIdentifier> list = paramIdentifierRepository.findAll();
         for (ParamIdentifier it : list) {
-            theMap.put(it.getCode(), it.getLibelle());
+            theMap.put(it.getCode().toString(), it.getLibelle());
         }
         return theMap;
     }

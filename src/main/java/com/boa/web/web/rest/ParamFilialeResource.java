@@ -11,7 +11,9 @@ import com.boa.web.request.ChargementCardRequest;
 import com.boa.web.request.CheckBankActivateCardRequest;
 import com.boa.web.request.ConsultationSoldeRequest;
 import com.boa.web.request.GetCardAuthRestrictionsRequest;
+import com.boa.web.request.GetCardsBisRequest;
 import com.boa.web.request.GetCommissionRequest;
+import com.boa.web.request.GetListCompteRequest;
 import com.boa.web.request.PrepareCardToCardTransferRequest;
 import com.boa.web.request.PrepareChangeCardOptionRequest;
 import com.boa.web.request.PrepareToCardFirstRequest;
@@ -25,6 +27,7 @@ import com.boa.web.response.ExecuteCardToCardTransferResponse;
 import com.boa.web.response.GetCardsDetailResponse;
 import com.boa.web.response.GetCardsResponse;
 import com.boa.web.response.GetCommissionResponse;
+import com.boa.web.response.GetListCompteResponse;
 import com.boa.web.response.PrepareCardToCardTransferResponse;
 import com.boa.web.response.PrepareChangeCardOptionResponse;
 import com.boa.web.response.VerifSeuilResponse;
@@ -185,17 +188,17 @@ public class ParamFilialeResource {
     }
 
     @PostMapping("/getCards")
-    public ResponseEntity<GetCardsResponse> getCards(@RequestBody CardsRequest cardsRequest, HttpServletRequest request)
+    public ResponseEntity<GetCardsResponse> getCards(@RequestBody GetCardsBisRequest cardsRequest, HttpServletRequest request)
             throws URISyntaxException {
         log.debug("REST request to getCards : {}", cardsRequest);
         GetCardsResponse cardsResponse = new GetCardsResponse();
-        if (controleParam(cardsRequest.getCompte()) || controleParam(cardsRequest.getInstitutionId())) {
+        if (controleParam(cardsRequest.getComptes()) || controleParam(cardsRequest.getInstitutionId())) {
             cardsResponse.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
             cardsResponse.setDateResponse(Instant.now());
             cardsResponse.setDescription(ICodeDescResponse.PARAM_DESCRIPTION);
             return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(cardsResponse);
         }
-        cardsResponse = paramFilialeService.getCards(cardsRequest, request);
+        cardsResponse = paramFilialeService.getCardsBis(cardsRequest, request);
         return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
         //.cacheControl(doCache())
         .body(cardsResponse);
@@ -517,6 +520,27 @@ public class ParamFilialeResource {
                 .body(response);
     }
 
+    @PostMapping("/getListComptes")
+    public ResponseEntity<GetListCompteResponse> getListComptes(
+            @RequestBody GetListCompteRequest cRequest, HttpServletRequest request) throws URISyntaxException {
+        log.info("REST request to getCommission :======= [{}]", cRequest);
+        GetListCompteResponse response = new GetListCompteResponse();
+        if (controleParam(cRequest.getComptes()) || 
+        controleParam(cRequest.getCountry())
+        ) {
+            log.info("param ko======");
+            response.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
+            response.setDateResponse(Instant.now());
+            response.setDescription(ICodeDescResponse.PARAM_DESCRIPTION);
+            return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                    .body(response);
+        }
+        
+        response = paramFilialeService.getListComptes(cRequest, request);
+        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                .body(response);
+    }
+    
     public Boolean controleParam(Object param) {
         Boolean flag = false;
         if (StringUtils.isEmpty(param))

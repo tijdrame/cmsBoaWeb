@@ -32,6 +32,7 @@
     "clientPackageManager": "npm",
     "blueprints": [],
     "skipClient": true,
-    "lastLiquibaseTimestamp": 1602250213000
+    "lastLiquibaseTimestamp": 1618839068000,
+    "entities": ["Institution", "Tracking", "ParamFiliale", "ParamIdentifier", "TypeIdentif", "CodeVisuel", "ParamGeneral"]
   }
 }

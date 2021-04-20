@@ -3,10 +3,9 @@
     xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    
     <!--
         Added the entity ParamGeneral.
     -->
@@ -48,7 +47,7 @@
             <column name="var_double_3" type="double">
                 <constraints nullable="true" />
             </column>
-            <column name="var_instant" type="datetime">
+            <column name="var_instant" type="${datetimeType}">
                 <constraints nullable="true" />
             </column>
             <column name="var_date" type="date">
@@ -59,12 +58,9 @@
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
-        <dropDefaultValue tableName="param_general" columnName="var_instant" columnDataType="datetime"/>
+        <dropDefaultValue tableName="param_general" columnName="var_instant" columnDataType="${datetimeType}"/>
     </changeSet>
 
-    <changeSet id="20201009133013-1-relations" author="jhipster">
-
-    </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
     <!--
@@ -92,11 +88,10 @@
             <column name="var_double_1" type="numeric"/>
             <column name="var_double_2" type="numeric"/>
             <column name="var_double_3" type="numeric"/>
-            <column name="var_instant" type="datetime"/>
+            <column name="var_instant" type="${datetimeType}"/>
             <column name="var_date" type="date"/>
             <column name="var_boolean" type="boolean"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>
-
 </databaseChangeLog>
