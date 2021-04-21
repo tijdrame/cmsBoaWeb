@@ -3,15 +3,15 @@ package com.boa.web.request;
 public class GetCardsBisRequest {
     
     private String institutionId;
-    private String comptes;
+    private String compte;
 
 
     public GetCardsBisRequest() {
     }
 
-    public GetCardsBisRequest(String institutionId, String comptes) {
+    public GetCardsBisRequest(String institutionId, String compte) {
         this.institutionId = institutionId;
-        this.comptes = comptes;
+        this.compte = compte;
     }
 
     public String getInstitutionId() {
@@ -22,23 +22,21 @@ public class GetCardsBisRequest {
         this.institutionId = institutionId;
     }
 
-    public String getComptes() {
-        return this.comptes;
+    public String getCompte() {
+        return this.compte;
     }
 
-    public void setComptes(String comptes) {
-        this.comptes = comptes;
+    public void setCompte(String compte) {
+        this.compte = compte;
     }
-
-    
 
     public GetCardsBisRequest institutionId(String institutionId) {
         setInstitutionId(institutionId);
         return this;
     }
 
-    public GetCardsBisRequest comptes(String comptes) {
-        setComptes(comptes);
+    public GetCardsBisRequest compte(String compte) {
+        setCompte(compte);
         return this;
     }
 
@@ -46,8 +44,10 @@ public class GetCardsBisRequest {
     public String toString() {
         return "{" +
             " institutionId='" + getInstitutionId() + "'" +
-            ", comptes='" + getComptes() + "'" +
+            ", compte='" + getCompte() + "'" +
             "}";
     }
+
+    
     
 }

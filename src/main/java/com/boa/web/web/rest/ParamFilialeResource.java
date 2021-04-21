@@ -192,7 +192,7 @@ public class ParamFilialeResource {
             throws URISyntaxException {
         log.debug("REST request to getCards : {}", cardsRequest);
         GetCardsResponse cardsResponse = new GetCardsResponse();
-        if (controleParam(cardsRequest.getComptes()) || controleParam(cardsRequest.getInstitutionId())) {
+        if (controleParam(cardsRequest.getCompte()) || controleParam(cardsRequest.getInstitutionId())) {
             cardsResponse.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
             cardsResponse.setDateResponse(Instant.now());
             cardsResponse.setDescription(ICodeDescResponse.PARAM_DESCRIPTION);

@@ -3866,7 +3866,7 @@ public class ParamFilialeService {
         tracking.setDateRequest(Instant.now());
 
         GetListCompteRequest compteRequest = new GetListCompteRequest();
-        compteRequest.comptes(cardsRequest.getComptes())
+        compteRequest.comptes(cardsRequest.getCompte())
         .country(institMap.get(cardsRequest.getInstitutionId()))
         ;
         GetListCompteResponse compteResponse = getListComptes(compteRequest, request);
@@ -3882,7 +3882,7 @@ public class ParamFilialeService {
             resCompte += "')";
         //String res = "\"('"+tab[0]+"','"+tab[1]+"')\"";
         }else {
-            resCompte = cardsRequest.getComptes();
+            resCompte = cardsRequest.getCompte();
         }
 
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardProxy_V2");
