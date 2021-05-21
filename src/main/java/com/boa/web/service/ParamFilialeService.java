@@ -686,8 +686,7 @@ public class ParamFilialeService {
             if (conn != null && conn.getResponseCode() > 0) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
-                // System.out.println("result===========>" + result);
-                log.info("result == [{}]", result);
+                //log.info("result == [{}]", result);
                 obj = new JSONObject(result);
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("get-card-details-response")) {
@@ -3341,8 +3340,7 @@ public class ParamFilialeService {
             if (conn != null && conn.getResponseCode() == 200) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
-                log.info("result == [{}]", result);
-                // System.out.println("result==" + result);
+                // log.info("result == [{}]", result);
                 obj = new JSONObject(result);
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("client-card-identifier")) {
@@ -3356,7 +3354,6 @@ public class ParamFilialeService {
                     tracking.setLoginActeur(login);
 
                     tracking.setResponseTr(result);
-                    // System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
                     return genericResponse;
@@ -3909,9 +3906,7 @@ public class ParamFilialeService {
                     result += ligne;
                     ligne = br.readLine();
                 }
-                // result = IOUtils.toString(conn.getInputStream(), "UTF-8");
-                log.info("getCardBis result ===== [{}]", result);
-                // if(result.contains(";")) result = result.replace(";", " ");
+                // log.info("getCardBis result ===== [{}]", result);
                 obj = new JSONObject(result);
                 obj = obj.getJSONObject("data");
 
