@@ -3892,7 +3892,13 @@ public class ParamFilialeService {
         try {
             Map<String, String> theMap = identifierService.findAll();
             String jsonStr = new JSONObject().put("institutionId", cardsRequest.getInstitutionId())
-                    .put("comptes", resCompte).toString();
+                    .put("comptes", resCompte)
+                    
+                    // .put("idClient", cardsRequest.getIdClient())
+                    .put("langue", cardsRequest.getLangue())
+                    .put("pays", cardsRequest.getPays()).put("variant", cardsRequest.getVariant())
+                    .put("catCarte", cardsRequest.getCatCarte())
+                    .toString();
             log.info("Requete getCardBis wso2 = [{}]", jsonStr);
             HttpURLConnection conn = utils.doConnexion(filiale.getEndPoint(), jsonStr, "application/json", null);
             BufferedReader br = null;
