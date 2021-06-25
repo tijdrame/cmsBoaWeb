@@ -1029,6 +1029,15 @@ public class ParamFilialeService {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
 
+            //add 1 day to date to
+            String[] tabDate = cardsRequest.getDateTo().split("\\+");
+            tabDate = tabDate[0].split("-");
+            LocalDate tempDate = LocalDate.of(Integer.parseInt(tabDate[0]), Integer.parseInt(tabDate[1]),
+                Integer.parseInt(tabDate[2]));
+            tempDate = tempDate.plusDays(1l);
+            cardsRequest.setDateTo(tempDate.toString()+"+03:00");
+            //end
+            
             String jsonString = "";
             jsonString = new JSONObject().put("idClient", client.getIdClient()).put("langue", cardsRequest.getLangue())
                     .put("pays", cardsRequest.getPays()).put("variant", cardsRequest.getVariant())
