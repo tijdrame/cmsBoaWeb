@@ -31,6 +31,8 @@ public interface ICodeDescResponse {
     public static String INSTITUTION_ABSENT_DESC = "Parametre client Absent";
     public static String SEUIL_LIMITE = "Exception lors de la recuperation du Seuil.";
     public static String FRAIS_NON_REMONTEE = "Frais non remontee.";
+    public static String USER_DEJA_DESACTIVE = "Utiisateur deja desactive.";
+    public static String COMPTE_INEXISTANT = "Compte Utiisateur inexistant.";
     /*------*/
 
 }
