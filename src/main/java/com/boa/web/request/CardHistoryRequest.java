@@ -159,4 +159,22 @@ public class CardHistoryRequest {
         this.additionalProperties.put(name, value);
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+            " compte='" + compte + "'" +
+            ", langue='" + langue + "'" +
+            ", pays='" + pays + "'" +
+            ", variant='" + variant + "'" +
+            ", cartIdentif='" + cartIdentif + "'" +
+            ", startNum='" + startNum + "'" +
+            ", maxCount='" + maxCount + "'" +
+            ", dateFrom='" + dateFrom + "'" +
+            ", dateTo='" + dateTo + "'" +
+            ", hold='" + hold + "'" +
+            ", institutionId='" + institutionId + "'" +
+            ", additionalProperties='" + additionalProperties + "'" +
+            "}";
+    }
+
 }

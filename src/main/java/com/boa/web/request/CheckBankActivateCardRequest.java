@@ -193,4 +193,25 @@ public class CheckBankActivateCardRequest {
         this.additionalProperties = additionalProperties;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+            " idoperation='" + idoperation + "'" +
+            ", idClient='" + idClient + "'" +
+            ", institutionId='" + institutionId + "'" +
+            ", compte='" + compte + "'" +
+            ", langue='" + langue + "'" +
+            ", pays='" + pays + "'" +
+            ", variant='" + variant + "'" +
+            ", cartIdentif='" + cartIdentif + "'" +
+            ", entKey1='" + entKey1 + "'" +
+            ", entValue1='" + entValue1 + "'" +
+            ", entKey2='" + entKey2 + "'" +
+            ", entValue2='" + entValue2 + "'" +
+            ", entKey3='" + entKey3 + "'" +
+            ", entValue3='" + entValue3 + "'" +
+            ", additionalProperties='" + additionalProperties + "'" +
+            "}";
+    }
+
 }

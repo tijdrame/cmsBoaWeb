@@ -79,15 +79,14 @@ public class ApiService {
     /*---------MEL21022020 :GetCardBankActivationParametersProxy--------------*/
     public GetCardBankActivationParametersResponse GetCardBankActivationParameters(
             GetCardBankActivationParametersRequest getCardBankActivationParametersRequest, HttpServletRequest request) {
+        log.info("GetCardBankActivationParameters [{}]", getCardBankActivationParametersRequest);
 
-        log.info("trace0 :05022020");
         Optional<User> user = userService.getUserWithAuthorities();
         Tracking tracking = new Tracking();
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         GetCardBankActivationParametersResponse genericResponse = new GetCardBankActivationParametersResponse();
         Client client = new Client();
-        log.info("trace1:05022020");
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardBankActivationParametersProxy");
         if (filiale == null) {
             genericResponse = (GetCardBankActivationParametersResponse) paramFilialeService.clientAbsent(
@@ -107,13 +106,11 @@ public class ApiService {
                 return genericResponse;
             }
 
-            log.info("ELM1");
 
         } catch (IOException e1) {
             log.info("error = [{}]", e1.getMessage());
         }
 
-        log.info("ELM2");
 
         try {
             URL url = new URL(filiale.getEndPoint());
@@ -147,7 +144,6 @@ public class ApiService {
             if (conn.getResponseCode() == 500) {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
-                // System.out.println("err=" + result);
                 log.info("err == [{}]", result);
                 obj = new JSONObject(result);
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("Fault")) {
@@ -179,7 +175,6 @@ public class ApiService {
             }
 
             if (conn != null && conn.getResponseCode() > 0) {
-                log.info("ELM4");
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
@@ -192,7 +187,6 @@ public class ApiService {
 
                     // TODO 11022020
 
-                    log.info("Here ELM14022020");
                     genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.CLIENT_ABSENT_DESC);
@@ -243,11 +237,9 @@ public class ApiService {
 
                     JSONArray jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
                             .getJSONObject("prepare-change-card-option-response").getJSONArray("string-input");
-                    log.info("1MEL18022020");
 
                     if (obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                             .contains("prepare-change-card-option-response")) {
-                        log.info(" Log1 test 18022020");
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject myObj1 = jsonArray.getJSONObject(i);
@@ -258,7 +250,6 @@ public class ApiService {
                             information.setDescription(myObj1.getString("description"));
                             information.setPlaceholder(myObj1.getString("placeholder"));
 
-                            log.info("Identifier == [{}]", myObj1.getString("identifier"));
                             genericResponse.getStringInput().add(information);
                         }
                         if (obj.toString().contains("hidden-input")) {
@@ -274,7 +265,6 @@ public class ApiService {
                     }
 
                 }
-                log.info(" Log2 test 18022020");
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
@@ -319,14 +309,13 @@ public class ApiService {
     /*---------MEL04022020:GetPrepaidDechargementResponse--------------*/
     public GetPrepaidDechargementResponse GetPrepaidDechargement(GetPrepaidDechargementRequest GetPrepaidDechargement,
             HttpServletRequest request) {
+        log.info("GetPrepaidDechargement [{}]", GetPrepaidDechargement);
         Tracking tracking = new Tracking();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
-        log.info("GetPrepaidDechargement :[{}]", GetPrepaidDechargement);
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         GetPrepaidDechargementResponse getPrepaidDechargementResponse = new GetPrepaidDechargementResponse();
-        log.info("trace1:05022020");
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("dechargementCarteProxy_V2");
         if (filiale == null) {
             getPrepaidDechargementResponse = (GetPrepaidDechargementResponse) paramFilialeService.clientAbsent(
@@ -344,7 +333,6 @@ public class ApiService {
             return getPrepaidDechargementResponse;
         }
 
-        log.info("trace2:05022020");
 
         try {
 
@@ -359,7 +347,6 @@ public class ApiService {
             cardsDetailRequest.setPays(GetPrepaidDechargement.getPays());
             cardsDetailRequest.setVariant(GetPrepaidDechargement.getVariant());
 
-            log.info("trace3:05022020");
 
             GetCardsDetailResponse cardsDetailResponse = paramFilialeService.getCardDetails(cardsDetailRequest,
                     request);
@@ -380,14 +367,11 @@ public class ApiService {
                 tracking.setDateRequest(Instant.now());
                 // tracking.setResponseTr(result);
                 tracking.setRequestTr(request.getRequestURI());
-                System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
                 trackingService.save(tracking);
-                log.info("MEL3");
                 return getPrepaidDechargementResponse;
             }
 
-            log.info("trace4:05022020");
 
             /*---- Transformation JSON to XML----*/
             // epayChargementRequestXml=
@@ -427,9 +411,7 @@ public class ApiService {
 
                 String result = "";
 
-                log.info("trace6:05022020");
 
-                log.info("trace7:05022020");
 
                 /*
                  * JSONObject jsonString1 = new JSONObject().put("codopsc", "GAB")
@@ -491,7 +473,6 @@ public class ApiService {
 
                 /*----------------------------*/
 
-                log.info("trace9:05022020");
                 // BufferedReader br1 = null;
                 log.info("response code [{}]", conn.getResponseCode());
                 JSONObject obj = new JSONObject();
@@ -642,6 +623,7 @@ public class ApiService {
     /*---------MEL10022020 Debut :prepareCardToOwnCardTransfer--------------*/
     public PrepareCardToOwnCardTransferResponse PrepareCardToOwnCardTransfer(
             PrepareCardToOwnCardTransferRequest prepareCardToOwnCardTransferRequest, HttpServletRequest request) {
+        log.info("PrepareCardToOwnCardTransfer [{}]", prepareCardToOwnCardTransferRequest);
         Tracking tracking = new Tracking();
         PrepareCardToOwnCardTransferResponse genericResponse = new PrepareCardToOwnCardTransferResponse();
         Optional<User> user = userService.getUserWithAuthorities();
@@ -754,7 +736,6 @@ public class ApiService {
             if (conn != null && conn.getResponseCode() > 0) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
-                // System.out.println("result==" + result);
                 log.info("result == [{}]", result);
                 try {
                     obj = new JSONObject(result);
@@ -762,7 +743,6 @@ public class ApiService {
                     if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                             .contains("prepare-card-to-own-card-transfer-response")) {
 
-                        log.info("Mouhcine Log Here");
 
                         // TODO 11022020
                         genericResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
@@ -783,7 +763,6 @@ public class ApiService {
 
                     // CardDetails cardDetails = new CardDetails();
 
-                    log.info("Mouhcine1 Log Here");
 
                     JSONObject myObj;
 
@@ -824,7 +803,6 @@ public class ApiService {
                     tracking.setLoginActeur(login);
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
-                    // System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
 
                 } catch (JSONException e) {
@@ -870,6 +848,7 @@ public class ApiService {
      */
     public ExecuteCardToOwnCardTransferResponse ExecuteCardToOwnCardTransfer(
             ExecuteCardToOwnCardTransferRequest executeCardToOwnCardTransferRequest, HttpServletRequest request) {
+        log.info("ExecuteCardToOwnCardTransfer [{}]", executeCardToOwnCardTransferRequest);
         Tracking tracking = new Tracking();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
@@ -951,7 +930,6 @@ public class ApiService {
             }
 
             if (conn != null && conn.getResponseCode() > 0) {
-                log.info("ELM4");
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
@@ -973,7 +951,6 @@ public class ApiService {
                 }
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("execute-card-to-own-card-transfer-response")) {
-                    log.info("Here ELM");
                     if (!obj.getJSONObject("Envelope").getJSONObject("Body")
                             .getJSONObject("execute-card-to-own-card-transfer-response").isNull("operation-info")) {// test
                                                                                                                     // operation-info
@@ -1062,14 +1039,12 @@ public class ApiService {
     /*---------------------------*/
 
     public IdClientResponse IdClient(IdClientRequest IdClient, HttpServletRequest request) {
+        log.info("IdClient [{}]", IdClient);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
-        log.info("trace0");
         IdClientResponse idClientResponse = new IdClientResponse();
-        log.info("trace1");
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("apiIdClient");
         Tracking tracking = new Tracking();
-        log.info("trace2");
         // construire json
 
         String autho = request.getHeader("Authorization");
@@ -1092,10 +1067,8 @@ public class ApiService {
             tracking.setDateRequest(Instant.now());
             // tracking.setResponseTr(result);
             tracking.setRequestTr(request.getRequestURI());
-            System.out.println("tab 1=" + tab[1]);
             tracking.setTokenTr(tab[1]);
             trackingService.save(tracking);
-            log.info("MEL3");
             return idClientResponse;
 
         }
@@ -1109,7 +1082,6 @@ public class ApiService {
 
             String jsonString = "";
 
-            log.info("MEL1");
             jsonString = new JSONObject().put("compte", IdClient.getCompte())
                     .put("institutionId", IdClient.getInstitutionId()).toString();
 
@@ -1125,11 +1097,9 @@ public class ApiService {
             if (conn != null && conn.getResponseCode() > 0) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
-                System.out.println("result===========================" + result);
+                log.info("result========================[{}]", result);
                 obj = new JSONObject(result);
 
-                // log.info("MEL21 {}", obj.getJSONObject("infoClient").toString()
-                // .contains("idClient"));
 
                 if (obj.isNull("infoClient")) {
                     idClientResponse.setCode(ICodeDescResponse.CLIENT_ABSENT_CODE);
@@ -1142,10 +1112,8 @@ public class ApiService {
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
                     tracking.setRequestTr(request.getRequestURI());
-                    System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
-                    log.info("MEL3");
                     return idClientResponse;
                 }
 
@@ -1165,10 +1133,8 @@ public class ApiService {
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
                     tracking.setRequestTr(request.getRequestURI());
-                    System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
-                    log.info("MEL3");
                     return idClientResponse;
                 }
 
@@ -1185,10 +1151,8 @@ public class ApiService {
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
                     tracking.setRequestTr(request.getRequestURI());
-                    System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
-                    log.info("MEL3");
                     return idClientResponse;
                 }
 
@@ -1205,10 +1169,8 @@ public class ApiService {
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
                     tracking.setRequestTr(request.getRequestURI());
-                    System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
-                    log.info("MEL3");
                     return idClientResponse;
                 }
 
@@ -1226,10 +1188,8 @@ public class ApiService {
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
                     tracking.setRequestTr(request.getRequestURI());
-                    System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
-                    log.info("MEL3");
                     return idClientResponse;
                 }
                 JSONObject jsonArray = obj.getJSONObject("infoClient").getJSONObject("infoClient");
@@ -1245,7 +1205,6 @@ public class ApiService {
                 tracking.setLoginActeur(login);
                 tracking.setDateRequest(Instant.now());
                 tracking.setResponseTr(result);
-                System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
                 tracking.setRequestTr(request.getRequestURI());
             }
@@ -1269,15 +1228,14 @@ public class ApiService {
      */
     public ExecuteBankActivateCardResponse ExecuteBankActivateCard(
             ExecuteBankActivateCardRequest executeBankActivateCardRequest, HttpServletRequest request) {
+        log.info("ExecuteBankActivateCard [{}]", executeBankActivateCardRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
-        log.info("trace0 :MEL21022020");
         Tracking tracking = new Tracking();
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
         ExecuteBankActivateCardResponse genericResponse = new ExecuteBankActivateCardResponse();
         Client client = new Client();
-        log.info("trace1:MEL21022020");
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("executeBankActivateCard");
         if (filiale == null) {
             genericResponse = (ExecuteBankActivateCardResponse) paramFilialeService.clientAbsent(genericResponse,
@@ -1294,11 +1252,9 @@ public class ApiService {
                         ICodeDescResponse.CLIENT_ABSENT_DESC, request.getRequestURI(), tab[1]);
                 return genericResponse;
             }
-            log.info("trace4 :MEL21022020");
         } catch (IOException e1) {
             log.info("error = [{}]", e1.getMessage());
         }
-        log.info("trace5 :MEL21022020");
         try {
             URL url = new URL(filiale.getEndPoint());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -1366,7 +1322,6 @@ public class ApiService {
                     tracking.setTokenTr(tab[1]);
 
                 } else {
-                    log.info("Here MEL21022020");
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
                     genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);

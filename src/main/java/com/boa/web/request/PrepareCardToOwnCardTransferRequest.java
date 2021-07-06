@@ -194,4 +194,25 @@ public class PrepareCardToOwnCardTransferRequest {
 	public void setAdditionalProperty(String name, Object value) {
 	this.additionalProperties.put(name, value);
 	}
+
+	@Override
+	public String toString() {
+		return "{" +
+			" idoperation='" + idoperation + "'" +
+			", clidentifier='" + clidentifier + "'" +
+			", compte='" + compte + "'" +
+			", institutionId='" + institutionId + "'" +
+			", langue='" + langue + "'" +
+			", pays='" + pays + "'" +
+			", variant='" + variant + "'" +
+			", sourceCardId='" + sourceCardId + "'" +
+			", receiverCardId='" + receiverCardId + "'" +
+			", montant='" + montant + "'" +
+			", currency='" + currency + "'" +
+			", entkey='" + entkey + "'" +
+			", entval='" + entval + "'" +
+			", additionalProperties='" + additionalProperties + "'" +
+			"}";
+	}
+
 }

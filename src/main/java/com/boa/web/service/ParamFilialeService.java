@@ -196,6 +196,7 @@ public class ParamFilialeService {
      * "#number>10" )
      */
     public GetCardsResponse getCards(CardsRequest cardsRequest, HttpServletRequest request) {
+        log.info("getCards [{}]", cardsRequest);
         Map<String, String> theMap = identifierService.findAll();
         // Map<String, CodeVisuel> mapCodeVisuel = codeVisuelService.findAll();
         // Map<String, String> typeMap = typeIdentifService.findAll();
@@ -283,7 +284,6 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
-                // System.out.println("result==" + result);
                 obj = new JSONObject(result);
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
                         .contains("client-card-identifier")) {
@@ -297,7 +297,6 @@ public class ParamFilialeService {
                     tracking.setLoginActeur(login);
 
                     tracking.setResponseTr(result);
-                    // System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
                     return genericResponse;
@@ -354,7 +353,6 @@ public class ParamFilialeService {
                  * card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"))
                  * ; card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
                  * 
-                 * // System.out.println("linked-accounts===+++" // +
                  * myObj.getJSONObject("linked-accounts").getString("account-identifier"));
                  * String str =
                  * myObj.getJSONObject("linked-accounts").getString("account-identifier");
@@ -395,7 +393,6 @@ public class ParamFilialeService {
                  * card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"))
                  * ; card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
                  * 
-                 * // System.out.println("linked-accounts===+++" // +
                  * myObj.getJSONObject("linked-accounts").getString("account-identifier"));
                  * String str =
                  * myObj.getJSONObject("linked-accounts").getString("account-identifier");
@@ -413,14 +410,12 @@ public class ParamFilialeService {
                 tracking.setLoginActeur(login);
                 tracking.setDateRequest(Instant.now());
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
 
             } else {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
-                // System.out.println("result==" + result);
                 obj = new JSONObject(result);
                 tracking.setCodeResponse(ICodeDescResponse.ECHEC_DESCRIPTION + "");
                 tracking.responseTr(ICodeDescResponse.ECHEC_DESCRIPTION);
@@ -497,8 +492,6 @@ public class ParamFilialeService {
         card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"));
         card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
 
-        // System.out.println("linked-accounts===+++"
-        // + myObj.getJSONObject("linked-accounts").getString("account-identifier"));
         String str = myObj.getJSONObject("linked-accounts").getString("account-identifier");
 
         card.setLinkedAccounts(str);
@@ -512,6 +505,7 @@ public class ParamFilialeService {
      */
     public PrepareChangeCardOptionResponse prepareChangeCardOptionProxy(PrepareChangeCardOptionRequest cardsRequest,
             HttpServletRequest request) {
+        log.info("prepareChangeCardOptionProxy [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("prepareChangeCardOption");
@@ -566,7 +560,6 @@ public class ParamFilialeService {
             if (conn != null && conn.getResponseCode() > 0) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
-                // System.out.println("result==" + result);
                 log.info("result == [{}]", result);
                 obj = new JSONObject(result);
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
@@ -585,8 +578,6 @@ public class ParamFilialeService {
                     trackingService.save(tracking);
                     return genericResponse;
                 }
-                // System.out.println("obj resp==" +
-                // obj.getJSONObject("Envelope").getJSONObject("Body").toString());
                 PrepareChangeCardOption cardOption = new PrepareChangeCardOption();
                 JSONArray jsonArray = obj.getJSONObject("Envelope").getJSONObject("Body")
                         .getJSONObject("prepare-change-card-option-response").getJSONArray("string-input");
@@ -618,7 +609,6 @@ public class ParamFilialeService {
                 tracking.setLoginActeur(login);
                 tracking.setDateRequest(Instant.now());
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
 
             }
@@ -644,6 +634,7 @@ public class ParamFilialeService {
      * @return GetCardsDetailResponse
      */
     public GetCardsDetailResponse getCardDetails(CardsDetailRequest cardsRequest, HttpServletRequest request) {
+        log.info("getCardDetails [{}]", cardsRequest);
         Map<String, String> theMap = identifierService.findAll();
         // Map<String, String> typeMap = typeIdentifService.findAll();
         Optional<User> user = userService.getUserWithAuthorities();
@@ -704,8 +695,6 @@ public class ParamFilialeService {
                     trackingService.save(tracking);
                     return genericResponse;
                 }
-                // System.out.println("obj resp==" +
-                // obj.getJSONObject("Envelope").getJSONObject("Body").toString());
                 CardDetails cardDetails = new CardDetails();
 
                 JSONObject myObj = obj.getJSONObject("Envelope").getJSONObject("Body")
@@ -722,7 +711,6 @@ public class ParamFilialeService {
                 cardDetails.setAvailableBalance(myObj.getDouble("available-balance"));
                 Type type = new Type();
                 // BeanUtils.copyProperties(myObj.getJSONObject("type"), type);
-                // System.out.println("type==="+myObj.getString("type"));
                 // String identif = myObj.getJSONObject("type").getString("identifier");
                 // type.setDefaultIdentifier(typeMap.get(identif));
                 type.setDefaultIdentifier(
@@ -783,7 +771,6 @@ public class ParamFilialeService {
                 tracking.setLoginActeur(login);
                 tracking.setDateRequest(Instant.now());
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
 
             }
@@ -810,6 +797,7 @@ public class ParamFilialeService {
      * @return CardLimitResponse
      */
     public CardLimitResponse getCardLimitProxy(CardsDetailRequest cardsRequest, HttpServletRequest request) {
+        log.info("getCardLimitProxy [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardLimitProxy");
@@ -862,7 +850,6 @@ public class ParamFilialeService {
             if (conn != null && conn.getResponseCode() > 0) {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
-                // System.out.println("result==" + result);
                 log.info("result getCardLimit ***== [{}]", result);
                 obj = new JSONObject(result);
                 if (!obj.getJSONObject("Envelope").getJSONObject("Body").toString()
@@ -877,7 +864,6 @@ public class ParamFilialeService {
                     tracking.setLoginActeur(login);
 
                     tracking.setResponseTr(result);
-                    // System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                     trackingService.save(tracking);
                     return genericResponse;
@@ -894,7 +880,6 @@ public class ParamFilialeService {
                     tracking.setLoginActeur(login);
                     tracking.setDateRequest(Instant.now());
                     tracking.setResponseTr(result);
-                    // System.out.println("tab 1=" + tab[1]);
                     tracking.setTokenTr(tab[1]);
                 }
 
@@ -966,7 +951,6 @@ public class ParamFilialeService {
                 tracking.setLoginActeur(login);
                 tracking.setDateRequest(Instant.now());
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
             }
             os.close();
@@ -996,6 +980,7 @@ public class ParamFilialeService {
      * @return GetCardHistoryResponse
      */
     public GetCardHistoryResponse getCardHistoryProxy(CardHistoryRequest cardsRequest, HttpServletRequest request) {
+        log.info("getCardHistoryProxy [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardHistoryProxy");
@@ -1400,6 +1385,7 @@ public class ParamFilialeService {
      * @return GetCardHistoryResponse
      */
     public GetCardHistoryResponse getCardHistoryProxyOld(CardHistoryRequest cardsRequest, HttpServletRequest request) {
+        log.info("getCardHistoryProxyOld [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardHistoryProxy");
@@ -1627,6 +1613,7 @@ public class ParamFilialeService {
      * @return ChangeCardLimitResponse
      */
     public ChangeCardLimitResponse changeCardLimitProxy(ChangeCardRequest cardsRequest, HttpServletRequest request) {
+        log.info("changeCardLimitProxy [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("changeCardLimitProxy");
@@ -1683,7 +1670,6 @@ public class ParamFilialeService {
             if (conn.getResponseCode() == 500) {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
-                // System.out.println("err=" + result);
                 log.info("err == [{}]", result);
                 obj = new JSONObject(result);
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("Fault")) {
@@ -1713,16 +1699,12 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
-                // System.out.println("result===========>" + result);
                 obj = new JSONObject(result);
 
-                // System.out.println("obj resp==" +
-                // obj.getJSONObject("Envelope").getJSONObject("Body").toString());
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
 
                 tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
@@ -1755,6 +1737,7 @@ public class ParamFilialeService {
     }
 
     public ChargeCardResponse chargeCardResponse(ChargementCardRequest cardsRequest, HttpServletRequest request) {
+        log.info("chargeCardResponse [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("chargementCarteProxy");
@@ -1892,7 +1875,6 @@ public class ParamFilialeService {
                     trackingService.save(tracking);
                     log.info("err == [{}]", result);
                     return genericResponse;
-                    // System.out.println("err=" + result);
 
                 }
                 if (conn != null && conn.getResponseCode() > 0) {
@@ -2002,6 +1984,7 @@ public class ParamFilialeService {
 
     public PrepareCardToCardTransferResponse prepareCardToCardTransferOld(PrepareCardToCardTransferRequest cardsRequest,
             HttpServletRequest request) {
+        log.info("prepareCardToCardTransferOld [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("prepareCardToCardTransferProxy");
@@ -2115,11 +2098,8 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
-                // System.out.println("result===========>" + result);
                 obj = new JSONObject(result);
 
-                // System.out.println("obj resp==" +
-                // obj.getJSONObject("Envelope").getJSONObject("Body").toString());
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
@@ -2134,7 +2114,6 @@ public class ParamFilialeService {
                 }
 
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
 
                 tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
@@ -2176,6 +2155,7 @@ public class ParamFilialeService {
 
     public PrepareCardToCardTransferResponse prepareCardToCardTransfer(PrepareCardToCardTransferRequest cardsRequest,
             HttpServletRequest request) {
+        log.info("prepareCardToCardTransfer [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("prepareCardToCardTransferProxy");
@@ -2289,11 +2269,8 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
-                // System.out.println("result===========>" + result);
                 obj = new JSONObject(result);
 
-                // System.out.println("obj resp==" +
-                // obj.getJSONObject("Envelope").getJSONObject("Body").toString());
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
@@ -2367,6 +2344,7 @@ public class ParamFilialeService {
 
     public ExecuteCardToCardTransferResponse executeCardToCardTransfer(PrepareCardToCardTransferRequest cardsRequest,
             HttpServletRequest request) {
+        log.info("executeCardToCardTransfer [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("executeCardToCardTransferProxy");
@@ -2425,7 +2403,6 @@ public class ParamFilialeService {
             if (conn.getResponseCode() == 500) {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
-                // System.out.println("err=" + result);
                 log.info("err == [{}]", result);
                 obj = new JSONObject(result);
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("Fault")) {
@@ -2579,6 +2556,7 @@ public class ParamFilialeService {
 
     public CheckBankActivateCardResponse checkBankActivateCardProxy(CheckBankActivateCardRequest cardsRequest,
             HttpServletRequest request) {
+        log.info("checkBankActivateCardProxy [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("checkBankActivateCardProxy");
@@ -2637,7 +2615,6 @@ public class ParamFilialeService {
             if (conn.getResponseCode() == 500) {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
-                // System.out.println("err=" + result);
                 log.info("err == [{}]", result);
                 obj = new JSONObject(result);
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("Fault")) {
@@ -2668,11 +2645,8 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
-                // System.out.println("result===========>" + result);
                 obj = new JSONObject(result);
 
-                // System.out.println("obj resp==" +
-                // obj.getJSONObject("Envelope").getJSONObject("Body").toString());
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
@@ -2687,7 +2661,6 @@ public class ParamFilialeService {
                 genericResponse.setValue(obj.toString().contains("value") ? obj.getInt("value") : 0);
 
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
 
                 tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
@@ -2720,6 +2693,7 @@ public class ParamFilialeService {
 
     public GetCardAuthRestrictionsResponse getCardAuthRestrictionsProxy(GetCardAuthRestrictionsRequest cardsRequest,
             HttpServletRequest request) {
+        log.info("getCardAuthRestrictionsProxy [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("getCardAuthRestrictionsProxy");
@@ -2774,7 +2748,6 @@ public class ParamFilialeService {
             if (conn.getResponseCode() == 500) {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
-                // System.out.println("err=" + result);
                 log.info("err == [{}]", result);
                 obj = new JSONObject(result);
                 if (obj.getJSONObject("Envelope").getJSONObject("Body").toString().contains("Fault")) {
@@ -2806,11 +2779,8 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
-                // System.out.println("result===========>" + result);
                 obj = new JSONObject(result);
 
-                // System.out.println("obj resp==" +
-                // obj.getJSONObject("Envelope").getJSONObject("Body").toString());
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
@@ -2854,7 +2824,6 @@ public class ParamFilialeService {
                 }
 
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
 
                 tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
@@ -2887,6 +2856,7 @@ public class ParamFilialeService {
 
     public ChangeCardAuthRestrictionResponse changeCardAuthRestrictionProxy(
             ChangeCardAuthRestrictionRequest cardsRequest, HttpServletRequest request) {
+        log.info("changeCardAuthRestrictionProxy [{}]", cardsRequest);
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("changeCardAuthRestrictionProxy");
@@ -3016,6 +2986,8 @@ public class ParamFilialeService {
      * @throws IOException
      */
     public Client callApiIdClient(String numAccount, String institutionId) throws IOException {
+        log.info("callApiIdClient [{}] & [{}]", numAccount, institutionId);
+
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("apiIdClient");
         if (filiale == null) {
             return null;
@@ -3043,7 +3015,6 @@ public class ParamFilialeService {
                 br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 result = br.readLine();
                 log.info("result call api client == [{}]", result);
-                // System.out.println("result==####µµµµµ" + result);
                 obj = new JSONObject(result);
                 if (obj.isNull("infoClient"))
                     // if (!obj.getJSONObject("infoClient").toString().contains("idClient"))
@@ -3065,6 +3036,7 @@ public class ParamFilialeService {
      */
 
     public Client callApiIdClientByIdCard(String newcard_id, String institutionId) throws IOException {
+        log.info("callApiIdClientByIdCard [{}] & [{}]", newcard_id, institutionId);
         ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("apiIdClientByIdCard");
         if (filiale == null) {
             return null;
@@ -3142,6 +3114,7 @@ public class ParamFilialeService {
     }
 
     public CardlessResponse cardlessChargement(CardlessRequest cardsRequest, HttpServletRequest request) {
+        log.info("cardlessChargement [{}]", cardsRequest);
         CardlessResponse genericResponse = new CardlessResponse();
         Optional<User> user = userService.getUserWithAuthorities();
         String login = user.isPresent() ? user.get().getLogin() : "";
@@ -3264,6 +3237,7 @@ public class ParamFilialeService {
     }
 
     public GetCardsResponse getCardsByDigitalId(GetCardsByDigitalIdRequest cardsRequest, HttpServletRequest request) {
+        log.info("getCardsByDigitalId [{}]", cardsRequest);
         Map<String, String> theMap = identifierService.findAll();
         // Map<String, String> typeMap = typeIdentifService.findAll();
         Optional<User> user = userService.getUserWithAuthorities();
@@ -3424,7 +3398,7 @@ public class ParamFilialeService {
                  * card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"))
                  * ; card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
                  * 
-                 * // System.out.println("linked-accounts===+++" // +
+                 * // ("linked-accounts===+++" // +
                  * myObj.getJSONObject("linked-accounts").getString("account-identifier"));
                  * String str =
                  * myObj.getJSONObject("linked-accounts").getString("account-identifier");
@@ -3468,7 +3442,6 @@ public class ParamFilialeService {
                  * card.setClientCardAccountOwner(myObj.getBoolean("client-card-account-owner"))
                  * ; card.setSupplementaryCard(myObj.getBoolean("supplementary-card"));
                  * 
-                 * // System.out.println("linked-accounts===+++" // +
                  * myObj.getJSONObject("linked-accounts").getString("account-identifier"));
                  * String str =
                  * myObj.getJSONObject("linked-accounts").getString("account-identifier");
@@ -3486,14 +3459,12 @@ public class ParamFilialeService {
                 tracking.setLoginActeur(login);
                 tracking.setDateRequest(Instant.now());
                 tracking.setResponseTr(result);
-                // System.out.println("tab 1=" + tab[1]);
                 tracking.setTokenTr(tab[1]);
 
             } else {
                 br = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
                 result = br.readLine();
                 log.info("result == [{}]", result);
-                // System.out.println("result==" + result);
                 obj = new JSONObject(result);
                 tracking.setCodeResponse(ICodeDescResponse.ECHEC_DESCRIPTION + "");
                 tracking.responseTr(ICodeDescResponse.ECHEC_DESCRIPTION);
@@ -3856,6 +3827,7 @@ public class ParamFilialeService {
     }
 
     public GetCardsResponse getCardsBis(GetCardsBisRequest cardsRequest, HttpServletRequest request) {
+        log.info("getCardsBis [{}]", cardsRequest);
         Tracking tracking = new Tracking();
         String autho = request.getHeader("Authorization");
         String[] tab = autho.split("Bearer");
@@ -4042,7 +4014,6 @@ public class ParamFilialeService {
         String str = "02014000005,02014000018";
         String [] tab = str.split(",");
         String res = "('"+tab[0]+"','"+tab[1]+"')";
-        System.out.println(res);
         //"('02014000005','0122200125500')"
     }
 }

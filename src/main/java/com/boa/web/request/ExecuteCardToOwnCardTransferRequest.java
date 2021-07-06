@@ -193,4 +193,20 @@ public class ExecuteCardToOwnCardTransferRequest {
 		this.additionalProperties = additionalProperties;
 	}
 
+	@Override
+	public String toString() {
+		return "{" +
+			" idoperation='" + idoperation + "'" +
+			", compte='" + compte + "'" +
+			", institutionId='" + institutionId + "'" +
+			", langue='" + langue + "'" +
+			", sourceCardId='" + sourceCardId + "'" +
+			", receiverCardId='" + receiverCardId + "'" +
+			", montant='" + montant + "'" +
+			", currency='" + currency + "'" +
+			", pays='" + pays + "'" +
+			", additionalProperties='" + additionalProperties + "'" +
+			"}";
+	}
+
 }

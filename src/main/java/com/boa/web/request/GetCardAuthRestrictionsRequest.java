@@ -66,4 +66,17 @@ public class GetCardAuthRestrictionsRequest {
         this.institutionId = institutionId;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+            " idClient='" + idClient + "'" +
+            ", langue='" + langue + "'" +
+            ", pays='" + pays + "'" +
+            ", variant='" + variant + "'" +
+            ", cartIdentif='" + cartIdentif + "'" +
+            ", compte='" + compte + "'" +
+            ", institutionId='" + institutionId + "'" +
+            "}";
+    }
+
 }

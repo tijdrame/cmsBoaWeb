@@ -87,4 +87,19 @@ public class PrepareChangeCardOptionRequest {
         this.entryValue = entryValue;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+            " compte='" + compte + "'" +
+            ", langue='" + langue + "'" +
+            ", pays='" + pays + "'" +
+            ", variant='" + variant + "'" +
+            ", cartIdentif='" + cartIdentif + "'" +
+            ", action='" + action + "'" +
+            ", entryKey='" + entryKey + "'" +
+            ", entryValue='" + entryValue + "'" +
+            ", institutionId='" + institutionId + "'" +
+            "}";
+    }
+
 }

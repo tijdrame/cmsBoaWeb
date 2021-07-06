@@ -169,4 +169,23 @@ public class ChangeCardRequest {
         this.additionalProperties.put(name, value);
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+            " compte='" + compte + "'" +
+            ", langue='" + langue + "'" +
+            ", pays='" + pays + "'" +
+            ", variant='" + variant + "'" +
+            ", cartIdentif='" + cartIdentif + "'" +
+            ", limitIdent='" + limitIdent + "'" +
+            ", amount='" + amount + "'" +
+            ", currency='" + currency + "'" +
+            ", countClimit='" + countClimit + "'" +
+            ", isActive='" + isActive + "'" +
+            ", duration='" + duration + "'" +
+            ", additionalProperties='" + additionalProperties + "'" +
+            ", institutionId='" + institutionId + "'" +
+            "}";
+    }
+
 }

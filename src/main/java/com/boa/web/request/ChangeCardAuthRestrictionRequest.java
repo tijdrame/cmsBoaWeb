@@ -111,4 +111,22 @@ public class ChangeCardAuthRestrictionRequest {
         this.institutionId = institutionId;
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+            " idClient='" + idClient + "'" +
+            ", compte='" + compte + "'" +
+            ", institutionId='" + institutionId + "'" +
+            ", langue='" + langue + "'" +
+            ", pays='" + pays + "'" +
+            ", variant='" + variant + "'" +
+            ", cartIdentif='" + cartIdentif + "'" +
+            ", operationId='" + operationId + "'" +
+            ", regionId='" + regionId + "'" +
+            ", isactive='" + isactive + "'" +
+            ", startDate='" + startDate + "'" +
+            ", endDate='" + endDate + "'" +
+            "}";
+    }
+
 }
