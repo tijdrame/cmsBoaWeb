@@ -87,20 +87,20 @@ public class NewApiService {
                 ObjectMapper mapper = new ObjectMapper();
                 Map<String, Object> map = mapper.readValue(obj.toString(), Map.class);
                 // genericResp.setDataOauth(map);
-                if (obj.toString() != null && !obj.isNull("response") && obj.get("response").equals("1")) {
+                if (obj.toString() != null && !obj.isNull("response") && obj.getInt("response") == 1) {
                     genericResp.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResp.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                     genericResp.setDateResponse(Instant.now());
-                    genericResp.setData(obj.getString("response"));
+                    genericResp.setData(obj.getInt("response"));
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
                             result, tab[1]);
                 } else if (obj.toString() != null && !obj.isNull("response")
-                        && (obj.get("response").equals("0") || obj.get("response").equals("2"))) {
-                    genericResp.setData(obj.getString("response"));
+                        && (obj.getInt("response") == 0 || obj.getInt("response")==2 )) {
+                    genericResp.setData(obj.getInt("response"));
                     genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResp.setDateResponse(Instant.now());
                     genericResp.setDescription(
-                            obj.getString("response").equals("0") ? ICodeDescResponse.USER_DEJA_DESACTIVE
+                            obj.getInt("response")==0 ? ICodeDescResponse.USER_DEJA_DESACTIVE
                                     : ICodeDescResponse.COMPTE_INEXISTANT);
 
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),

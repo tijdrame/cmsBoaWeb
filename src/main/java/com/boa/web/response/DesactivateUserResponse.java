@@ -1,24 +1,24 @@
 package com.boa.web.response;
 
 public class DesactivateUserResponse extends GenericResponse {
-    private String data;
+    private Integer data;
 
     public DesactivateUserResponse() {
     }
 
-    public DesactivateUserResponse(String data) {
+    public DesactivateUserResponse(Integer data) {
         this.data = data;
     }
 
-    public String getData() {
+    public Integer getData() {
         return this.data;
     }
 
-    public void setData(String data) {
+    public void setData(Integer data) {
         this.data = data;
     }
 
-    public DesactivateUserResponse data(String data) {
+    public DesactivateUserResponse data(Integer data) {
         setData(data);
         return this;
     }
