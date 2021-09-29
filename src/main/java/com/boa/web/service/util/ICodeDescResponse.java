@@ -12,6 +12,7 @@ public interface ICodeDescResponse {
     public static Integer FILIALE_ABSENT_CODE = 404;
     public static Integer PARAM_ABSENT_CODE = 304;
     public static String PARAM_DESCRIPTION = "Parametre(s) Compte et/ou Institution absent(s)";
+    public static String PARAM_OBLIGATOIRE = "Parametre(s) Obligatoire(s) absent(s)";
     public static String SUCCES_DESCRIPTION = "Operation effectuee avec succes";
     public static String FILIALE_ABSENT_DESC = "Une erreur est survenue";
     public static String INSTITUTION_NON_PARAMETRE = "Institution non parametre.";
