@@ -2,15 +2,16 @@ package com.boa.web.request;
 
 public class ChangeRestrictionRequest {
     private String cartIdentif;
-    private String cnp;
-    private String contactless;
-    private String gab;
-    private String tpe;
+    private Integer cnp;
+    private Integer contactless;
+    private Integer gab;
+    private Integer tpe;
+
 
     public ChangeRestrictionRequest() {
     }
 
-    public ChangeRestrictionRequest(String cartIdentif, String cnp, String contactless, String gab, String tpe) {
+    public ChangeRestrictionRequest(String cartIdentif, Integer cnp, Integer contactless, Integer gab, Integer tpe) {
         this.cartIdentif = cartIdentif;
         this.cnp = cnp;
         this.contactless = contactless;
@@ -26,35 +27,35 @@ public class ChangeRestrictionRequest {
         this.cartIdentif = cartIdentif;
     }
 
-    public String getCnp() {
+    public Integer getCnp() {
         return this.cnp;
     }
 
-    public void setCnp(String cnp) {
+    public void setCnp(Integer cnp) {
         this.cnp = cnp;
     }
 
-    public String getContactless() {
+    public Integer getContactless() {
         return this.contactless;
     }
 
-    public void setContactless(String contactless) {
+    public void setContactless(Integer contactless) {
         this.contactless = contactless;
     }
 
-    public String getGab() {
+    public Integer getGab() {
         return this.gab;
     }
 
-    public void setGab(String gab) {
+    public void setGab(Integer gab) {
         this.gab = gab;
     }
 
-    public String getTpe() {
+    public Integer getTpe() {
         return this.tpe;
     }
 
-    public void setTpe(String tpe) {
+    public void setTpe(Integer tpe) {
         this.tpe = tpe;
     }
 
@@ -63,22 +64,22 @@ public class ChangeRestrictionRequest {
         return this;
     }
 
-    public ChangeRestrictionRequest cnp(String cnp) {
+    public ChangeRestrictionRequest cnp(Integer cnp) {
         setCnp(cnp);
         return this;
     }
 
-    public ChangeRestrictionRequest contactless(String contactless) {
+    public ChangeRestrictionRequest contactless(Integer contactless) {
         setContactless(contactless);
         return this;
     }
 
-    public ChangeRestrictionRequest gab(String gab) {
+    public ChangeRestrictionRequest gab(Integer gab) {
         setGab(gab);
         return this;
     }
 
-    public ChangeRestrictionRequest tpe(String tpe) {
+    public ChangeRestrictionRequest tpe(Integer tpe) {
         setTpe(tpe);
         return this;
     }
@@ -93,5 +94,6 @@ public class ChangeRestrictionRequest {
             ", tpe='" + getTpe() + "'" +
             "}";
     }
+    
 
 }

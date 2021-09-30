@@ -2,12 +2,12 @@ package com.boa.web.response;
 
 public class DataChangeRestriction {
     private String statut;
-    private String respc;
+    private Integer respc;
 
     public DataChangeRestriction() {
     }
 
-    public DataChangeRestriction(String statut, String respc) {
+    public DataChangeRestriction(String statut, Integer respc) {
         this.statut = statut;
         this.respc = respc;
     }
@@ -20,11 +20,11 @@ public class DataChangeRestriction {
         this.statut = statut;
     }
 
-    public String getRespc() {
+    public Integer getRespc() {
         return this.respc;
     }
 
-    public void setRespc(String respc) {
+    public void setRespc(Integer respc) {
         this.respc = respc;
     }
 
@@ -33,7 +33,7 @@ public class DataChangeRestriction {
         return this;
     }
 
-    public DataChangeRestriction respc(String respc) {
+    public DataChangeRestriction respc(Integer respc) {
         setRespc(respc);
         return this;
     }

@@ -1,19 +1,18 @@
 package com.boa.web.response;
 
 public class DataGetRestriction {
-    private String cnp;
-    private String contactless;
-    private String gab;
-    private String tpe;
+    private Integer cnp;
+    private Integer contactless;
+    private Integer gab;
+    private Integer tpe;
     private String statut;
-    private String respc;
-
+    private Integer respc;
 
 
     public DataGetRestriction() {
     }
 
-    public DataGetRestriction(String cnp, String contactless, String gab, String tpe, String statut, String respc) {
+    public DataGetRestriction(Integer cnp, Integer contactless, Integer gab, Integer tpe, String statut, Integer respc) {
         this.cnp = cnp;
         this.contactless = contactless;
         this.gab = gab;
@@ -22,35 +21,35 @@ public class DataGetRestriction {
         this.respc = respc;
     }
 
-    public String getCnp() {
+    public Integer getCnp() {
         return this.cnp;
     }
 
-    public void setCnp(String cnp) {
+    public void setCnp(Integer cnp) {
         this.cnp = cnp;
     }
 
-    public String getContactless() {
+    public Integer getContactless() {
         return this.contactless;
     }
 
-    public void setContactless(String contactless) {
+    public void setContactless(Integer contactless) {
         this.contactless = contactless;
     }
 
-    public String getGab() {
+    public Integer getGab() {
         return this.gab;
     }
 
-    public void setGab(String gab) {
+    public void setGab(Integer gab) {
         this.gab = gab;
     }
 
-    public String getTpe() {
+    public Integer getTpe() {
         return this.tpe;
     }
 
-    public void setTpe(String tpe) {
+    public void setTpe(Integer tpe) {
         this.tpe = tpe;
     }
 
@@ -62,30 +61,30 @@ public class DataGetRestriction {
         this.statut = statut;
     }
 
-    public String getRespc() {
+    public Integer getRespc() {
         return this.respc;
     }
 
-    public void setRespc(String respc) {
+    public void setRespc(Integer respc) {
         this.respc = respc;
     }
 
-    public DataGetRestriction cnp(String cnp) {
+    public DataGetRestriction cnp(Integer cnp) {
         setCnp(cnp);
         return this;
     }
 
-    public DataGetRestriction contactless(String contactless) {
+    public DataGetRestriction contactless(Integer contactless) {
         setContactless(contactless);
         return this;
     }
 
-    public DataGetRestriction gab(String gab) {
+    public DataGetRestriction gab(Integer gab) {
         setGab(gab);
         return this;
     }
 
-    public DataGetRestriction tpe(String tpe) {
+    public DataGetRestriction tpe(Integer tpe) {
         setTpe(tpe);
         return this;
     }
@@ -95,7 +94,7 @@ public class DataGetRestriction {
         return this;
     }
 
-    public DataGetRestriction respc(String respc) {
+    public DataGetRestriction respc(Integer respc) {
         setRespc(respc);
         return this;
     }
@@ -111,4 +110,7 @@ public class DataGetRestriction {
             ", respc='" + getRespc() + "'" +
             "}";
     }
+
+
+    
 }

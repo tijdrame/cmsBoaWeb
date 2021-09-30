@@ -101,13 +101,12 @@ public class NewApiService {
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
                             result, tab[1]);
                 } else if (obj.toString() != null && !obj.isNull("response")
-                        && (obj.getInt("response") == 0 || obj.getInt("response")==2 )) {
+                        && (obj.getInt("response") == 0 || obj.getInt("response") == 2)) {
                     genericResp.setData(obj.getInt("response"));
                     genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResp.setDateResponse(Instant.now());
-                    genericResp.setDescription(
-                            obj.getInt("response")==0 ? ICodeDescResponse.USER_DEJA_DESACTIVE
-                                    : ICodeDescResponse.COMPTE_INEXISTANT);
+                    genericResp.setDescription(obj.getInt("response") == 0 ? ICodeDescResponse.USER_DEJA_DESACTIVE
+                            : ICodeDescResponse.COMPTE_INEXISTANT);
 
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                             result, tab[1]);
@@ -164,8 +163,7 @@ public class NewApiService {
             return genericResp;
         }
         try {
-            String jsonStr = new JSONObject().put("cartIdentif", gRequest.getCartIdentif())
-                    .toString();
+            String jsonStr = new JSONObject().put("cartIdentif", gRequest.getCartIdentif()).toString();
             log.info("Request for getRestriction [{}]", jsonStr);
             HttpURLConnection conn = utils.doConnexion(filiale.getEndPoint(), jsonStr, "application/json", null);
             BufferedReader br = null;
@@ -181,25 +179,25 @@ public class NewApiService {
                 }
                 log.info("getRestriction result ===== [{}]", result);
                 obj = new JSONObject(result);
-                // obj = obj.getJSONObject("cardDesactivation").getJSONObject("response");
+                obj = obj.getJSONObject("data");
                 // log.info("ob to str =[{}]", obj.toString());
                 // ObjectMapper mapper = new ObjectMapper();
                 // Map<String, Object> map = mapper.readValue(obj.toString(), Map.class);
                 // genericResp.setDataOauth(map);
-                if (obj.toString() != null && !obj.isNull("respc") && obj.getString("respc").equals("10")) {
+                if (obj.toString() != null && !obj.isNull("respc") && obj.getInt("respc") == 10) {
                     genericResp.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResp.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                     genericResp.setDateResponse(Instant.now());
                     DataGetRestriction data = new DataGetRestriction();
-                    data.cnp(obj.getString("cnp")).contactless(obj.getString("contactless")).gab(obj.getString("gab")).tpe(obj.getString("tpe"))
-                    .statut(obj.getString("statut")).respc(obj.getString("respc"));
+                    data.cnp(obj.getInt("cnp")).contactless(obj.getInt("contactless")).gab(obj.getInt("gab"))
+                            .tpe(obj.getInt("tpe")).statut(obj.getString("statut")).respc(obj.getInt("respc"));
                     genericResp.setData(data);
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
                             result, tab[1]);
-                } else if (obj.toString() != null && !obj.isNull("respc") && !obj.getString("respc").equals("10")) {
+                } else if (obj.toString() != null && !obj.isNull("respc") && obj.getInt("respc") != 10) {
                     DataGetRestriction data = new DataGetRestriction();
-                    data.cnp(obj.getString("cnp")).contactless(obj.getString("contactless")).gab(obj.getString("gab")).tpe(obj.getString("tpe"))
-                    .statut(obj.getString("statut")).respc(obj.getString("respc"));
+                    data.cnp(obj.getInt("cnp")).contactless(obj.getInt("contactless")).gab(obj.getInt("gab"))
+                            .tpe(obj.getInt("tpe")).statut(obj.getString("statut")).respc(obj.getInt("respc"));
                     genericResp.setData(data);
                     genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResp.setDateResponse(Instant.now());
@@ -225,7 +223,7 @@ public class NewApiService {
                 // genericResp.setData(map);
                 genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResp.setDateResponse(Instant.now());
-                genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION+ " "+ obj.toString());
                 tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                         result, tab[1]);
             }
@@ -260,10 +258,9 @@ public class NewApiService {
             return genericResp;
         }
         try {
-            String jsonStr = new JSONObject().put("cartIdentif", gRequest.getCartIdentif()).put("cnp", gRequest.getCnp())
-            .put("contactless", gRequest.getContactless()).put("gab", gRequest.getGab())
-            .put("tpe", gRequest.getTpe())
-                    .toString();
+            String jsonStr = new JSONObject().put("cartIdentif", gRequest.getCartIdentif())
+                    .put("cnp", gRequest.getCnp()).put("contactless", gRequest.getContactless())
+                    .put("gab", gRequest.getGab()).put("tpe", gRequest.getTpe()).toString();
             log.info("Request for changeRestriction [{}]", jsonStr);
             HttpURLConnection conn = utils.doConnexion(filiale.getEndPoint(), jsonStr, "application/json", null);
             BufferedReader br = null;
@@ -279,23 +276,24 @@ public class NewApiService {
                 }
                 log.info("changeRestriction result ===== [{}]", result);
                 obj = new JSONObject(result);
-                obj = obj.getJSONObject("response");
+                obj = obj.getJSONObject("data");
+                if(obj.toString()!= null) obj = obj.getJSONObject("response");
                 // log.info("ob to str =[{}]", obj.toString());
                 // ObjectMapper mapper = new ObjectMapper();
                 // Map<String, Object> map = mapper.readValue(obj.toString(), Map.class);
                 // genericResp.setDataOauth(map);
-                if (obj.toString() != null && !obj.isNull("respc") && obj.getString("respc").equals("10")) {
+                if (obj.toString() != null  && !obj.isNull("respc") && obj.getInt("respc") == 10) {
                     genericResp.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResp.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
                     genericResp.setDateResponse(Instant.now());
                     DataChangeRestriction data = new DataChangeRestriction();
-                    data.statut(obj.getString("statut")).respc(obj.getString("respc"));
+                    data.statut(obj.getString("statut")).respc(obj.getInt("respc"));
                     genericResp.setData(data);
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
                             result, tab[1]);
-                } else if (obj.toString() != null && !obj.isNull("respc") && !obj.getString("respc").equals("10")) {
+                } else if (obj.toString() != null  && !obj.isNull("respc") && obj.getInt("respc") != 10) {
                     DataChangeRestriction data = new DataChangeRestriction();
-                    data.statut(obj.getString("statut")).respc(obj.getString("respc"));
+                    data.statut(obj.getString("statut")).respc(obj.getInt("respc"));
                     genericResp.setData(data);
                     genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResp.setDateResponse(Instant.now());
@@ -321,7 +319,7 @@ public class NewApiService {
                 // genericResp.setData(map);
                 genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResp.setDateResponse(Instant.now());
-                genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION+ " "+obj.toString());
                 tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                         result, tab[1]);
             }
