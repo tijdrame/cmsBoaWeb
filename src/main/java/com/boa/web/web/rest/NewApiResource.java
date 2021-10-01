@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.boa.web.request.ChangeRestrictionRequest;
 import com.boa.web.request.DesactivateUserRequest;
+import com.boa.web.request.GetCardLimitsRequest;
 import com.boa.web.request.GetRestrictionRequest;
 import com.boa.web.response.ChangeRestrictionResponse;
 import com.boa.web.response.DesactivateUserResponse;
+import com.boa.web.response.GetCardLimitsResponse;
 import com.boa.web.response.GetRestrictionResponse;
 import com.boa.web.service.NewApiService;
 import com.boa.web.service.util.ICodeDescResponse;
@@ -82,6 +84,22 @@ public class NewApiResource {
             return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(response);
         }
         response = newApiService.changeRestriction(cRequest, request);
+        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(response);
+    }
+
+    @PostMapping("/getCardLimits")
+    public ResponseEntity<GetCardLimitsResponse> getCardLimits(@RequestBody GetCardLimitsRequest cRequest,
+            HttpServletRequest request) throws URISyntaxException {
+        log.debug("REST request to getCardLimits : {}", cRequest);
+        GetCardLimitsResponse response = new GetCardLimitsResponse();
+        if (controleParam(cRequest.getCartIdentif()) || controleParam(cRequest.getLangue())
+                || controleParam(cRequest.getTypeoper()) ) {
+            response.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
+            response.setDateResponse(Instant.now());
+            response.setDescription(ICodeDescResponse.PARAM_OBLIGATOIRE);
+            return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(response);
+        }
+        response = newApiService.getCardLimits(cRequest, request);
         return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization")).body(response);
     }
 
