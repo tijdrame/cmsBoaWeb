@@ -6,7 +6,7 @@ public class CardlessRequest {
     private String senderAccountNumber, destCellPhone, institutionId, currency;
     private LocalDate withdrawalDueDate;
     private Double amount;
-
+    private String langue;
 
     public CardlessRequest() {
     }
@@ -99,6 +99,14 @@ public class CardlessRequest {
         return this;
     }
 
+    public String getLangue() {
+        return this.langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
+    }
+
 
     @Override
     public String toString() {
@@ -109,6 +117,7 @@ public class CardlessRequest {
             ", withdrawalDueDate='" + getWithdrawalDueDate() + "'" +
             ", currency='" + getCurrency() + "'" +
             ", amount='" + getAmount() + "'" +
+            ", langue='" + getLangue() + "'" +
             "}";
     }
 

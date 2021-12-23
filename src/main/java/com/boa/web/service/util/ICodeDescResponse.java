@@ -14,6 +14,7 @@ public interface ICodeDescResponse {
     public static String PARAM_DESCRIPTION = "Parametre(s) Compte et/ou Institution absent(s)";
     public static String PARAM_OBLIGATOIRE = "Parametre(s) Obligatoire(s) absent(s)";
     public static String SUCCES_DESCRIPTION = "Operation effectuee avec succes";
+    public static String EN_SUCCES_DESCRIPTION = "Operation successfully completed";
     public static String FILIALE_ABSENT_DESC = "Une erreur est survenue";
     public static String INSTITUTION_NON_PARAMETRE = "Institution non parametre.";
     public static String CLIENT_ABSENT_DESC = "Numero Client absent dans nos livres";

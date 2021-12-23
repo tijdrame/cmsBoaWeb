@@ -4,6 +4,7 @@ public class GetListCompteRequest {
     
     private String country;
     private String comptes;
+    private String langue;
 
     public GetListCompteRequest() {
     }
@@ -39,11 +40,20 @@ public class GetListCompteRequest {
         return this;
     }
 
+    public String getLangue() {
+        return this.langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
+    }
+
     @Override
     public String toString() {
         return "{" +
             " country='" + getCountry() + "'" +
             ", comptes='" + getComptes() + "'" +
+            ", langue='" + getComptes() + "'" +
             "}";
     }
 

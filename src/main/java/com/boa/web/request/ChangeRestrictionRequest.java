@@ -6,6 +6,7 @@ public class ChangeRestrictionRequest {
     private Integer contactless;
     private Integer gab;
     private Integer tpe;
+    private String langue;
 
 
     public ChangeRestrictionRequest() {
@@ -84,6 +85,14 @@ public class ChangeRestrictionRequest {
         return this;
     }
 
+    public String getLangue() {
+        return this.langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -92,6 +101,7 @@ public class ChangeRestrictionRequest {
             ", contactless='" + getContactless() + "'" +
             ", gab='" + getGab() + "'" +
             ", tpe='" + getTpe() + "'" +
+            ", langue='" + getLangue() + "'" +
             "}";
     }
     

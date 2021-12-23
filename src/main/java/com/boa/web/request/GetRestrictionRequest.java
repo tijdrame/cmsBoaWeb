@@ -2,6 +2,7 @@ package com.boa.web.request;
 
 public class GetRestrictionRequest {
     private String cartIdentif;
+    private String langue;
 
     public GetRestrictionRequest() {
     }
@@ -23,10 +24,19 @@ public class GetRestrictionRequest {
         return this;
     }
 
+    public String getLangue() {
+        return this.langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
+    }
+
     @Override
     public String toString() {
         return "{" +
             " cartIdentif='" + getCartIdentif() + "'" +
+            " langue='" + getLangue() + "'" +
             "}";
     }
 

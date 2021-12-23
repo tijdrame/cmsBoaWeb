@@ -6,6 +6,7 @@ public class DesactivateUserRequest {
     private String param1 ="";
     private String param2 ="";
     private String param3 ="";
+    private String langue ="";
 
 
     public DesactivateUserRequest() {
@@ -84,6 +85,14 @@ public class DesactivateUserRequest {
         return this;
     }
 
+    public String getLangue() {
+        return this.langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -92,6 +101,7 @@ public class DesactivateUserRequest {
             ", param1='" + getParam1() + "'" +
             ", param2='" + getParam2() + "'" +
             ", param3='" + getParam3() + "'" +
+            ", langue='" + getLangue() + "'" +
             "}";
     }
 

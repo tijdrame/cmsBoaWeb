@@ -39,6 +39,7 @@ import com.boa.web.response.VerifSeuilResponse;
 import com.boa.web.response.prepareChangeCardOption.HiddenInput;
 import com.boa.web.response.prepareChangeCardOption.Information;
 import com.boa.web.service.util.ICodeDescResponse;
+import com.boa.web.service.util.Utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,14 +63,16 @@ public class ApiService {
     private final UserService userService;
     private final ParamFilialeService paramFilialeService;
     private final ParamGeneralService paramGeneralService;
+    private final Utils utils;
 
     public ApiService(ParamFilialeRepository paramFilialeRepository, ParamFilialeService paramFilialeService,
-            UserService userService, TrackingService trackingService, ParamGeneralService paramGeneralService) {
+            UserService userService, TrackingService trackingService, ParamGeneralService paramGeneralService, Utils utils) {
         this.paramFilialeRepository = paramFilialeRepository;
         this.trackingService = trackingService;
         this.userService = userService;
         this.paramFilialeService = paramFilialeService;
         this.paramGeneralService = paramGeneralService;
+        this.utils = utils;
     }
 
     /*
@@ -267,7 +270,7 @@ public class ApiService {
                 }
                 genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                genericResponse.setDescription(utils.getSuccessMsg(getCardBankActivationParametersRequest.getLangue()));
                 tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
                 tracking.setDateResponse(Instant.now());
                 tracking.setEndPointTr(filiale.getEndPoint());
@@ -551,7 +554,7 @@ public class ApiService {
 
                         getPrepaidDechargementResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                         getPrepaidDechargementResponse.setDateResponse(Instant.now());
-                        getPrepaidDechargementResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                        getPrepaidDechargementResponse.setDescription(utils.getSuccessMsg(GetPrepaidDechargement.getLangue()));
                         getPrepaidDechargementResponse.setReference("");
                         getPrepaidDechargementResponse.setResultat(
                                 obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RCOD"));
@@ -796,7 +799,7 @@ public class ApiService {
                     // genericResponse.setCurrency(myObj.getString("currency"));
                     genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResponse.setDescription(utils.getSuccessMsg(prepareCardToOwnCardTransferRequest.getlangue()));
                     tracking.setCodeResponse(ICodeDescResponse.SUCCES_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
@@ -984,7 +987,7 @@ public class ApiService {
                     }
                     genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResponse.setDescription(utils.getSuccessMsg(executeCardToOwnCardTransferRequest.getLangue()));
 
                     //paramFilialeService.invalidateCache(client.getIdClient());
 
@@ -1309,7 +1312,7 @@ public class ApiService {
                             .getJSONObject("complete-change-card-option-response").getString("action"));
                     genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResponse.setDescription(utils.getSuccessMsg(executeBankActivateCardRequest.getLangue()));
 
                     //paramFilialeService.invalidateCache(client.getIdClient());
 

@@ -100,7 +100,7 @@ public class NewApiService {
                 // genericResp.setDataOauth(map);
                 if (obj.toString() != null && !obj.isNull("response") && obj.getInt("response") == 1) {
                     genericResp.setCode(ICodeDescResponse.SUCCES_CODE);
-                    genericResp.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResp.setDescription(utils.getSuccessMsg(blockRequest.getLangue()));
                     genericResp.setDateResponse(Instant.now());
                     genericResp.setData(obj.getInt("response"));
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
@@ -191,7 +191,7 @@ public class NewApiService {
                 // genericResp.setDataOauth(map);
                 if (obj.toString() != null && !obj.isNull("respc") && obj.getInt("respc") == 10) {
                     genericResp.setCode(ICodeDescResponse.SUCCES_CODE);
-                    genericResp.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResp.setDescription(utils.getSuccessMsg(gRequest.getLangue()));
                     genericResp.setDateResponse(Instant.now());
                     DataGetRestriction data = new DataGetRestriction();
                     data.cnp(obj.getInt("cnp")).contactless(obj.getInt("contactless")).gab(obj.getInt("gab"))
@@ -286,7 +286,7 @@ public class NewApiService {
                     obj = obj.getJSONObject("response");
                 if (obj.toString() != null && !obj.isNull("respc") && obj.getInt("respc") == 10) {
                     genericResp.setCode(ICodeDescResponse.SUCCES_CODE);
-                    genericResp.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResp.setDescription(utils.getSuccessMsg(gRequest.getLangue()));
                     genericResp.setDateResponse(Instant.now());
                     DataChangeRestriction data = new DataChangeRestriction();
                     data.statut(obj.getString("statut")).respc(obj.getInt("respc"));
@@ -392,7 +392,7 @@ public class NewApiService {
                             .typeoper(obj.getString("typeoper"));
 
                     genericResp.setCode(ICodeDescResponse.SUCCES_CODE);
-                    genericResp.setDescription(ICodeDescResponse.SUCCES_DESCRIPTION);
+                    genericResp.setDescription(utils.getSuccessMsg(gRequest.getLangue()));
                     genericResp.setDateResponse(Instant.now());
 
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(),
