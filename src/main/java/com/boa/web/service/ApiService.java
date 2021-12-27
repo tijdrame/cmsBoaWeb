@@ -156,7 +156,7 @@ public class ApiService {
                     genericResponse.setBusinessfault(obj.getJSONObject("Envelope").getJSONObject("Body")
                             .getJSONObject("Fault").getString("faultstring"));
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(getCardBankActivationParametersRequest.getLangue()));
                     genericResponse.setDateResponse(Instant.now());
                     // genericResponse.setFaultString(obj.getJSONObject("Envelope").getJSONObject("Body")
                     // .getJSONObject("Fault").getJSONObject("detail").getJSONObject("business-fault")
@@ -486,7 +486,7 @@ public class ApiService {
                     log.info("res 500= [{}]", result);
                     getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     getPrepaidDechargementResponse.setDateResponse(Instant.now());
-                    getPrepaidDechargementResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    getPrepaidDechargementResponse.setDescription(utils.getEchecMsg(GetPrepaidDechargement.getLangue()));
                     getPrepaidDechargementResponse.setResultat(
                             obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RCOD"));
                     getPrepaidDechargementResponse.setTexte(
@@ -520,7 +520,7 @@ public class ApiService {
                                 .getJSONObject("annulation").toString());
                         getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                         getPrepaidDechargementResponse.setDateResponse(Instant.now());
-                        getPrepaidDechargementResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                        getPrepaidDechargementResponse.setDescription(utils.getEchecMsg(GetPrepaidDechargement.getLangue()));
                         // if
                         // (!obj.getJSONObject("dechargementCarte").getJSONObject("response").getJSONObject("annulation")
                         // .toString().contains(null)) {
@@ -575,7 +575,7 @@ public class ApiService {
 
                         getPrepaidDechargementResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                         getPrepaidDechargementResponse.setDateResponse(Instant.now());
-                        getPrepaidDechargementResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                        getPrepaidDechargementResponse.setDescription(utils.getEchecMsg(GetPrepaidDechargement.getLangue()));
                         getPrepaidDechargementResponse.setReference("");
                         getPrepaidDechargementResponse.setResultat(
                                 obj.getJSONObject("dechargementCarte").getJSONObject("response").getString("RCOD"));
@@ -1008,7 +1008,7 @@ public class ApiService {
                     genericResponse.setIshold("");
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(executeCardToOwnCardTransferRequest.getLangue()));
                     tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());
@@ -1327,7 +1327,7 @@ public class ApiService {
                 } else {
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(executeBankActivateCardRequest.getLangue()));
                     tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
                     tracking.setDateResponse(Instant.now());
                     tracking.setEndPointTr(filiale.getEndPoint());

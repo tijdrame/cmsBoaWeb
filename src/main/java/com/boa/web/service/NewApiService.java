@@ -133,7 +133,7 @@ public class NewApiService {
                 // genericResp.setData(map);
                 genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResp.setDateResponse(Instant.now());
-                genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResp.setDescription(utils.getEchecMsg(blockRequest.getLangue()));
                 tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                         result, tab[1]);
             }
@@ -141,9 +141,9 @@ public class NewApiService {
             log.error("Exception in oAuth [{}]", e);
             genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
             genericResp.setDateResponse(Instant.now());
-            // genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + " " +
+            // genericResp.setDescription(utils.getEchecMsg(GetPrepaidDechargement.getLangue()) + " " +
             // e.getMessage());
-            genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + e.getMessage());
+            genericResp.setDescription(utils.getEchecMsg(blockRequest.getLangue()) + e.getMessage());
             tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                     e.getMessage(), tab[1]);
         }
@@ -206,7 +206,7 @@ public class NewApiService {
                     genericResp.setData(data);
                     genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResp.setDateResponse(Instant.now());
-                    genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()));
 
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                             result, tab[1]);
@@ -228,7 +228,7 @@ public class NewApiService {
                 // genericResp.setData(map);
                 genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResp.setDateResponse(Instant.now());
-                genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + " " + obj.toString());
+                genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()) + " " + obj.toString());
                 tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                         result, tab[1]);
             }
@@ -236,9 +236,9 @@ public class NewApiService {
             log.error("Exception in getRestriction [{}]", e);
             genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
             genericResp.setDateResponse(Instant.now());
-            // genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + " " +
+            // genericResp.setDescription(utils.getEchecMsg(GetPrepaidDechargement.getLangue()) + " " +
             // e.getMessage());
-            genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + e.getMessage());
+            genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()) + e.getMessage());
             tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                     e.getMessage(), tab[1]);
         }
@@ -299,7 +299,7 @@ public class NewApiService {
                     genericResp.setData(data);
                     genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResp.setDateResponse(Instant.now());
-                    genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()));
 
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                             result, tab[1]);
@@ -316,7 +316,7 @@ public class NewApiService {
                 obj = new JSONObject(result);
                 genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResp.setDateResponse(Instant.now());
-                genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + " " + obj.toString());
+                genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()) + " " + obj.toString());
                 tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                         result, tab[1]);
             }
@@ -324,7 +324,7 @@ public class NewApiService {
             log.error("Exception in changeRestriction [{}]", e);
             genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
             genericResp.setDateResponse(Instant.now());
-            genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + e.getMessage());
+            genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()) + e.getMessage());
             tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                     e.getMessage(), tab[1]);
         }
@@ -403,7 +403,7 @@ public class NewApiService {
 
                     genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResp.setDateResponse(Instant.now());
-                    genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()));
 
                     tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                             result, tab[1]);
@@ -420,7 +420,7 @@ public class NewApiService {
                 obj = new JSONObject(result);
                 genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResp.setDateResponse(Instant.now());
-                genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + " " + obj.toString());
+                genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()) + " " + obj.toString());
                 tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                         result, tab[1]);
             }
@@ -428,7 +428,7 @@ public class NewApiService {
             log.error("Exception in getCardLimits [{}]", e);
             genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
             genericResp.setDateResponse(Instant.now());
-            genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + e.getMessage());
+            genericResp.setDescription(utils.getEchecMsg(gRequest.getLangue()) + e.getMessage());
             tracking = paramFilialeService.createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                     e.getMessage(), tab[1]);
         }

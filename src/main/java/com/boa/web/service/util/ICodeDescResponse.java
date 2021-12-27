@@ -8,6 +8,7 @@ public interface ICodeDescResponse {
     public static Integer SUCCES_CODE = 200;
     public static Integer ECHEC_CODE = 301;
     public static String ECHEC_DESCRIPTION = "Operation echouee.";
+    public static String EN_ECHEC_DESCRIPTION = "Operation failed.";
     public static Integer CLIENT_ABSENT_CODE = 405;
     public static Integer FILIALE_ABSENT_CODE = 404;
     public static Integer PARAM_ABSENT_CODE = 304;

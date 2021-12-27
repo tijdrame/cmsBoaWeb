@@ -417,14 +417,14 @@ public class ParamFilialeService {
                 result = br.readLine();
                 log.info("result == [{}]", result);
                 obj = new JSONObject(result);
-                tracking.setCodeResponse(ICodeDescResponse.ECHEC_DESCRIPTION + "");
-                tracking.responseTr(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking.setCodeResponse(utils.getEchecMsg(cardsRequest.getLangue()) + "");
+                tracking.responseTr(utils.getEchecMsg(cardsRequest.getLangue()));
                 tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
                 tracking.dateResponse(Instant.now()).endPointTr(request.getRequestURI());
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(
-                        ICodeDescResponse.ECHEC_DESCRIPTION + " Message=" + obj.getJSONObject("Envelope")
+                        utils.getEchecMsg(cardsRequest.getLangue()) + " Message=" + obj.getJSONObject("Envelope")
                                 .getJSONObject("Body").getJSONObject("Fault").getJSONObject("detail").toString());
 
             }
@@ -1347,7 +1347,7 @@ public class ParamFilialeService {
                 log.info("getCardHistoryProxy result error == [{}]", result);
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                 tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
 
                 tracking.setDateResponse(Instant.now());
@@ -1578,7 +1578,7 @@ public class ParamFilialeService {
                 log.info("getCardHistoryProxy result error == [{}]", result);
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                 tracking.setCodeResponse(ICodeDescResponse.ECHEC_CODE + "");
 
                 tracking.setDateResponse(Instant.now());
@@ -1859,7 +1859,7 @@ public class ParamFilialeService {
                     obj = new JSONObject(result);
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                     genericResponse.setResultat(obj.getJSONObject("chargementCarte").getJSONObject("response")
                             .getJSONObject("chargement").getString("CCOD") + " ");
                     genericResponse.setTexte(obj.getJSONObject("chargementCarte").getJSONObject("response")
@@ -1886,7 +1886,7 @@ public class ParamFilialeService {
                         log.info("With annulation");
                         genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                         genericResponse.setDateResponse(Instant.now());
-                        genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                        genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                         // genericResponse.setReference("");
                         // if
                         // (!obj.getJSONObject("chargementCarte").getJSONObject("response").getJSONObject("annulation")
@@ -1945,7 +1945,7 @@ public class ParamFilialeService {
 
                         genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                         genericResponse.setDateResponse(Instant.now());
-                        genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                        genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                         // genericResponse.setReference("");
                         genericResponse.setResultat(
                                 obj.getJSONObject("chargementCarte").getJSONObject("response").getString("RCOD"));
@@ -3201,14 +3201,14 @@ public class ParamFilialeService {
                     // echec car result null
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                     tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), "Aucune reponse",
                             tab[1]);
                 }
             } else {
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                         "Le proxy a donne une reponse innatendu", tab[1]);
             }
@@ -3466,14 +3466,14 @@ public class ParamFilialeService {
                 result = br.readLine();
                 log.info("result == [{}]", result);
                 obj = new JSONObject(result);
-                tracking.setCodeResponse(ICodeDescResponse.ECHEC_DESCRIPTION + "");
-                tracking.responseTr(ICodeDescResponse.ECHEC_DESCRIPTION);
+                tracking.setCodeResponse(utils.getEchecMsg(cardsRequest.getLangue()) + "");
+                tracking.responseTr(utils.getEchecMsg(cardsRequest.getLangue()));
                 tracking.tokenTr(tab[1]).dateRequest(Instant.now()).loginActeur(login);
                 tracking.dateResponse(Instant.now()).endPointTr(request.getRequestURI());
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
                 genericResponse.setDescription(
-                        ICodeDescResponse.ECHEC_DESCRIPTION + " Message=" + obj.getJSONObject("Envelope")
+                        utils.getEchecMsg(cardsRequest.getLangue()) + " Message=" + obj.getJSONObject("Envelope")
                                 .getJSONObject("Body").getJSONObject("Fault").getJSONObject("detail").toString());
 
             }
@@ -3557,7 +3557,7 @@ public class ParamFilialeService {
                     } else {
                         genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                         genericResp.setDateResponse(Instant.now());
-                        genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                        genericResp.setDescription(utils.getEchecMsg(soldeRequest.getLangue()));
                         tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                                 genericResp.toString(), soldeRequest.toString());
                     }
@@ -3577,7 +3577,7 @@ public class ParamFilialeService {
 
                     genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResp.setDateResponse(Instant.now());
-                    genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResp.setDescription(utils.getEchecMsg(soldeRequest.getLangue()));
                     tracking = createTracking(ICodeDescResponse.ECHEC_CODE, request.getRequestURI(),
                             genericResp.toString(), soldeRequest.toString());
                 }
@@ -3587,7 +3587,7 @@ public class ParamFilialeService {
             log.error("Exception in consultationSoldeMultiCompte [{}]", e);
             genericResp.setCode(ICodeDescResponse.ECHEC_CODE);
             genericResp.setDateResponse(Instant.now());
-            genericResp.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION + " " + e.getMessage());
+            genericResp.setDescription(utils.getEchecMsg(soldeRequest.getLangue()) + " " + e.getMessage());
             tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
         }
         trackingService.save(tracking);
@@ -3641,7 +3641,7 @@ public class ParamFilialeService {
                 && !obj.getJSONObject("seuil").getString("rcode").equals("00")){
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(vRequest.getLangue()));
                     genericResponse.setRCode(obj.getJSONObject("seuil").getString("rcode"));
                     genericResponse.setRMessage(obj.getJSONObject("seuil").getString("rmessage"));
                     tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
@@ -3649,7 +3649,7 @@ public class ParamFilialeService {
             }else {
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(vRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
             }
         } catch (Exception e) {
@@ -3712,7 +3712,7 @@ public class ParamFilialeService {
                 && !obj.getJSONObject("rcommission").getString("rcode").equals("00")){
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(commissionRequest.getLangue()));
                     genericResponse.setRCode(obj.getJSONObject("rcommission").getString("rcode"));
                     genericResponse.setRMessage(obj.getJSONObject("rcommission").getString("rmessage"));
                     tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
@@ -3720,7 +3720,7 @@ public class ParamFilialeService {
             } else {
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(commissionRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
             }
         } catch (Exception e) {
@@ -3788,7 +3788,7 @@ public class ParamFilialeService {
                 && !obj.getJSONObject("listaccounts").getString("acode").equals("00")){
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(compteRequest.getLangue()));
                     genericResponse.setAmessage(obj.getJSONObject("listaccounts").getString("amessage"));
                     tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                             genericResponse.toString(), tab[1]);
@@ -3804,13 +3804,13 @@ public class ParamFilialeService {
                 obj = new JSONObject(result);*/
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(compteRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                 genericResponse.toString(), tab[1]);
             } else {
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(compteRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                 genericResponse.toString(), tab[1]);
             }
@@ -3818,7 +3818,7 @@ public class ParamFilialeService {
             log.error("Exception in newInward [{}]", e);
             genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(compteRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                 e.getMessage(), tab[1]);
         }
@@ -3929,20 +3929,20 @@ public class ParamFilialeService {
                 } else {
                     genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                     genericResponse.setDateResponse(Instant.now());
-                    genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                    genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                     tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                             genericResponse.toString(), tab[1]);
                 }
             } else if (conn != null) {
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                 genericResponse.toString(), tab[1]);
             } else {
                 genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                 genericResponse.toString(), tab[1]);
             }
@@ -3950,7 +3950,7 @@ public class ParamFilialeService {
             log.error("Exception in getCards [{}]", e);
             genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
                 genericResponse.setDateResponse(Instant.now());
-                genericResponse.setDescription(ICodeDescResponse.ECHEC_DESCRIPTION);
+                genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                 tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(),
                 e.getMessage(), tab[1]);
         }

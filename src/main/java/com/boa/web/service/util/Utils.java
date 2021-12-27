@@ -92,4 +92,9 @@ public class Utils {
         if(langue!= null && langue.equalsIgnoreCase("en")) return ICodeDescResponse.EN_SUCCES_DESCRIPTION;
         return ICodeDescResponse.SUCCES_DESCRIPTION;
     }
+
+    public String getEchecMsg(String langue){
+        if(langue!= null && langue.equalsIgnoreCase("en")) return ICodeDescResponse.EN_ECHEC_DESCRIPTION;
+        return ICodeDescResponse.ECHEC_DESCRIPTION;
+    }
 }
