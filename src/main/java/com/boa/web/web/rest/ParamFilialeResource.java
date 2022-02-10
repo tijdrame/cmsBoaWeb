@@ -4,7 +4,6 @@ import com.boa.web.domain.ParamFiliale;
 import com.boa.web.request.CardHistoryRequest;
 import com.boa.web.request.CardlessRequest;
 import com.boa.web.request.CardsDetailRequest;
-import com.boa.web.request.CardsRequest;
 import com.boa.web.request.ChangeCardAuthRestrictionRequest;
 import com.boa.web.request.ChangeCardRequest;
 import com.boa.web.request.ChargementCardRequest;
@@ -33,7 +32,6 @@ import com.boa.web.response.PrepareChangeCardOptionResponse;
 import com.boa.web.response.VerifSeuilResponse;
 import com.boa.web.response.cardhistory.GetCardHistoryResponse;
 import com.boa.web.response.cardlimit.CardLimitResponse;
-import com.boa.web.response.cardsrequest.Card;
 import com.boa.web.response.changecardlimit.ChangeCardLimitResponse;
 import com.boa.web.response.getCardAuthRestrictions.GetCardAuthRestrictionsResponse;
 import com.boa.web.service.ParamFilialeService;
@@ -51,7 +49,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
@@ -63,10 +60,8 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Null;
 
 /**
  * REST controller for managing {@link com.boa.web.domain.ParamFiliale}.
@@ -455,6 +450,27 @@ public class ParamFilialeResource {
         return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
                 .body(response);
     }
+
+    /*@PostMapping("/cardlessRemittanceByCardNumber")
+    public ResponseEntity<CardlessRemittanceByCardNumberResponse> cardlessRemittanceByCardNumber(
+            @RequestBody CardlessRemittanceByCardNumberRequest cardsRequest, HttpServletRequest request) throws URISyntaxException {
+        log.info("REST request to cardlessRemittanceByCardNumber :======= [{}]", cardsRequest);
+        CardlessRemittanceByCardNumberResponse response = new CardlessRemittanceByCardNumberResponse();
+        if (controleParam(cardsRequest.getCurrency()) || controleParam(cardsRequest.getDestCellPhone())||
+        controleParam(cardsRequest.getInstitutionId()) || controleParam(cardsRequest.getSenderCardNumber())||
+        (cardsRequest.getWithdrawalDueDate().equals(null)) || cardsRequest.getAmount().equals(null)) {
+            log.info("param ko======");
+            response.setCode(ICodeDescResponse.PARAM_ABSENT_CODE);
+            response.setDateResponse(Instant.now());
+            response.setDescription(ICodeDescResponse.PARAM_DESCRIPTION);
+            return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                    .body(response);
+        }
+        
+        response = paramFilialeService.cardlessRemittanceByCardNumber(cardsRequest, request);
+        return ResponseEntity.ok().header("Authorization", request.getHeader("Authorization"))
+                .body(response);
+    }*/
 
     @PostMapping("/consultationSolde")
     public ResponseEntity<ConsultationSoldeResponse> consultationSolde(

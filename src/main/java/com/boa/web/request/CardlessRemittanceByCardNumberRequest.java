@@ -2,34 +2,31 @@ package com.boa.web.request;
 
 import java.time.LocalDate;
 
-public class CardlessRequest {
-    private String senderAccountNumber, destCellPhone, institutionId, currency;
+public class CardlessRemittanceByCardNumberRequest {
+    private String senderCardNumber, destCellPhone, institutionId, currency;
     private LocalDate withdrawalDueDate;
     private Double amount;
     private String langue;
-    private String senderType;
 
-
-    public CardlessRequest() {
+    public CardlessRemittanceByCardNumberRequest() {
     }
 
-    public CardlessRequest(String senderAccountNumber, String destCellPhone, String institutionId, String currency, LocalDate withdrawalDueDate, Double amount, String langue, String senderType) {
-        this.senderAccountNumber = senderAccountNumber;
+    public CardlessRemittanceByCardNumberRequest(String senderCardNumber, String destCellPhone, String institutionId, String currency, LocalDate withdrawalDueDate, Double amount, String langue) {
+        this.senderCardNumber = senderCardNumber;
         this.destCellPhone = destCellPhone;
         this.institutionId = institutionId;
         this.currency = currency;
         this.withdrawalDueDate = withdrawalDueDate;
         this.amount = amount;
         this.langue = langue;
-        this.senderType = senderType;
     }
 
-    public String getSenderAccountNumber() {
-        return this.senderAccountNumber;
+    public String getSenderCardNumber() {
+        return this.senderCardNumber;
     }
 
-    public void setSenderAccountNumber(String senderAccountNumber) {
-        this.senderAccountNumber = senderAccountNumber;
+    public void setSenderCardNumber(String senderCardNumber) {
+        this.senderCardNumber = senderCardNumber;
     }
 
     public String getDestCellPhone() {
@@ -80,67 +77,52 @@ public class CardlessRequest {
         this.langue = langue;
     }
 
-    public String getSenderType() {
-        return this.senderType;
-    }
-
-    public void setSenderType(String senderType) {
-        this.senderType = senderType;
-    }
-
-    public CardlessRequest senderAccountNumber(String senderAccountNumber) {
-        setSenderAccountNumber(senderAccountNumber);
+    public CardlessRemittanceByCardNumberRequest senderCardNumber(String senderCardNumber) {
+        setSenderCardNumber(senderCardNumber);
         return this;
     }
 
-    public CardlessRequest destCellPhone(String destCellPhone) {
+    public CardlessRemittanceByCardNumberRequest destCellPhone(String destCellPhone) {
         setDestCellPhone(destCellPhone);
         return this;
     }
 
-    public CardlessRequest institutionId(String institutionId) {
+    public CardlessRemittanceByCardNumberRequest institutionId(String institutionId) {
         setInstitutionId(institutionId);
         return this;
     }
 
-    public CardlessRequest currency(String currency) {
+    public CardlessRemittanceByCardNumberRequest currency(String currency) {
         setCurrency(currency);
         return this;
     }
 
-    public CardlessRequest withdrawalDueDate(LocalDate withdrawalDueDate) {
+    public CardlessRemittanceByCardNumberRequest withdrawalDueDate(LocalDate withdrawalDueDate) {
         setWithdrawalDueDate(withdrawalDueDate);
         return this;
     }
 
-    public CardlessRequest amount(Double amount) {
+    public CardlessRemittanceByCardNumberRequest amount(Double amount) {
         setAmount(amount);
         return this;
     }
 
-    public CardlessRequest langue(String langue) {
+    public CardlessRemittanceByCardNumberRequest langue(String langue) {
         setLangue(langue);
-        return this;
-    }
-
-    public CardlessRequest senderType(String senderType) {
-        setSenderType(senderType);
         return this;
     }
 
     @Override
     public String toString() {
         return "{" +
-            " senderAccountNumber='" + getSenderAccountNumber() + "'" +
+            " senderCardNumber='" + getSenderCardNumber() + "'" +
             ", destCellPhone='" + getDestCellPhone() + "'" +
             ", institutionId='" + getInstitutionId() + "'" +
             ", currency='" + getCurrency() + "'" +
             ", withdrawalDueDate='" + getWithdrawalDueDate() + "'" +
             ", amount='" + getAmount() + "'" +
             ", langue='" + getLangue() + "'" +
-            ", senderType='" + getSenderType() + "'" +
             "}";
     }
-    
 
 }

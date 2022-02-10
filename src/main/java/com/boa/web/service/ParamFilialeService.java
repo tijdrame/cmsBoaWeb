@@ -3141,7 +3141,9 @@ public class ParamFilialeService {
                     .put("amount", cardsRequest.getAmount()).put("currency", cardsRequest.getCurrency())
                     .put("send_card_acc_num", cardsRequest.getSenderAccountNumber())
                     .put("dest_phone_number", cardsRequest.getDestCellPhone())
-                    .put("institut_id", cardsRequest.getInstitutionId()).toString();
+                    .put("institut_id", cardsRequest.getInstitutionId())
+                    .put("sender_type", cardsRequest.getSenderType())
+                    .toString();
             log.info("req== [{}]", jsonString);
             tracking.setRequestTr(jsonString);
             os = conn.getOutputStream();
@@ -4010,10 +4012,84 @@ public class ParamFilialeService {
         card.setLinkedAccounts(str);
         return card;
     }
+
+    /* public CardlessRemittanceByCardNumberResponse cardlessRemittanceByCardNumber(
+            CardlessRemittanceByCardNumberRequest cardsRequest, HttpServletRequest request) {
+                log.info("in cardlessRemittanceByCardNumber [{}]", cardsRequest);
+                CardlessRemittanceByCardNumberResponse genericResponse = new CardlessRemittanceByCardNumberResponse();
+                Tracking tracking = new Tracking();
+                String autho = request.getHeader("Authorization");
+                String[] tab = autho.split("Bearer");
+                ParamFiliale filiale = paramFilialeRepository.findByCodeFiliale("cardlessRemittanceByCardNumber");
+                String result = "";
+                try {
+                    if (filiale == null) {
+                        genericResponse = (CardlessRemittanceByCardNumberResponse) clientAbsent(genericResponse, tracking,
+                                request.getRequestURI(), ICodeDescResponse.FILIALE_ABSENT_CODE,
+                                ICodeDescResponse.SERVICE_ABSENT_DESC, request.getRequestURI(), tab[1]);
+                        return genericResponse;
+                    }
+                    String jsonString =  new JSONObject().put("montant", commissionRequest.getMontant())
+                    .put("devise", commissionRequest.getDevise())
+                    .put("codeoper", commissionRequest.getCodeOperation())
+                    .put("compte", commissionRequest.getCompte())
+                    .put("country", commissionRequest.getCountry())
+                    .toString();
+        
+                    
+                    BufferedReader br = null;
+                    JSONObject obj = new JSONObject();
+                    // String result = "";
+                    HttpURLConnection conn = utils.doConnexion(filiale.getEndPoint(), jsonString, "application/json",
+                            null);
+                    if (conn != null && conn.getResponseCode() == 200) {
+                        br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String ligne = br.readLine();
+                        while (ligne != null) {
+                            result += ligne;
+                            ligne = br.readLine();
+                        }
+                        log.info("cardlessRemittanceByCardNumber result ===== [{}]", result);
+                        obj = new JSONObject(result);
+                        obj = obj.getJSONObject("data");
+                        if (obj.toString() != null && !obj.isNull("rcommission") && obj.toString().contains("rcode") 
+                        && obj.getJSONObject("rcommission").getString("rcode").equals("00")) {
+                            genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                            genericResponse.setDateResponse(Instant.now());
+                            genericResponse.setDescription(utils.getSuccessMsg(commissionRequest.getLangue()));
+                            genericResponse.setMontantCommission(obj.getJSONObject("rcommission").getDouble("commission"));
+                            tracking = createTracking(ICodeDescResponse.SUCCES_CODE, filiale.getEndPoint(), result, tab[1]);
+                        } else if (obj.toString() != null && !obj.isNull("rcommission") && obj.toString().contains("rcode") 
+                        && !obj.getJSONObject("rcommission").getString("rcode").equals("00")){
+                            genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                            genericResponse.setDateResponse(Instant.now());
+                            genericResponse.setDescription(utils.getEchecMsg(commissionRequest.getLangue()));
+                            genericResponse.setRCode(obj.getJSONObject("rcommission").getString("rcode"));
+                            genericResponse.setRMessage(obj.getJSONObject("rcommission").getString("rmessage"));
+                            tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
+                        }
+                    } else {
+                        genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                        genericResponse.setDateResponse(Instant.now());
+                        genericResponse.setDescription(utils.getEchecMsg(commissionRequest.getLangue()));
+                        tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
+                    }
+                } catch (Exception e) {
+                    log.error("exception in cardlessRemittanceByCardNumber [{}]", e);
+                    genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);
+                    genericResponse.setDateResponse(Instant.now());
+                    genericResponse.setDescription(ICodeDescResponse.FILIALE_ABSENT_DESC + " Message=" + e.getMessage());
+                    tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), e.getMessage(), tab[1]);
+                }
+                trackingService.save(tracking);
+                return genericResponse;
+    }*/
     public static void main(String[] args) {
         String str = "02014000005,02014000018";
         String [] tab = str.split(",");
         String res = "('"+tab[0]+"','"+tab[1]+"')";
         //"('02014000005','0122200125500')"
     }
+
+    
 }
