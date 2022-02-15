@@ -3170,7 +3170,7 @@ public class ParamFilialeService {
                 if (!obj.isNull("Envelope")) {
                     obj = obj.getJSONObject("Envelope").getJSONObject("Body")
                             .getJSONObject("cardlessRemittanceResponse").getJSONObject("reply");
-                    if (obj.toString().contains("errorCode")) {
+                    if (obj.getInt("status")==0) {
                         Reply reply = new Reply();
                         reply.setErrorCode(obj.getString("errorCode"));
                         reply.setErrorDescription(obj.getString("errorDescription"));
@@ -3179,14 +3179,15 @@ public class ParamFilialeService {
                         reply.setAmount(cardsRequest.getAmount());
                         reply.setAccount(cardsRequest.getSenderAccountNumber());
                         genericResponse.setReply(reply);
-                        genericResponse.setCode(ICodeDescResponse.SUCCES_CODE);
+                        genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);//AVT SUCCES
                         genericResponse.setDateResponse(Instant.now());
                         genericResponse.setDescription(utils.getSuccessMsg(cardsRequest.getLangue()));
                         tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
-                    } else if (obj.toString().contains("amount")) {
+                    } else if (obj.getInt("status")==1) {
                         log.info("with amount [{}]", obj.toString());
                         Reply reply = new Reply();
-                        reply.setAccount(obj.getString("account"));
+                        if(obj.toString().contains("account"))
+                            reply.setAccount(obj.getString("account"));
                         reply.setAmount(obj.getJSONObject("amount").getDouble("amount"));
                         reply.setCurrencyCode(obj.getJSONObject("amount").getString("currencyCode"));
                         reply.setOtp(obj.getString("otp"));
