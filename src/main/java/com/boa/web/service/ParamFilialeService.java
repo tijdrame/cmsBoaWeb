@@ -3181,7 +3181,7 @@ public class ParamFilialeService {
                         genericResponse.setReply(reply);
                         genericResponse.setCode(ICodeDescResponse.ECHEC_CODE);//AVT SUCCES
                         genericResponse.setDateResponse(Instant.now());
-                        genericResponse.setDescription(utils.getSuccessMsg(cardsRequest.getLangue()));
+                        genericResponse.setDescription(utils.getEchecMsg(cardsRequest.getLangue()));
                         tracking = createTracking(ICodeDescResponse.ECHEC_CODE, filiale.getEndPoint(), result, tab[1]);
                     } else if (obj.getInt("status")==1) {
                         log.info("with amount [{}]", obj.toString());
