@@ -161,7 +161,7 @@ public class InstitutionResource {
    * @param id the id of the institution to delete.
    * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
    */
-  @DeleteMapping("/institutions/{id}")
+  /*@DeleteMapping("/institutions/{id}")
   public ResponseEntity<Void> deleteInstitution(@PathVariable Long id) {
     log.debug("REST request to delete Institution : {}", id);
     institutionService.delete(id);
@@ -169,5 +169,5 @@ public class InstitutionResource {
       .noContent()
       .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
       .build();
-  }
+  }*/
 }

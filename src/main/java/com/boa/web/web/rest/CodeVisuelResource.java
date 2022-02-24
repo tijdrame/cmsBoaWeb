@@ -161,7 +161,7 @@ public class CodeVisuelResource {
    * @param id the id of the codeVisuel to delete.
    * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
    */
-  @DeleteMapping("/code-visuels/{id}")
+  /*@DeleteMapping("/code-visuels/{id}")
   public ResponseEntity<Void> deleteCodeVisuel(@PathVariable Long id) {
     log.debug("REST request to delete CodeVisuel : {}", id);
     codeVisuelService.delete(id);
@@ -169,5 +169,5 @@ public class CodeVisuelResource {
       .noContent()
       .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
       .build();
-  }
+  }*/
 }

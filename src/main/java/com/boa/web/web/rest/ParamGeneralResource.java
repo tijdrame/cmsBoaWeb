@@ -161,7 +161,7 @@ public class ParamGeneralResource {
    * @param id the id of the paramGeneral to delete.
    * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
    */
-  @DeleteMapping("/param-generals/{id}")
+  /*@DeleteMapping("/param-generals/{id}")
   public ResponseEntity<Void> deleteParamGeneral(@PathVariable Long id) {
     log.debug("REST request to delete ParamGeneral : {}", id);
     paramGeneralService.delete(id);
@@ -169,5 +169,5 @@ public class ParamGeneralResource {
       .noContent()
       .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
       .build();
-  }
+  }*/
 }

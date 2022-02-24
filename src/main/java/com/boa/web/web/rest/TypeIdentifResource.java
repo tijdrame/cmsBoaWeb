@@ -170,7 +170,7 @@ public class TypeIdentifResource {
    * @param id the id of the typeIdentif to delete.
    * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
    */
-  @DeleteMapping("/type-identifs/{id}")
+  /*@DeleteMapping("/type-identifs/{id}")
   public ResponseEntity<Void> deleteTypeIdentif(@PathVariable Long id) {
     log.debug("REST request to delete TypeIdentif : {}", id);
     typeIdentifService.delete(id);
@@ -178,5 +178,5 @@ public class TypeIdentifResource {
       .noContent()
       .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
       .build();
-  }
+  }*/
 }

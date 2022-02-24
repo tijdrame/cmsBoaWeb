@@ -170,7 +170,7 @@ public class ParamIdentifierResource {
    * @param id the id of the paramIdentifier to delete.
    * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
    */
-  @DeleteMapping("/param-identifiers/{id}")
+  /*@DeleteMapping("/param-identifiers/{id}")
   public ResponseEntity<Void> deleteParamIdentifier(@PathVariable Long id) {
     log.debug("REST request to delete ParamIdentifier : {}", id);
     paramIdentifierService.delete(id);
@@ -178,5 +178,5 @@ public class ParamIdentifierResource {
       .noContent()
       .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
       .build();
-  }
+  }*/
 }

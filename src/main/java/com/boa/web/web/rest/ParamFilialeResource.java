@@ -172,7 +172,7 @@ public class ParamFilialeResource {
      * @param id the id of the paramFiliale to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/param-filiales/{id}")
+    /*@DeleteMapping("/param-filiales/{id}")
     @ApiIgnore
     public ResponseEntity<Void> deleteParamFiliale(@PathVariable Long id) {
         log.debug("REST request to delete ParamFiliale : {}", id);
@@ -180,7 +180,7 @@ public class ParamFilialeResource {
         return ResponseEntity.noContent()
                 .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
                 .build();
-    }
+    }*/
 
     @PostMapping("/getCards")
     public ResponseEntity<GetCardsResponse> getCards(@RequestBody GetCardsBisRequest cardsRequest, HttpServletRequest request)

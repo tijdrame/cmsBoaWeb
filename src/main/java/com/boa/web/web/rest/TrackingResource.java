@@ -161,7 +161,7 @@ public class TrackingResource {
    * @param id the id of the tracking to delete.
    * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
    */
-  @DeleteMapping("/trackings/{id}")
+  /*@DeleteMapping("/trackings/{id}")
   public ResponseEntity<Void> deleteTracking(@PathVariable Long id) {
     log.debug("REST request to delete Tracking : {}", id);
     trackingService.delete(id);
@@ -169,5 +169,5 @@ public class TrackingResource {
       .noContent()
       .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
       .build();
-  }
+  }*/
 }
